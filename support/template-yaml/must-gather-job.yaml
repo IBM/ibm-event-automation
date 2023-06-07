@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ibm-events-must-gather
+  namespace: MUSTGATHER_NAMESPACE_PLACEHOLDER
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    metadata:
+      name: mg-test
+      labels:
+        app: mg-v0.0.4
+    spec:
+      serviceAccountName: ibm-events-must-gather
+      securityContext:
+        seLinuxOptions:
+          level: 's0:c26,c10'
+        fsGroup: 1000670000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: gather
+          image: GATHER_IMAGE_PLACEHOLDER
+          imagePullPolicy: Always
+          command:
+            - /bin/bash
+            - '-c'
+            - 'GATHER_COMMAND_PLACEHOLDER'
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsUser: 1000670000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: must-gather
+              mountPath: /must-gather
+        - name: copy
+          image: COPY_IMAGE_PLACEHOLDER
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: must-gather
+              mountPath: /must-gather
+          command:
+            - /bin/bash
+            - '-c'
+            - 'trap : TERM INT; sleep infinity & wait'
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsUser: 1000670000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+      imagePullSecrets:
+        - name: ibm-entitlement-key
+      volumes:
+        - name: must-gather
+          emptyDir: {}
+      restartPolicy: Never
