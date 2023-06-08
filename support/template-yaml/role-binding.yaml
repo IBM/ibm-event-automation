@@ -1,0 +1,12 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ibm-events-must-gather
+subjects:
+  - kind: ServiceAccount
+    name: ibm-events-must-gather
+    namespace: MUSTGATHER_NAMESPACE_PLACEHOLDER
+roleRef:
+  kind: ClusterRole
+  name: ibm-events-must-gather
+  apiGroup: rbac.authorization.k8s.io
