@@ -11,7 +11,7 @@ function compactUsage() {
     echo ""
     echo "Options:"
     echo "  -h: Show full help message."
-    echo "  -i: The address of the image to be used for the gather. By default this uses icr.io/cpopen/ibm-events-must-gather."
+    echo "  -i: The address of the image to be used for the gather. By default this uses icr.io/cpopen/ibm-eventstreams-must-gather."
     echo "  -m: Define the data module(s) that specifies what type of information is collected. Run with -h, to see full list of available data modules."
     echo "  -n: Specify the namespace from which the data is collected. If specifying more than one of eventstreams, eem and eventprocessing modules, individual namespace flags must be used."
     echo "  --es-namespace: The namespace from which the eventstreams data is collected."
@@ -309,8 +309,8 @@ fi
 
 if [ -z "$image" ]
 then
-      echo "Using default image: icr.io/cpopen/ibm-events-must-gather"
-      image="icr.io/cpopen/ibm-events-must-gather"
+      echo "Using default image: icr.io/cpopen/ibm-eventstreams-must-gather"
+      image="icr.io/cpopen/ibm-eventstreams-must-gather"
 fi
 
 setup
