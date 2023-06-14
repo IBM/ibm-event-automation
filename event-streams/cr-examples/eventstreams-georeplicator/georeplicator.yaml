@@ -1,0 +1,23 @@
+###############################################################################
+#
+# Licensed Materials - Property of IBM
+#
+# IBM Event Streams
+#
+# (C) Copyright IBM Corp. 2020, 2022  All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1beta1
+kind: EventStreamsGeoReplicator
+metadata:
+  # The name needs to match the metadata.name of your EventStreams cluster
+  name: minimal-prod
+  labels:
+    # The value of this label needs to match the metadata.name of your EventStreams cluster
+    eventstreams.ibm.com/cluster: minimal-prod
+spec:
+  version: latest
+  replicas: 1

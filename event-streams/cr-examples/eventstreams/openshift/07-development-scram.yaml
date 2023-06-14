@@ -1,0 +1,79 @@
+###############################################################################
+#
+# Licensed Materials - Property of IBM
+#
+# IBM Event Streams
+#
+# (C) Copyright IBM Corp. 2020, 2023  All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: EventStreams
+metadata:
+  annotations:
+    eventstreams.ibm.com/apicurio-registry-version: ">=2.4"
+  name: dev-scram
+spec:
+  version: latest
+  license:
+    # By installing this product you accept the license terms at https://ibm.biz/es-license
+    accept: false
+    license: ""
+    use: ""
+  adminApi: {}
+  adminUI:
+    authentication:
+      - type: scram-sha-512
+  apicurioRegistry: {}
+  collector: {}
+  restProducer: {}
+  strimziOverrides:
+    kafka:
+      replicas: 3
+      authorization:
+        type: custom
+        authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
+        supportsAdminApi: true
+      config:
+        inter.broker.protocol.version: "3.4"
+        log.cleaner.threads: 6
+        num.io.threads: 24
+        num.network.threads: 9
+        num.replica.fetchers: 3
+        offsets.topic.replication.factor: 3
+        default.replication.factor: 3
+        min.insync.replicas: 2
+      listeners:
+        - name: external
+          port: 9094
+          type: route
+          tls: true
+          authentication:
+            type: scram-sha-512
+        - name: tls
+          port: 9093
+          type: internal
+          tls: true
+          authentication:
+            type: tls
+      metricsConfig:
+        type: jmxPrometheusExporter
+        valueFrom:
+          configMapKeyRef:
+            key: kafka-metrics-config.yaml
+            name: development-metrics-config
+      storage:
+        type: ephemeral
+    zookeeper:
+      replicas: 3
+      metricsConfig:
+        type: jmxPrometheusExporter
+        valueFrom:
+          configMapKeyRef:
+            key: zookeeper-metrics-config.yaml
+            name: development-metrics-config
+      storage:
+        type: ephemeral

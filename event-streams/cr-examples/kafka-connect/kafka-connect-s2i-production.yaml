@@ -1,0 +1,53 @@
+###############################################################################
+#
+# Licensed Materials - Property of IBM
+#
+# 5737-H33
+#
+# (C) Copyright IBM Corp. 2020, 2022  All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaConnectS2I
+metadata:
+  name: prod
+#  annotations:
+#  # use-connector-resources configures this KafkaConnect
+#  # to use KafkaConnector resources to avoid
+#  # needing to call the Connect REST API directly
+#    eventstreams.ibm.com/use-connector-resources: "true"
+spec:
+  template:
+    pod:
+      metadata:
+        annotations:
+          eventstreams.production.type: CloudPakForIntegrationProduction
+          productID: 2cba508800504d0abfa48a0e2c4ecbe2
+          productName: IBM Event Streams
+          productVersion: EVENTSTREAMS_PRODUCT_VERSION
+          productMetric: VIRTUAL_PROCESSOR_CORE
+          productChargedContainers: <ADD-NAME-OF-KAFKA-CONNECT-CR>-connect
+          cloudpakId: c8b82d189e7545f0892db9ef2731b90d
+          cloudpakName: IBM Cloud Pak for Integration
+          productCloudpakRatio: "1:1"
+  bootstrapServers: my-cluster-kafka-bootstrap:9093
+  tls:
+    trustedCertificates:
+      - secretName: my-cluster-cluster-ca-cert
+        certificate: ca.crt
+  config:
+    group.id: connect-cluster
+    offset.storage.topic: connect-cluster-offsets
+    config.storage.topic: connect-cluster-configs
+    status.storage.topic: connect-cluster-status
+  replicas: 1
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 2000m
+      memory: 2Gi

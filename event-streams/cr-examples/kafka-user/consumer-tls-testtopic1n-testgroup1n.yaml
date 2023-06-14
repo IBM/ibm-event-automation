@@ -1,0 +1,47 @@
+###############################################################################
+#
+# Licensed Materials - Property of IBM
+#
+# 5737-H33
+#
+# (C) Copyright IBM Corp. 2020, 2022  All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaUser
+# This kafka user generates Mutual TLS credentials for a consumer application.
+# It grants permissions to consume from any topic prefixed with testtopic1 e.g. testtopic1, testtopic10, testtopic123 etc
+# It grants permissions to consume with any consumer group prefixed with testgroup1 e.g. testgroup1, testgroup10, testgroup123 etc
+# It also grants permission to read any schema.
+metadata:
+  name: consumer-tls-testtopic1n-testgroup1n
+  namespace: placeholder
+  labels:
+    eventstreams.ibm.com/cluster: <cluster name>
+spec:
+  authentication:
+    type: tls
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: testtopic1
+          patternType: prefix
+        operations:
+          - Read
+      - resource:
+          type: group
+          name: testgroup1
+          patternType: prefix
+        operations:
+          - Read
+      - resource:
+          type: topic
+          name: __schema_
+          patternType: prefix
+        operations:
+          - Read

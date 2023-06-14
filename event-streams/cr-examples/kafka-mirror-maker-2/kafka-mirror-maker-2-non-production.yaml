@@ -1,0 +1,64 @@
+###############################################################################
+#
+# Licensed Materials - Property of IBM
+#
+# 5737-H33
+#
+# (C) Copyright IBM Corp. 2020, 2022  All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaMirrorMaker2
+metadata:
+  name: non-prod
+spec:
+  template:
+    pod:
+      metadata:
+        annotations:
+          eventstreams.production.type: CloudPakForIntegrationNonProduction
+          productID: 2a79e49111f44ec3acd89608e56138f5
+          productName: IBM Event Streams for Non Production
+          productVersion: EVENTSTREAMS_PRODUCT_VERSION
+          productMetric: VIRTUAL_PROCESSOR_CORE
+          productChargedContainers: <ADD-NAME-OF-MM2-CR>-mirrormaker2
+          cloudpakId: c8b82d189e7545f0892db9ef2731b90d
+          cloudpakName: IBM Cloud Pak for Integration
+          productCloudpakRatio: "2:1"
+  connectCluster: "my-cluster-target"
+  clusters:
+    - alias: "my-cluster-source"
+      bootstrapServers: my-cluster-source-kafka-bootstrap:9092
+    - alias: "my-cluster-target"
+      bootstrapServers: my-cluster-target-kafka-bootstrap:9092
+      config:
+        config.storage.replication.factor: 1
+        offset.storage.replication.factor: 1
+        status.storage.replication.factor: 1
+  mirrors:
+    - sourceCluster: "my-cluster-source"
+      targetCluster: "my-cluster-target"
+      sourceConnector:
+        config:
+          replication.factor: 1
+          offset-syncs.topic.replication.factor: 1
+          sync.topic.acls.enabled: "false"
+      heartbeatConnector:
+        config:
+          heartbeats.topic.replication.factor: 1
+      checkpointConnector:
+        config:
+          checkpoints.topic.replication.factor: 1
+      topicsPattern: ".*"
+      groupsPattern: ".*"
+  replicas: 1
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
