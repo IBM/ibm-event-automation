@@ -7,16 +7,17 @@
 
 function compactUsage() {
     echo "Usage:"
-    echo "ibm-events-must-gather [-m GATHER_MODULES] [-n NAMESPACE | --es-namespace NAMESPACE | --eem-namespace NAMESPACE | --ep-namespace NAMESPACE] [-i IMAGE] [-h]"
+    echo "ibm-events-must-gather [-m GATHER_MODULES] [-n NAMESPACE | --es-namespace NAMESPACE | --eem-namespace NAMESPACE | --ep-namespace NAMESPACE | --flink-namespace NAMESPACE] [-i IMAGE] [-h]"
     echo ""
     echo "Options:"
     echo "  -h: Show full help message."
     echo "  -i: The address of the image to be used for the gather. By default this uses icr.io/cpopen/ibm-events-must-gather."
     echo "  -m: Define the data module(s) that specifies what type of information is collected. Run with -h, to see full list of available data modules."
-    echo "  -n: Specify the namespace from which the data is collected. If specifying more than one of eventstreams, eem and eventprocessing modules, individual namespace flags must be used."
+    echo "  -n: Specify the namespace from which the data is collected. If specifying more than one of eventstreams, eem, eventprocessing and flink modules, individual namespace flags must be used."
     echo "  --es-namespace: The namespace from which the eventstreams data is collected."
     echo "  --eem-namespace: The namespace from which the eem data is collected."
     echo "  --ep-namespace: The namespace from which the eventprocessing data is collected."
+    echo "  --flink-namespace: The namespace from which the flink data is collected."
 }
 
 
@@ -28,6 +29,7 @@ function usage() {
     echo "  - IBM Event Streams"
     echo "  - IBM Event Endpoint Management"
     echo "  - IBM Event Processing"
+    echo "  - IBM Flink"
     echo ""
     echo "Output:"
     echo "This command will set up a pod in an ephemeral namespace that gathers logs from the cluster. The gathered information is compressed and then copied to the users "
@@ -50,6 +52,8 @@ function usage() {
     echo "                          Resources relating to the event processing operator"
     echo "  eem                     Resources relating to instances of event endpoint management"
     echo "                          Resources relating to the event endpoint management operator"
+    echo "  flink                   Resources relating to instances of flink"
+    echo "                          Resources relating to the flink operator"
     echo "  failure                 Unhealthy pods and their logs"
     echo "                          Unhealthy deployments, daemonsets, statefulsets and jobs"
     echo "                          Unhealthy routes and services"
@@ -72,6 +76,7 @@ function usage() {
     echo "    --es-namespace: the namespace from which the eventstreams data is collected."
     echo "    --eem-namespace: the namespace from which the eem data is collected."
     echo "    --ep-namespace: the namespace from which the eventprocessing data is collected."
+    echo "    --flink-namespace: the namespace from which the flink data is collected."
     echo ""
     echo ""
     echo "Examples: "
@@ -138,6 +143,9 @@ function setup ()
     if [ -n "${eemNamespace}" ]; then
       gatherCommand="${gatherCommand} --eem-namespace ${eemNamespace} "
     fi
+    if [ -n "${flinkNamespace}" ]; then
+      gatherCommand="${gatherCommand} --flink-namespace ${flinkNamespace} "
+    fi
     export gatherCommand
   else
     export gatherCommand="gather -m ${gatherModules} -n ${instanceNamespace}"
@@ -173,6 +181,7 @@ test=""
 esNamespace=""
 eemNamespace=""
 epNamespace=""
+flinkNamespace=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -200,6 +209,9 @@ while [[ $# -gt 0 ]]; do
     "--eem-namespace") eemNamespace="$2"
            shift 2
            ;;
+    "--flink-namespace") flinkNamespace="$2"
+            shift 2
+            ;;
     *) echo "Invalid argument ${1}"
        echo ""
        compactUsage
@@ -215,7 +227,7 @@ module_array=(${gatherModules//,/ })
 for m in ${module_array[@]}
 do
   case $m in
-    "eventstreams"|"eem"|"eventprocessing")
+    "eventstreams"|"eem"|"eventprocessing"|"flink")
       let products+=1
       ;;
     "overview"|"kafka"|"schema"|"failure"|"system")
@@ -255,6 +267,12 @@ if [ $products -gt 1 ]; then
         if [ -z "${epNamespace}" ]; then
           echo "you must indicate the eventprocessing namespace using the --ep-namespace flag"
           exit 5
+        fi
+        ;;
+      "flink")
+        if [ -z "${flinkNamespace}" ]; then
+          echo "you must indicate the flink namespace using the --flink-namespace flag"
+          exit 8
         fi
         ;;
     esac
