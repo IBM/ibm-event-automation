@@ -1,0 +1,35 @@
+###############################################################################
+#
+# Licensed Materials - Property of IBM
+#
+# IBM Event Streams
+#
+# (C) Copyright IBM Corp. 2023  All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+###############################################################################
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: metrics-config
+data:
+  kafka-metrics-config.yaml: |
+    lowercaseOutputName: true
+    rules:
+    - attrNameSnakeCase: false
+      name: kafka_controller_$1_$2_$3
+      pattern: kafka.controller<type=(\w+), name=(\w+)><>(Count|Value|Mean)
+    - attrNameSnakeCase: false
+      name: kafka_server_BrokerTopicMetrics_$1_$2
+      pattern: kafka.server<type=BrokerTopicMetrics, name=(BytesInPerSec|BytesOutPerSec)><>(Count)
+    - attrNameSnakeCase: false
+      name: kafka_server_BrokerTopicMetrics_$1__alltopics_$2
+      pattern: kafka.server<type=BrokerTopicMetrics, name=(BytesInPerSec|BytesOutPerSec)><>(OneMinuteRate)
+    - attrNameSnakeCase: false
+      name: kafka_server_ReplicaManager_$1_$2
+      pattern: kafka.server<type=ReplicaManager, name=(\w+)><>(Value)
+  zookeeper-metrics-config.yaml: |
+    lowercaseOutputName: true
+    rules: []

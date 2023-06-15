@@ -1,0 +1,1431 @@
+###############################################################################
+#
+# Licensed Materials - Property of IBM
+#
+# 5737-H33
+#
+# (C) Copyright IBM Corp. 2020, 2021  All Rights Reserved.
+#
+# US Government Users Restricted Rights - Use, duplication or
+# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+###############################################################################
+apiVersion: monitoringcontroller.cloud.ibm.com/v1
+kind: MonitoringDashboard
+metadata:
+  name: eventstreams-georeplication-health
+  labels:
+    app.kubernetes.io/instance: eventstreams-operator
+    app.kubernetes.io/managed-by: eventstreams-cluster-operator
+    app.kubernetes.io/name: eventstreams-georeplication-health-dashboard
+spec:
+  enabled: true
+  data: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "gnetId": null,
+      "graphTooltip": 0,
+      "id": null,
+      "iteration": 1593082596176,
+      "links": [],
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "prometheus",
+          "description": "Shows the total number of connectors running in this connect cluster.\n\nEach geo-replictor pairing has two connectors - the MirrorSourceConnector and the MirrorCheckpointConnector.",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 0,
+            "y": 0
+          },
+          "height": 250,
+          "id": 26,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_connect_worker_metrics_connector_count{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"})",
+              "format": "time_series",
+              "instant": true,
+              "intervalFactor": 2,
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": "",
+          "title": "Number of Connectors",
+          "type": "singlestat",
+          "valueFontSize": "200%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "0",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "prometheus",
+          "description": "Shows the total number of connect tasks for this geo-replicator",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 4,
+            "y": 0
+          },
+          "id": 27,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_connect_worker_metrics_task_count{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"})",
+              "format": "time_series",
+              "instant": true,
+              "intervalFactor": 2,
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": "",
+          "title": "Number of Tasks",
+          "type": "singlestat",
+          "valueFontSize": "200%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "0",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "prometheus",
+          "description": "Shows the total number of MirrorSourceConnector tasks for this geo-replicator",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 8,
+            "y": 0
+          },
+          "id": 45,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_connect_worker_metrics_connector_running_task_count{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\",connector=~\".*MirrorSourceConnector.*\"})",
+              "format": "time_series",
+              "instant": true,
+              "intervalFactor": 2,
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": "",
+          "title": "Running Geo-replication Tasks",
+          "type": "singlestat",
+          "valueFontSize": "200%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "0",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "prometheus",
+          "description": "Shows the total number of paused MirrorSourceConnector tasks for this geo-replicator",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 12,
+            "y": 0
+          },
+          "id": 47,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_connect_worker_metrics_connector_paused_task_count{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\",connector=~\".*MirrorSourceConnector.*\"})",
+              "format": "time_series",
+              "instant": true,
+              "intervalFactor": 2,
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": "",
+          "title": "Paused Geo-replication Tasks",
+          "type": "singlestat",
+          "valueFontSize": "200%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "0",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "prometheus",
+          "description": "Shows the total number of running MirrorCheckpointConnector tasks for this geo-replicator",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 16,
+            "y": 0
+          },
+          "id": 46,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_connect_worker_metrics_connector_running_task_count{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\",connector=~\".*MirrorCheckpointConnector.*\"})",
+              "format": "time_series",
+              "instant": true,
+              "intervalFactor": 1,
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": "",
+          "title": "Running Checkpointing Tasks",
+          "type": "singlestat",
+          "valueFontSize": "200%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "0",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "prometheus",
+          "description": "Shows the total number of paused MirrorCheckpointConnector tasks for this geo-replicator",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 20,
+            "y": 0
+          },
+          "id": 48,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_connect_worker_metrics_connector_paused_task_count{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\",status=\"paused\",connector=~\".*MirrorCheckpointConnector.*\"})",
+              "format": "time_series",
+              "instant": true,
+              "intervalFactor": 1,
+              "refId": "A",
+              "step": 40
+            }
+          ],
+          "thresholds": "",
+          "title": "Paused Checkpointing Tasks",
+          "type": "singlestat",
+          "valueFontSize": "200%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "0",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "collapsed": false,
+          "datasource": "prometheus",
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 4
+          },
+          "id": 36,
+          "panels": [],
+          "title": "Geo-replication",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "description": "Shows the rate of geo-replicated data in records per second, for each replicated topic",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 11,
+            "w": 12,
+            "x": 0,
+            "y": 5
+          },
+          "hiddenSeries": false,
+          "id": 38,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "sort": null,
+            "sortDesc": null,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_mirror_MirrorSourceConnector_record_rate{eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"}) by (topic)",
+              "legendFormat": "{{topic}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Geo-replicated Records per Topic",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "Records / second",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "description": "Shows the rate of geo-replicated data in bytes per second, , for each replicated topic",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 11,
+            "w": 12,
+            "x": 12,
+            "y": 5
+          },
+          "hiddenSeries": false,
+          "id": 39,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "sort": null,
+            "sortDesc": null,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_mirror_MirrorSourceConnector_byte_rate{eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"}) by (topic)",
+              "legendFormat": "{{topic}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Geo-replicated Bytes per Topic",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "Bytes / second",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "description": "Shows the age of each record when consumed by the geo-replicator ",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 12,
+            "w": 12,
+            "x": 0,
+            "y": 16
+          },
+          "hiddenSeries": false,
+          "id": 40,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "kafka_connect_mirror_MirrorSourceConnector_record_age_ms{eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"}",
+              "legendFormat": "{{topic}}:{{partition}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Geo-replicated Record Age per Topic Partition",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "ms",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "description": "Shows the  times in ms between each record's timestamp and the acknowledgement at the destination cluster",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 12,
+            "w": 12,
+            "x": 12,
+            "y": 16
+          },
+          "hiddenSeries": false,
+          "id": 41,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "kafka_connect_mirror_MirrorSourceConnector_replication_latency_ms{eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"}",
+              "legendFormat": "{{topic}}:{{partition}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Geo-replication Latency per Topic Partition",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "ms",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "collapsed": false,
+          "datasource": "prometheus",
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 28
+          },
+          "id": 44,
+          "panels": [],
+          "title": "Consumer group checkpointing",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "description": "Shows the time in ms between the consumer group commit at the origin, and the acknowledgement at the destination cluster for the checkpoint",
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 11,
+            "w": 12,
+            "x": 0,
+            "y": 29
+          },
+          "hiddenSeries": false,
+          "id": 42,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(kafka_connect_mirror_MirrorCheckpointConnector_latency_ms{eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"}) by (topic)",
+              "intervalFactor": 1,
+              "legendFormat": "{{topic}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Consumer Group Checkpoint Latency per Topic",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "ms",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "collapsed": false,
+          "datasource": "prometheus",
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 40
+          },
+          "id": 34,
+          "panels": [],
+          "title": "Geo-replication workers",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "description": "",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 8,
+            "x": 0,
+            "y": 41
+          },
+          "hiddenSeries": false,
+          "id": 30,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "rate(process_cpu_seconds_total{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"}[5m])",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{pod}}",
+              "metric": "",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "CPU Usage",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "Cores",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "description": "Memory usage of the KafkaMirrorMaker2 pods used for geo-replication",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 8,
+            "x": 8,
+            "y": 41
+          },
+          "hiddenSeries": false,
+          "id": 31,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum without(area)(jvm_memory_bytes_used{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{pod}}",
+              "metric": "",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "JVM Memory",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": "Memory",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "description": "Time spend in garbage collection by the KafkaMirrorMaker2 pods used for geo-replication",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 8,
+            "x": 16,
+            "y": 41
+          },
+          "hiddenSeries": false,
+          "id": 32,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum without(gc)(rate(jvm_gc_collection_seconds_sum{eventstreams_ibm_com_kind=~\"KafkaMirrorMaker2\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",job=\"kubernetes-pods\"}[5m]))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{pod}}",
+              "metric": "",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Time spent in GC",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "percent",
+              "label": "% time in GC",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "refresh": "10s",
+      "schemaVersion": 21,
+      "style": "dark",
+      "tags": [
+        "Kafka",
+        "Kafka Mirror Maker 2"
+      ],
+      "templating": {
+        "list": [
+          {
+            "allValue": null,
+            "current": {
+              "selected": true,
+              "text": "em",
+              "value": "em"
+            },
+            "datasource": "prometheus",
+            "definition": "label_values(namespace)",
+            "hide": 0,
+            "includeAll": false,
+            "label": "Namespace",
+            "multi": false,
+            "name": "kubernetes_namespace",
+            "options": [],
+            "query": "label_values(namespace)",
+            "refresh": 1,
+            "regex": "^(?!kube-)(?!openshift).*$",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": null,
+            "current": {
+              "selected": false,
+              "tags": [],
+              "text": "minimal-prod-d",
+              "value": "minimal-prod-d"
+            },
+            "datasource": "prometheus",
+            "definition": "label_values(kube_pod_labels{namespace=\"$kubernetes_namespace\"}, label_eventstreams_ibm_com_cluster)",
+            "hide": 0,
+            "includeAll": false,
+            "label": "Cluster Name",
+            "multi": false,
+            "name": "eventstreams_cluster_name",
+            "options": [],
+            "query": "label_values(kube_pod_labels{namespace=\"$kubernetes_namespace\"}, label_eventstreams_ibm_com_cluster)",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          }
+        ]
+      },
+      "time": {
+        "from": "now-5m",
+        "to": "now"
+      },
+      "timepicker": {
+        "refresh_intervals": [
+          "5s",
+          "10s",
+          "30s",
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "2h",
+          "1d"
+        ],
+        "time_options": [
+          "5m",
+          "15m",
+          "1h",
+          "6h",
+          "12h",
+          "24h",
+          "2d",
+          "7d",
+          "30d"
+        ]
+      },
+      "timezone": "",
+      "title": "IBM Event Streams - Geo-replication",
+      "uid": "_GCZbBmMz",
+      "version": 21
+    }
