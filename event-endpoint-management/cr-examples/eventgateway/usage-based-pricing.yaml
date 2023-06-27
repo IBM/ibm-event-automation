@@ -1,0 +1,15 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventGateway
+metadata:
+  name: ubp-gw
+spec:
+  license:
+    accept: false
+    license: ''
+    metric: MONTHLY_API_CALL
+    use: CloudPakForIntegrationProduction
+  managerEndpoint: https://<eem-manager-gateway-route>
+  gatewayGroupName: <gateway-group>
+  gatewayID: <gateway-id>
+  tls:
+    caSecretName: <root-ca-secret-name>

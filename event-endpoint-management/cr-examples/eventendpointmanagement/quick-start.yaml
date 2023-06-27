@@ -1,0 +1,27 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventEndpointManagement
+metadata:
+  name: quick-start-manager
+spec:
+  license:
+    accept: false
+    license: ''
+    metric: ''
+    use: ''
+  manager:
+    authConfig:
+      authType: LOCAL
+    storage:
+      type: ephemeral
+    template:
+      pod:
+        spec:
+          containers:
+            - name: manager
+              resources:
+                requests:
+                  cpu: '0.25'
+                  memory: 256Mi
+                limits:
+                  cpu: '0.5'
+                  memory: 512Mi
