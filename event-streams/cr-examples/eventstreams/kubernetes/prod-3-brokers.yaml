@@ -1,13 +1,6 @@
 ###############################################################################
 #
-# Licensed Materials - Property of IBM
-#
-# IBM Event Streams
-#
-# (C) Copyright IBM Corp. 2020, 2023  All Rights Reserved.
-#
-# US Government Users Restricted Rights - Use, duplication or
-# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+# © Copyright IBM Corp. 2020, 2023
 #
 ###############################################################################
 apiVersion: eventstreams.ibm.com/v1beta2
@@ -17,7 +10,7 @@ metadata:
 spec:
   version: latest
   license:
-    # By installing this product you accept the license terms at https://ibm.biz/es-license
+    # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
     license: ""
     use: ""
@@ -25,7 +18,7 @@ spec:
     endpoints:
       - name: ingress
         type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
+        host: <HOSTNAME>
         class: <INGRESS-CLASS>
         containerPort: 8001
   adminUI:
@@ -34,14 +27,14 @@ spec:
     endpoints:
       - name: ingress
         type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
+        host: <HOSTNAME>
         class: <INGRESS-CLASS>
         containerPort: 3000
   apicurioRegistry:
     endpoints:
       - name: ingress
         type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
+        host: <HOSTNAME>
         class: <INGRESS-CLASS>
         containerPort: 8002
   collector: {}
@@ -49,7 +42,7 @@ spec:
     endpoints:
       - name: ingress
         type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
+        host: <HOSTNAME>
         class: <INGRESS-CLASS>
         containerPort: 8003
   strimziOverrides:
@@ -101,10 +94,10 @@ spec:
       resources:
         requests:
           memory: 8096Mi
-          cpu: 4000m
+          cpu: 2000m
         limits:
           memory: 8096Mi
-          cpu: 4000m
+          cpu: 2000m
       storage:
         type: persistent-claim
         size: 10Gi

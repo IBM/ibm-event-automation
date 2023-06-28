@@ -1,13 +1,6 @@
 ###############################################################################
 #
-# Licensed Materials - Property of IBM
-#
-# IBM Event Streams
-#
-# (C) Copyright IBM Corp. 2020, 2023  All Rights Reserved.
-#
-# US Government Users Restricted Rights - Use, duplication or
-# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+# © Copyright IBM Corp. 2020, 2023
 #
 ###############################################################################
 apiVersion: eventstreams.ibm.com/v1beta2
@@ -15,11 +8,11 @@ kind: EventStreams
 metadata:
   annotations:
     eventstreams.ibm.com/apicurio-registry-version: ">=2.4"
-  name: prod-3-brokers
+  name: prod-6-brokers
 spec:
   version: latest
   license:
-    # By installing this product you accept the license terms at https://ibm.biz/es-license
+    # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
     license: ""
     use: ""
@@ -30,7 +23,7 @@ spec:
   restProducer: {}
   strimziOverrides:
     kafka:
-      replicas: 3
+      replicas: 6
       authorization:
         type: custom
         authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
@@ -40,8 +33,7 @@ spec:
         log.cleaner.threads: 6
         num.io.threads: 24
         num.network.threads: 9
-        num.replica.fetchers: 3
-        offsets.topic.replication.factor: 3
+        num.replica.fetchers: 6
         default.replication.factor: 3
         min.insync.replicas: 2
       listeners:
@@ -62,17 +54,17 @@ spec:
         valueFrom:
           configMapKeyRef:
             key: kafka-metrics-config.yaml
-            name: prod-3-brokers-metrics-config
+            name: prod-6-brokers-metrics-config
       resources:
         requests:
           memory: 8096Mi
-          cpu: 4000m
+          cpu: 2000m
         limits:
           memory: 8096Mi
-          cpu: 4000m
+          cpu: 2000m
       storage:
         type: persistent-claim
-        size: 10Gi
+        size: 50Gi
         class: enter-storage-class-name-here
     zookeeper:
       replicas: 3
@@ -81,7 +73,7 @@ spec:
         valueFrom:
           configMapKeyRef:
             key: zookeeper-metrics-config.yaml
-            name: prod-3-brokers-metrics-config
+            name: prod-6-brokers-metrics-config
       storage:
         type: persistent-claim
         size: 4Gi
