@@ -1,13 +1,6 @@
 ###############################################################################
 #
-# Licensed Materials - Property of IBM
-#
-# IBM Event Streams
-#
-# (C) Copyright IBM Corp. 2020, 2023  All Rights Reserved.
-#
-# US Government Users Restricted Rights - Use, duplication or
-# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+# © Copyright IBM Corp. 2020, 2023
 #
 ###############################################################################
 apiVersion: eventstreams.ibm.com/v1beta2
@@ -19,7 +12,7 @@ metadata:
 spec:
   version: latest
   license:
-    # By installing this product you accept the license terms at https://ibm.biz/es-license
+    # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
     license: ""
     use: ""

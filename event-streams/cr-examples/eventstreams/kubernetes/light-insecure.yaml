@@ -1,33 +1,32 @@
 ###############################################################################
 #
-# Licensed Materials - Property of IBM
-#
-# IBM Event Streams
-#
-# (C) Copyright IBM Corp. 2020, 2023  All Rights Reserved.
-#
-# US Government Users Restricted Rights - Use, duplication or
-# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+# © Copyright IBM Corp. 2020, 2023
 #
 ###############################################################################
 apiVersion: eventstreams.ibm.com/v1beta2
 kind: EventStreams
 metadata:
-  annotations:
-    eventstreams.ibm.com/apicurio-registry-version: ">=2.4"
   name: light-insecure
 spec:
   version: latest
   license:
-    # By installing this product you accept the license terms at https://ibm.biz/es-license
+    # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
     license: ""
     use: ""
   adminApi: {}
-  adminUI: {}
+  adminUI:
+    authentication:
+      - type: scram-sha-512
+    endpoints:
+      - name: ingress
+        type: ingress
+        host: <HOSTNAME>
+        containerPort: 3000
+        class: <INGRESS-CLASS>
   apicurioRegistry: {}
-  collector: {}
   restProducer: {}
+  collector: {}
   security:
     internalTls: NONE
   strimziOverrides:
@@ -43,14 +42,14 @@ spec:
           port: 9092
           type: internal
           tls: false
-      storage:
-        type: ephemeral
       metricsConfig:
         type: jmxPrometheusExporter
         valueFrom:
           configMapKeyRef:
             key: kafka-metrics-config.yaml
             name: light-insecure-metrics-config
+      storage:
+        type: ephemeral
     zookeeper:
       replicas: 1
       metricsConfig:
@@ -61,6 +60,3 @@ spec:
             name: light-insecure-metrics-config
       storage:
         type: ephemeral
-  requestIbmServices:
-    iam: false
-    monitoring: false

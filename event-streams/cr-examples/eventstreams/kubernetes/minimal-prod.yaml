@@ -1,23 +1,16 @@
 ###############################################################################
 #
-# Licensed Materials - Property of IBM
-#
-# IBM Event Streams
-#
-# (C) Copyright IBM Corp. 2020, 2023  All Rights Reserved.
-#
-# US Government Users Restricted Rights - Use, duplication or
-# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+# © Copyright IBM Corp. 2020, 2023
 #
 ###############################################################################
 apiVersion: eventstreams.ibm.com/v1beta2
 kind: EventStreams
 metadata:
-  name: prod-6-brokers
+  name: minimal-prod
 spec:
   version: latest
   license:
-    # By installing this product you accept the license terms at https://ibm.biz/es-license
+    # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
     license: ""
     use: ""
@@ -25,7 +18,7 @@ spec:
     endpoints:
       - name: ingress
         type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
+        host: <HOSTNAME>
         class: <INGRESS-CLASS>
         containerPort: 8001
   adminUI:
@@ -34,37 +27,37 @@ spec:
     endpoints:
       - name: ingress
         type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
+        host: <HOSTNAME>
         class: <INGRESS-CLASS>
         containerPort: 3000
   apicurioRegistry:
     endpoints:
       - name: ingress
         type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
+        host: <HOSTNAME>
         class: <INGRESS-CLASS>
         containerPort: 8002
-  collector: {}
   restProducer:
     endpoints:
       - name: ingress
         type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
+        host: <HOSTNAME>
         class: <INGRESS-CLASS>
         containerPort: 8003
   strimziOverrides:
     kafka:
-      replicas: 6
+      replicas: 3
       authorization:
         type: custom
-        authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
         supportsAdminApi: true
+        authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
       config:
         inter.broker.protocol.version: "3.4"
         log.cleaner.threads: 6
         num.io.threads: 24
         num.network.threads: 9
-        num.replica.fetchers: 6
+        num.replica.fetchers: 3
+        offsets.topic.replication.factor: 3
         default.replication.factor: 3
         min.insync.replicas: 2
       listeners:
@@ -76,20 +69,14 @@ spec:
             type: scram-sha-512
           configuration:
             bootstrap:
-              host: <HOSTNAME/IP-ADDRESS>
+              host: <HOSTNAME>
             brokers:
               - broker: 0
-                host: <HOSTNAME/IP-ADDRESS>
+                host: <HOSTNAME>
               - broker: 1
-                host: <HOSTNAME/IP-ADDRESS>
+                host: <HOSTNAME>
               - broker: 2
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 3
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 4
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 5
-                host: <HOSTNAME/IP-ADDRESS>
+                host: <HOSTNAME>
             class: <INGRESS-CLASS>
         - name: tls
           port: 9093
@@ -102,17 +89,17 @@ spec:
         valueFrom:
           configMapKeyRef:
             key: kafka-metrics-config.yaml
-            name: prod-6-brokers-metrics-config
+            name: minimal-prod-metrics-config
       resources:
         requests:
-          memory: 8096Mi
-          cpu: 4000m
+          memory: 128Mi
+          cpu: 100m
         limits:
-          memory: 8096Mi
-          cpu: 4000m
+          memory: 2048Mi
+          cpu: 1000m
       storage:
         type: persistent-claim
-        size: 50Gi
+        size: 4Gi
         class: <STORAGE-CLASS>
     zookeeper:
       replicas: 3
@@ -121,9 +108,8 @@ spec:
         valueFrom:
           configMapKeyRef:
             key: zookeeper-metrics-config.yaml
-            name: prod-6-brokers-metrics-config
+            name: minimal-prod-metrics-config
       storage:
         type: persistent-claim
-        size: 4Gi
+        size: 2Gi
         class: <STORAGE-CLASS>
-

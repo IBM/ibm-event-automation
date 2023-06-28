@@ -1,63 +1,33 @@
 ###############################################################################
 #
-# Licensed Materials - Property of IBM
-#
-# IBM Event Streams
-#
-# (C) Copyright IBM Corp. 2020, 2023  All Rights Reserved.
-#
-# US Government Users Restricted Rights - Use, duplication or
-# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+# © Copyright IBM Corp. 2020, 2023
 #
 ###############################################################################
 apiVersion: eventstreams.ibm.com/v1beta2
 kind: EventStreams
 metadata:
+  annotations:
+    eventstreams.ibm.com/apicurio-registry-version: ">=2.4"
   name: development
 spec:
   version: latest
   license:
-    # By installing this product you accept the license terms at https://ibm.biz/es-license
+    # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
     license: ""
     use: ""
-  adminApi:
-    endpoints:
-      - name: ingress
-        type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
-        class: <INGRESS-CLASS>
-        containerPort: 8001
-  adminUI:
-    authentication:
-      - type: scram-sha-512
-    endpoints:
-      - name: ingress
-        type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
-        class: <INGRESS-CLASS>
-        containerPort: 3000
-  apicurioRegistry:
-    endpoints:
-      - name: ingress
-        type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
-        class: <INGRESS-CLASS>
-        containerPort: 8002
-  restProducer:
-    endpoints:
-      - name: ingress
-        type: ingress
-        host: <HOSTNAME/IP-ADDRESS>
-        class: <INGRESS-CLASS>
-        containerPort: 8003
+  adminApi: {}
+  adminUI: {}
+  apicurioRegistry: {}
+  collector: {}
+  restProducer: {}
   strimziOverrides:
     kafka:
       replicas: 3
       authorization:
         type: custom
-        supportsAdminApi: true
         authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
+        supportsAdminApi: true
       config:
         inter.broker.protocol.version: "3.4"
         log.cleaner.threads: 6
@@ -70,21 +40,10 @@ spec:
       listeners:
         - name: external
           port: 9094
-          type: ingress
+          type: route
           tls: true
           authentication:
             type: scram-sha-512
-          configuration:
-            bootstrap:
-              host: <HOSTNAME/IP-ADDRESS>
-            brokers:
-              - broker: 0
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 1
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 2
-                host: <HOSTNAME/IP-ADDRESS>
-            class: <INGRESS-CLASS>
         - name: tls
           port: 9093
           type: internal
@@ -109,3 +68,6 @@ spec:
             name: development-metrics-config
       storage:
         type: ephemeral
+  requestIbmServices:
+    iam: true
+    monitoring: true
