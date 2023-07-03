@@ -18,3 +18,7 @@ spec:
       - name: 'licensing-service'
         endpoint: <license-service-endpoint>
         secretName: <license-service-auth-secret>
+    tls:
+      trustedCertificates:
+        - secretName: <licensing-service-cert-secret>
+          certificate: <secret-key>
