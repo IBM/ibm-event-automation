@@ -1,0 +1,24 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventEndpointManagement
+metadata:
+  name: ubp-manager
+spec:
+  license:
+    accept: false
+    license: ''
+    metric: MONTHLY_API_CALL
+    use: CloudPakForIntegrationProduction
+  manager:
+    storage:
+      storageClassName: <storage-class>
+      type: persistent-claim
+    authConfig:
+      authType: LOCAL
+    extensionServices:
+      - name: 'licensing-service'
+        endpoint: <license-service-endpoint>
+        secretName: <license-service-auth-secret>
+    tls:
+      trustedCertificates:
+        - secretName: <licensing-service-cert-secret>
+          certificate: <secret-key>

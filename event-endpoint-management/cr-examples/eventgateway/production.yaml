@@ -1,0 +1,15 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventGateway
+metadata:
+  name: production-gw
+spec:
+  license:
+    accept: false
+    license: ''
+    metric: ''
+    use: ''
+  managerEndpoint: https://<eem-manager-gateway-route>
+  gatewayGroupName: <gateway-group>
+  gatewayID: <gateway-id>
+  tls:
+    caSecretName: <root-ca-secret-name>

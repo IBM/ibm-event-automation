@@ -1,0 +1,16 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventProcessing
+metadata:
+  name: quick-start-ep
+spec:
+  license:
+    accept: false
+    license: ''
+    use: EventAutomationNonProduction
+  flink:
+    endpoint: session-cluster-quick-start-rest:8081
+  authoring:
+    authConfig:
+      authType: LOCAL
+    storage:
+      type: ephemeral
