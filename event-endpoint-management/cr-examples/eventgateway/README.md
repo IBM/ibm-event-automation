@@ -5,7 +5,7 @@ and are non-functional without modification.
 
 To utilise the samples, you will need to:
 
-- Specify the license, license metric and  license use
+- Specify the license, license metric and license use
 - Accept the terms of the license
 - Replace all placeholder values indicated by angled brackets, for example: `<eem-manager-gateway-route>`
 
