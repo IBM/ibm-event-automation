@@ -344,8 +344,12 @@ while : ; do
   if [ "$PODS" ]; then
       break
   fi
-  if [ $i -gt 180 ]; then
+  if [ $i -gt 300 ]; then
       echo "The must gather pods failed to start correctly. Please try again and if the problem persists contact IBM support for further advice."
+      LOGDIR="./must-gather-failure-logs"
+      mkdir "${LOGDIR}"
+      kubectl get events -n ${mustgatherNamespace} > "${LOGDIR}/must-gather-failure-events-$(date +'%Y%m%d%H%M%S').log"
+      kubectl get pods -n ${mustgatherNamespace} -o yaml > "${LOGDIR}/must-gather-failure-pod-details-$(date +"%Y%m%d%H%M%S").yaml"
       trapCtrlc
   fi
   sleep 1
