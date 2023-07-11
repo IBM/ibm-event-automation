@@ -4,7 +4,7 @@ metadata:
   name: session-cluster-quick-start
 spec:
   flinkConfiguration:
-    license.use: EventAutomationProduction
+    license.use: EventAutomationNonProduction
     license.license: L-HRZF-DWHH7A
     license.accept: 'false'
     execution.checkpointing.interval: '5000'
