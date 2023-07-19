@@ -31,6 +31,8 @@ To find out more about the samples, see the [documentation](https://ibm.github.i
    - Features:
       - Persistent storage.
       - Lower CPU and memory requests/limits than the Production sample.
+      - Automatic job restart on Flink Job Manager restart.
+      - Lower footprint than the Production sample because it uses a single Flink Job Manager, but it does not have High Availability for the Flink Job Manager.
    - Prerequisites:
       - [Deploy the Flink PVC](https://ibm.github.io/event-automation/ep/installing/planning/#deploying-the-flink-pvc).
 
@@ -39,6 +41,7 @@ To find out more about the samples, see the [documentation](https://ibm.github.i
   when deploying Flink for use with the Event Processing flow authoring UI.
    - Features:
       - Persistent storage.
+      - High Availability for the Flink Job Manager.
    - Prerequisites:
       - Replace all placeholder values indicated by angled brackets, for example: `<insert jar file name here>`.
       - [Deploy the Flink PVC](https://ibm.github.io/event-automation/ep/installing/planning/#deploying-the-flink-pvc).
