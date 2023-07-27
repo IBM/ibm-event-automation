@@ -1,2 +1,2 @@
-## Event Streams metrics examples
-This folder contains configuration to fetch metrics from the panels in the dashboard.
+## Event Streams metrics samples
+This folder contains sample configurations to collect Kafka and Zookeeper metrics.

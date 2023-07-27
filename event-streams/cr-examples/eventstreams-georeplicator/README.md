@@ -1,2 +1,2 @@
-# Sample for Geo-Replication 
-This folder contains an example for creating an EventStreamsGeoReplicator instance for event streams.
+# Sample for geo-replication 
+This folder contains an example for creating an `EventStreamsGeoReplicator` instance for Event Streams to enable data replication.

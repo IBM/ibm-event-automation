@@ -1,6 +1,6 @@
-# Event Streams samples for Kubernetes Platform 
+# Event Streams samples for Kubernetes platforms 
 
-This directory provides sample configuration for installing EventStreams on a Kubernetes Platform.
+This directory provides sample configurations for installing Event Streams on Kubernetes platforms.
 
 These range from smaller deployments for non-production development or general experimentation to large scale clusters ready to handle a production workload.
 

@@ -1,6 +1,6 @@
-# Event Streams samples for OpenShift Container Platform
+# Event Streams samples for the Red Hat OpenShift Container Platform
 
-This directory provides sample configuration for installing Event Streams on OpenShift Container Platform .
+This directory provides sample configurations for installing Event Streams on the OpenShift Container Platform.
 
 These range from smaller deployments for non-production development or general experimentation to large scale clusters ready to handle a production workload.
 

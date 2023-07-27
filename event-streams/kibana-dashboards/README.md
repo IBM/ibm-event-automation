@@ -1,2 +1,2 @@
-# Examples for Kibana dashboards for Event Streams 
-This folder contains example for configuring Kibana dashboards for Event Streams
+# Sample Kibana dashboard for Event Streams 
+This folder contains a sample configuration file to help you set up Kibana dashboards for Event Streams.
