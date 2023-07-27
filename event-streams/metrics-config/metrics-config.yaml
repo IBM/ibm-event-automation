@@ -23,6 +23,13 @@ data:
     - attrNameSnakeCase: false
       name: kafka_server_ReplicaManager_$1_$2
       pattern: kafka.server<type=ReplicaManager, name=(\w+)><>(Value)
+    - attrNameSnakeCase: false
+      name: kafka_cluster_partition_$1
+      pattern: kafka.cluster<type=Partition, name=(UnderMinIsr|AtMinIsr), topic=(.+), partition=(.+)><>Value
+      type: GAUGE
+      labels:
+        topic : "$2"
+        partition : "$3"
   zookeeper-metrics-config.yaml: |
     lowercaseOutputName: true
     rules: []
