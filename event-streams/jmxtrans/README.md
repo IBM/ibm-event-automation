@@ -7,7 +7,7 @@ The ability to deploy JmxTrans was deprecated in Event Streams 11.1.5 and remove
 To configure [JmxTrans](https://github.com/jmxtrans/jmxtrans/wiki) with Event Streams, complete the following steps:
 1. Create a ConfigMap for JmxTrans configuration.
 2. Build a container image that includes Java 11 runtime and the JmxTrans tool.
-3. Deploy JmxTrans by using the configmap and the container image.
+3. Deploy JmxTrans by using the ConfigMap and the container image.
 
 ## Configuring JmxTrans
 
