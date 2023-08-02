@@ -170,11 +170,11 @@ spec:
 ```
 
 Where:
-- `<es-name>` is the name of the Event Streams instance
-- `<jmxtrans-config>` is the name of the JmxTrans ConfigMap
-- `<image-registry>` is the name of the image registry
-- `<image-name>` is the name of the JmxTrans image
-- `<image-tag>` is the tag for the JmxTrans image
-- `<image-pull-secret>` is the name of the image pull secret
+- `<es-name>` is the name of the Event Streams instance.
+- `<jmxtrans-config>` is the name of the JmxTrans ConfigMap.
+- `<image-registry>` is the name of the image registry.
+- `<image-name>` is the name of the JmxTrans image.
+- `<image-tag>` is the tag for the JmxTrans image.
+- `<image-pull-secret>` is the name of the image pull secret.
 
 **Note:** If the Kafka JMX port is not configured with security, remove the environment variables `STRIMZI_JMX_USERNAME` and `STRIMZI_JMX_PASSWORD` from the definition.
