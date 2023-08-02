@@ -46,10 +46,10 @@ data:
 ```
 
 Where:
-- `<jmxtrans-config>` is the name of the ConfigMap
-- `<namespace>` is the namespace where Event Streams is installed
-- `<eventstreams-name>` is the name of the Event Streams instance
-- `<broker-id>` is Kafka broker ID (for example 0) 
+- `<jmxtrans-config>` is the name of the ConfigMap.
+- `<namespace>` is the namespace where Event Streams is installed.
+- `<eventstreams-name>` is the name of the Event Streams instance.
+- `<broker-id>` is Kafka broker ID (for example 0).
 
 
 ## JmxTrans container image
