@@ -77,7 +77,7 @@ docker push <image-registry>/<image-name>:<image-tag>
 
 ## JmxTrans Deployment
 
-Create a deployment with the JmxTrans image and mount the configuration that is defined in the ConfigMap. An example deployment definition is included as a reference.
+Create a deployment with the JmxTrans image and mount the configuration that is defined in the ConfigMap. For example:
 
 ```yaml
 kind: Deployment
