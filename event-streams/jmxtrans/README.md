@@ -67,7 +67,7 @@ JmxTrans is a Java application. This means that a container image, which include
 
 ### Custom JmxTrans image
 
-Build a container image that includes Java 11 runtime and the JmxTrans tool. An example [Dockerfile](./Dockerfile) to build such an image is provided as a reference. 
+Build a container image that includes Java 11 runtime and the JmxTrans tool. An example [Dockerfile](./Dockerfile) to build the JmxTrans container image is available for reference.
 
 You can build and push the container image by running the following commands:
 ```
