@@ -11,10 +11,7 @@ To configure [JmxTrans](https://github.com/jmxtrans/jmxtrans/wiki) with Event St
 
 ## Configuring JmxTrans
 
-Create a ConfigMap for the JmxTrans tool. For more information, see [queries](https://github.com/jmxtrans/jmxtrans/wiki/Queries) and [output writers](https://github.com/jmxtrans/jmxtrans/wiki/OutputWriters). The configMap configuration depends on what information is to be captured and where it must be sent. 
-
-The configuration can be deployed as a ConfigMap and then made available to the JmxTrans tool. An example ConfigMap definition is included as a reference. 
-
+Create a ConfigMap for the JmxTrans configuration. For more information, see [queries](https://github.com/jmxtrans/jmxtrans/wiki/Queries) and [output writers](https://github.com/jmxtrans/jmxtrans/wiki/OutputWriters). The configuration depends on what information is to be captured and where it must be sent. For example: 
 
 ```yaml
 kind: ConfigMap
