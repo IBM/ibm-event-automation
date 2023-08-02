@@ -52,7 +52,7 @@ Where:
 - `<broker-id>` is Kafka broker ID (for example 0) 
 
 
-## JmxTrans Container Image
+## JmxTrans container image
 
 JmxTrans is a Java application. This means that a container image, which includes a Java runtime and the JmxTrans tool, is needed to deploy the application on Kubernetes environments. Build a custom image that include a Java runtime and the JmxTrans tool.
 
