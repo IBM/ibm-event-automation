@@ -54,7 +54,9 @@ Where:
 
 ## JmxTrans Container Image
 
-JmxTrans is a Java application, so a container image that includes a Java runtime and the JmxTrans tool is needed to deploy it on Kubernetes environments. JmxTrans does not support Java 17 yet, so Java 11 is required. We recommend that you build a custom image that include a Java runtime and the JmxTrans tool.
+JmxTrans is a Java application. This means that a container image, which includes a Java runtime and the JmxTrans tool, is needed to deploy the application on Kubernetes environments. Build a custom image that include a Java runtime and the JmxTrans tool.
+
+**Important:** JmxTrans only supports Java 11.
 
 > Note: Event Streams 11.1.6 (and earlier) included a container image for running the JmxTrans tool. For example, `cp.icr.io/cp/ibm-eventstreams-jmxtrans@sha256:c43965013d22d3227cf7c1bf1211d59b0595ce6d535ab3fab8e7c80694417f76`. This image is no longer maintained and does not receive security updates. 
 
