@@ -4,6 +4,11 @@
 
 The ability to deploy JmxTrans was deprecated in Event Streams 11.1.5 and removed in Event Streams 11.2.0. While the JmxTrans tool remains unsupported, this document provides high-level guidance on how to deploy it separately alongside an Event Streams instance.
 
+To configure [JmxTrans](https://github.com/jmxtrans/jmxtrans/wiki) with Event Streams, complete the following steps:
+1. Create a ConfigMap for JmxTrans configuration.
+2. Build a container image that includes Java 11 runtime and the JmxTrans tool.
+3. Deploy JmxTrans by using the configmap and the container image.
+
 ## Configuring JmxTrans
 
 [JmxTrans documentation](https://github.com/jmxtrans/jmxtrans/wiki) provides further guidance on defining [queries](https://github.com/jmxtrans/jmxtrans/wiki/Queries) and [output writers](https://github.com/jmxtrans/jmxtrans/wiki/OutputWriters). The configuration depends largely on what information is to be captured and where it must be sent. 
