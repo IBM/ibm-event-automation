@@ -1,6 +1,6 @@
 # JmxTrans
 
-[JMX Trans](https://github.com/jmxtrans/jmxtrans) is a tool for collecting data from JMX endpoints of Java applications and sending it to other applications and services. 
+[JmxTrans](https://github.com/jmxtrans/jmxtrans) is a tool for collecting data from JMX endpoints of Java applications and sending it to other applications and services. 
 
 The ability to deploy JmxTrans was deprecated in Event Streams 11.1.5 and removed in Event Streams 11.2.0. While the JmxTrans tool remains unsupported, this document provides high-level guidance on how to deploy it separately alongside an Event Streams instance.
 
