@@ -58,7 +58,7 @@ JmxTrans is a Java application. This means that a container image, which include
 
 **Important:** JmxTrans only supports Java 11.
 
-> Note: Event Streams 11.1.6 (and earlier) included a container image for running the JmxTrans tool. For example, `cp.icr.io/cp/ibm-eventstreams-jmxtrans@sha256:c43965013d22d3227cf7c1bf1211d59b0595ce6d535ab3fab8e7c80694417f76`. This image is no longer maintained and does not receive security updates. 
+**Note:** Event Streams 11.1.6 (and earlier) included a container image for running the JmxTrans tool. For example, `cp.icr.io/cp/ibm-eventstreams-jmxtrans@sha256:c43965013d22d3227cf7c1bf1211d59b0595ce6d535ab3fab8e7c80694417f76`. This container image is no longer maintained and does not receive security updates. 
 
 ### Custom JmxTrans image
 
