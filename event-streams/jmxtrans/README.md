@@ -1,17 +1,17 @@
-# JmxTrans
+# jmxtrans
 
-[JmxTrans](https://github.com/jmxtrans/jmxtrans) is a tool for collecting data from JMX endpoints of Java applications and sending it to other applications and services. 
+[jmxtrans](https://github.com/jmxtrans/jmxtrans) is a tool for collecting data from JMX endpoints of Java applications and sending it to other applications and services. 
 
-The ability to deploy JmxTrans was deprecated in Event Streams 11.1.5 and removed in Event Streams 11.2.0. While the JmxTrans tool remains unsupported, this document provides high-level guidance on how to deploy it separately alongside an Event Streams instance.
+The ability to deploy jmxtrans was deprecated in Event Streams 11.1.5 and removed in Event Streams 11.2.0. While the jmxtrans tool remains unsupported, this document provides high-level guidance on how to deploy it separately alongside an Event Streams instance.
 
-To configure [JmxTrans](https://github.com/jmxtrans/jmxtrans/wiki) with Event Streams, complete the following steps:
-1. Create a ConfigMap for JmxTrans configuration.
-2. Build a container image that includes Java 11 runtime and the JmxTrans tool.
-3. Deploy JmxTrans by using the ConfigMap and the container image.
+To configure [jmxtrans](https://github.com/jmxtrans/jmxtrans/wiki) with Event Streams, complete the following steps:
+1. Create a ConfigMap for jmxtrans configuration.
+2. Build a container image that includes Java 11 runtime and the jmxtrans tool.
+3. Deploy jmxtrans by using the ConfigMap and the container image.
 
-## Configuring JmxTrans
+## Configuring jmxtrans
 
-Create a ConfigMap for the JmxTrans configuration. For more information, see [queries](https://github.com/jmxtrans/jmxtrans/wiki/Queries) and [output writers](https://github.com/jmxtrans/jmxtrans/wiki/OutputWriters). The configuration depends on what information is to be captured and where it must be sent. For example: 
+Create a ConfigMap for the jmxtrans configuration. For more information, see [queries](https://github.com/jmxtrans/jmxtrans/wiki/Queries) and [output writers](https://github.com/jmxtrans/jmxtrans/wiki/OutputWriters). The configuration depends on what information is to be captured and where it must be sent. For example: 
 
 ```yaml
 kind: ConfigMap
@@ -54,17 +54,17 @@ Where:
 - `<broker-id>` is Kafka broker ID (for example 0).
 
 
-## JmxTrans container image
+## jmxtrans container image
 
-JmxTrans is a Java application. This means that a container image, which includes a Java runtime and the JmxTrans tool, is needed to deploy the application on Kubernetes environments. Build a custom image that include a Java runtime and the JmxTrans tool.
+jmxtrans is a Java application. This means that a container image, which includes a Java runtime and the JmxTrans tool, is needed to deploy the application on Kubernetes environments. Build a custom image that include a Java runtime and the JmxTrans tool.
 
 **Important:** JmxTrans only supports Java 11.
 
 **Note:** Event Streams 11.1.6 (and earlier) included a container image for running the JmxTrans tool. For example, `cp.icr.io/cp/ibm-eventstreams-jmxtrans@sha256:c43965013d22d3227cf7c1bf1211d59b0595ce6d535ab3fab8e7c80694417f76`. This container image is no longer maintained and does not receive security updates. 
 
-### Custom JmxTrans image
+### Custom jmxtrans image
 
-Build a container image that includes Java 11 runtime and the JmxTrans tool. An example [Dockerfile](./Dockerfile) to build the JmxTrans container image is available for reference.
+Build a container image that includes Java 11 runtime and the jmxtrans tool. An example [Dockerfile](./Dockerfile) to build the jmxtrans container image is available for reference.
 
 You can build and push the container image by running the following commands:
 ```
@@ -72,9 +72,9 @@ docker build -t <image-registry>/<image-name>:<image-tag> .
 docker push <image-registry>/<image-name>:<image-tag>
 ```
 
-## JmxTrans Deployment
+## jmxtrans Deployment
 
-Create a deployment with the JmxTrans image and mount the configuration that is defined in the ConfigMap. For example:
+Create a deployment with the jmxtrans image and mount the configuration that is defined in the ConfigMap. For example:
 
 ```yaml
 kind: Deployment
@@ -175,10 +175,10 @@ spec:
 
 Where:
 - `<es-name>` is the name of the Event Streams instance.
-- `<jmxtrans-config>` is the name of the JmxTrans ConfigMap.
+- `<jmxtrans-config>` is the name of the jmxtrans ConfigMap.
 - `<image-registry>` is the name of the image registry.
-- `<image-name>` is the name of the JmxTrans image.
-- `<image-tag>` is the tag for the JmxTrans image.
+- `<image-name>` is the name of the jmxtrans image.
+- `<image-tag>` is the tag for the jmxtrans image.
 - `<image-pull-secret>` is the name of the image pull secret.
 
 **Note:** If the Kafka JMX port is not configured with security, remove the environment variables `STRIMZI_JMX_USERNAME` and `STRIMZI_JMX_PASSWORD` from the definition.
