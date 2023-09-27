@@ -1,0 +1,30 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventGateway
+metadata:
+  name: quick-start-gw
+spec:
+  license:
+    accept: false
+    license: ""
+    metric: ""
+    use: ""
+  endpoints:
+    - name: gateway
+      host: qs-gateway.<cluster-host-dns-name>
+  managerEndpoint: https://<eem-manager-gateway-route>
+  gatewayGroupName: <gateway-group>
+  gatewayID: <gateway-id>
+  tls:
+    caSecretName: <root-ca-secret-name>
+  template:
+    pod:
+      spec:
+        containers:
+          - name: egw
+            resources:
+              requests:
+                cpu: '0.5'
+                memory: 512Mi
+              limits:
+                cpu: '1'
+                memory: 1Gi

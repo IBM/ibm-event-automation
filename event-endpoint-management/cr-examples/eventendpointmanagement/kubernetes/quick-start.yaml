@@ -1,0 +1,32 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventEndpointManagement
+metadata:
+  name: quick-start-manager
+spec:
+  license:
+    accept: false
+    license: ""
+    metric: ""
+    use: ""
+  manager:
+    endpoints:
+      - name: ui
+        host: qs-eem-ui.<cluster-host-dns-name>
+      - name: gateway
+        host: qs-eem-gateway.<cluster-host-dns-name>
+    authConfig:
+      authType: LOCAL
+    storage:
+      type: ephemeral
+    template:
+      pod:
+        spec:
+          containers:
+            - name: manager
+              resources:
+                requests:
+                  cpu: '1'
+                  memory: 256Mi
+                limits:
+                  cpu: '1'
+                  memory: 1Gi
