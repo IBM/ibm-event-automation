@@ -1,0 +1,28 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventEndpointManagement
+metadata:
+  name: apic-integration
+spec:
+  license:
+    accept: false
+    license: ""
+    metric: ""
+    use: ""
+  manager:
+    endpoints:
+      - name: ui
+        host: qs-eem-ui.<cluster-host-dns-name>
+      - name: gateway
+        host: qs-eem-gateway.<cluster-host-dns-name>
+      - name: apic
+        host: qs-apic.<cluster-host-dns-name>
+    authConfig:
+      authType: LOCAL
+    storage:
+      type: ephemeral
+    apic:
+      tls: false
+      clientSubjectDN: <common-name>
+      jwks:
+        endpoint: <end point>
+
