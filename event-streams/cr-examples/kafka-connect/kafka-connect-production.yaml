@@ -12,6 +12,8 @@ metadata:
 #  # to use KafkaConnector resources to avoid
 #  # needing to call the Connect REST API directly
 #    eventstreams.ibm.com/use-connector-resources: "true"
+  labels:
+    backup.eventstreams.ibm.com/component: kafkaconnect
 spec:
   template:
     pod:

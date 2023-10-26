@@ -13,4 +13,4 @@ metadata:
     eventstreams.ibm.com/cluster: minimal-prod
 spec:
   version: latest
-  replicas: 1
+  replicas: 2

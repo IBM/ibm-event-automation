@@ -13,6 +13,7 @@ metadata:
   namespace: placeholder
   labels:
     eventstreams.ibm.com/cluster: <cluster name>
+    backup.eventstreams.ibm.com/component: kafkauser
 spec:
   authentication:
     type: tls
