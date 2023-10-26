@@ -1,0 +1,42 @@
+# {
+#   "description": "Production sample with increased resources, dynamically provisioned persistence",
+#   "name": "Production",
+#   "resources": {
+#     "cpu": "1",
+#     "memory": "1 Gb",
+#     "vpc": "1"
+#   }
+# }
+apiVersion: events.ibm.com/v1beta1
+kind: EventProcessing
+metadata:
+  name: production-ep
+spec:
+  license:
+    accept: false
+    license: ""
+    use: EventAutomationProduction
+  flink:
+    endpoint: session-cluster-prod-rest:8081
+  authoring:
+    endpoints:
+      - name: ui
+        host: production-ep-ui.<CLUSTER_HOST>
+    storage:
+      type: persistent-claim
+      storageClassName: <storage-class>
+    authConfig:
+      authType: OIDC
+      oidcConfig:
+        clientIDKey: <client-id>
+        clientSecretKey: <client-secret>
+        discovery: true
+        secretName: <keycloak-oidc-secret>
+        site: 'https://<keycloak-route>/realms/<keycloak-realm>'
+    tls:
+      caSecretName: <custom-root-ca>
+      ui:
+        secretName: <custom-ui-cert>
+      trustedCertificates:
+        - certificate: <ca-key>
+          secretName: <keycloak-ca>
