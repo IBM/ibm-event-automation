@@ -1,0 +1,28 @@
+# {
+#   "description": "Quick start sample with no persistence and reduced resources",
+#   "name": "Quick start",
+#   "resources": {
+#     "cpu": "0.5",
+#     "memory": "512 Mb",
+#     "vpc": "0.5"
+#   }
+# }
+apiVersion: events.ibm.com/v1beta1
+kind: EventProcessing
+metadata:
+  name: quick-start-ep
+spec:
+  license:
+    accept: false
+    license: ""
+    use: EventAutomationNonProduction
+  flink:
+    endpoint: session-cluster-quick-start-rest:8081
+  authoring:
+    endpoints:
+      - name: ui
+        host: qs-ep-ui.<CLUSTER_HOST>
+    authConfig:
+      authType: LOCAL
+    storage:
+      type: ephemeral
