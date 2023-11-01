@@ -8,6 +8,8 @@ kind: EventStreams
 metadata:
   annotations:
     eventstreams.ibm.com/apicurio-registry-version: ">=2.4"
+  labels:
+    backup.eventstreams.ibm.com/component: eventstreams
   name: dev-scram
 spec:
   version: latest

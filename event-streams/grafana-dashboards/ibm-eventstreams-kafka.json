@@ -1,34 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "7.1.5"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -51,7 +21,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -72,7 +42,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Number of Brokers Online",
       "format": "none",
       "gauge": {
@@ -158,7 +128,7 @@
         "#e5ac0e",
         "#bf1b00"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Number of active controllers in the cluster.",
       "format": "none",
       "gauge": {
@@ -241,7 +211,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Unclean leader election rate",
       "format": "none",
       "gauge": {
@@ -317,7 +287,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -332,14 +302,15 @@
     {
       "cacheTimeout": null,
       "colorBackground": false,
-      "colorValue": true,
+      "colorPostfix": false,
+      "colorPrefix": false,
+      "colorValue": false,
       "colors": [
         "#299c46",
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_PROMETHEUS}",
-      "decimals": null,
+      "datasource": "prometheus",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -352,6 +323,115 @@
         "h": 4,
         "w": 4,
         "x": 0,
+        "y": 6
+      },
+      "id": 109,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "scalar(kube_pod_status_phase{pod=\"$kafka_broker\", phase=\"Failed\"}*1) +  scalar(kube_pod_status_phase{pod=\"$kafka_broker\", phase=\"Pending\"}*2) + scalar(kube_pod_status_phase{pod=\"$kafka_broker\", phase=\"Running\"}*3) +  scalar(kube_pod_status_phase{pod=\"$kafka_broker\", phase=\"Succeeded\"}*4) +scalar(kube_pod_status_phase{pod=\"$kafka_broker\", phase=\"Unknown\"}*5)",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Pod Phase",
+      "type": "singlestat",
+      "valueFontSize": "70%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "Failed",
+          "value": "1"
+        },
+        {
+          "op": "=",
+          "text": "Pending",
+          "value": "2"
+        },
+        {
+          "op": "=",
+          "text": "Running",
+          "value": "3"
+        },
+        {
+          "op": "=",
+          "text": "Succeeded",
+          "value": "4"
+        },
+        {
+          "op": "=",
+          "text": "Unknown",
+          "value": "5"
+        },
+        {
+          "op": "=",
+          "text": "Select One Broker",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": true,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "prometheus",
+      "decimals": null,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
         "y": 6
       },
       "id": 111,
@@ -394,7 +474,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kube_pod_container_status_restarts_total{namespace=\"$kubernetes_namespace\",pod=~\"$kafka_broker\",container=\"kafka\"}",
+          "expr": "kube_pod_container_status_restarts_total{namespace=\"$kubernetes_namespace\",pod=\"$kafka_broker\",container=\"kafka\"}",
           "format": "time_series",
           "instant": true,
           "refId": "A"
@@ -424,7 +504,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Replicas that are online",
       "format": "none",
       "gauge": {
@@ -437,7 +517,7 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 4,
+        "x": 8,
         "y": 6
       },
       "id": 40,
@@ -507,7 +587,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#bf1b00"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Number of under-replicated partitions (| ISR | < | all replicas |).",
       "format": "none",
       "gauge": {
@@ -520,7 +600,7 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 7,
+        "x": 11,
         "y": 6
       },
       "id": 30,
@@ -590,7 +670,7 @@
         "#ef843c",
         "#bf1b00"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Number of partitions which are under their minimum in sync replica count (| ISR | < | min.insync.replicas |).",
       "format": "none",
       "gauge": {
@@ -603,7 +683,7 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 10,
+        "x": 14,
         "y": 6
       },
       "id": 103,
@@ -673,7 +753,7 @@
         "#ef843c",
         "#bf1b00"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Number of partitions which are at their minimum in sync replica count (| ISR | == | min.insync.replicas |).",
       "format": "none",
       "gauge": {
@@ -686,7 +766,7 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 13,
+        "x": 17,
         "y": 6
       },
       "id": 102,
@@ -756,7 +836,7 @@
         "#ef843c",
         "#bf1b00"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Number of partitions that don’t have an active leader and are hence not writable or readable.",
       "format": "none",
       "gauge": {
@@ -769,7 +849,7 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 16,
+        "x": 20,
         "y": 6
       },
       "id": 32,
@@ -832,7 +912,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -849,7 +929,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Kafka Broker Pods Memory Usage",
       "fill": 1,
       "fillGradient": 0,
@@ -943,7 +1023,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Aggregated Kafka Broker Pods CPU Usage",
       "fill": 1,
       "fillGradient": 0,
@@ -1036,7 +1116,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1127,7 +1207,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1218,7 +1298,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1313,7 +1393,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "decimals": 2,
       "description": "Total Incoming Byte Rate",
       "format": "Bps",
@@ -1399,7 +1479,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "decimals": 2,
       "description": "Total Outgoing Byte Rate",
       "format": "Bps",
@@ -1481,7 +1561,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Byte Rate",
       "fill": 1,
       "fillGradient": 0,
@@ -1586,7 +1666,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1603,7 +1683,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "prometheus",
       "description": "Produce Request Rate.",
       "fill": 1,
       "fillGradient": 0,
@@ -1705,7 +1785,7 @@
           "text": "my-namespace",
           "value": "my-namespace"
         },
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "prometheus",
         "definition": "label_values(namespace)",
         "hide": 0,
         "includeAll": false,
@@ -1730,7 +1810,7 @@
           "text": "my-instance",
           "value": "my-instance"
         },
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "prometheus",
         "definition": "label_values(kube_pod_labels{namespace=\"$kubernetes_namespace\"}, label_eventstreams_ibm_com_cluster)",
         "hide": 0,
         "includeAll": false,
@@ -1757,7 +1837,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "prometheus",
         "definition": "label_values(es_kafka_producermetrics_messageswrittenpertopicperproducer_total_count{namespace=\"$kubernetes_namespace\",eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\"}, topic)",
         "hide": 0,
         "includeAll": true,
@@ -1787,7 +1867,7 @@
             "my-instance-kafka-2"
           ]
         },
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": "prometheus",
         "definition": "label_values(kube_pod_labels{namespace=\"$kubernetes_namespace\",label_eventstreams_ibm_com_cluster=\"$eventstreams_cluster_name\",label_app_kubernetes_io_name=\"kafka\"}, label_statefulset_kubernetes_io_pod_name)",
         "hide": 0,
         "includeAll": false,
@@ -1840,5 +1920,5 @@
   "timezone": "",
   "title": "IBM Event Streams Kafka",
   "uid": "KTUYr0m8u",
-  "version": 14
+  "version": 13
 }

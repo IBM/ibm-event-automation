@@ -9,6 +9,8 @@ metadata:
   annotations:
     eventstreams.ibm.com/apicurio-registry-version: ">=2.4"
   name: prod-3-brokers
+  labels:
+    backup.eventstreams.ibm.com/component: eventstreams
 spec:
   version: latest
   license:
