@@ -11,9 +11,11 @@ spec:
   manager:
     endpoints:
       - name: ui
-        host: prod-eem-ui.<cluster-host-dns-name>
+        host: prod-eem-ui.<CLUSTER_HOST>
       - name: gateway
-        host: prod-eem-gateway.<cluster-host-dns-name>
+        host: prod-eem-gateway.<CLUSTER_HOST>
+      - name: admin
+        host: prod-eem-admin.<CLUSTER_HOST>
     authConfig:
       authType: OIDC
       oidcConfig:

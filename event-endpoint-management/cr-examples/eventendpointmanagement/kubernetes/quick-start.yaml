@@ -11,9 +11,11 @@ spec:
   manager:
     endpoints:
       - name: ui
-        host: qs-eem-ui.<cluster-host-dns-name>
+        host: qs-eem-ui.<CLUSTER_HOST>
       - name: gateway
-        host: qs-eem-gateway.<cluster-host-dns-name>
+        host: qs-eem-gateway.<CLUSTER_HOST>
+      - name: admin
+        host: qs-eem-admin.<CLUSTER_HOST>
     authConfig:
       authType: LOCAL
     storage:
