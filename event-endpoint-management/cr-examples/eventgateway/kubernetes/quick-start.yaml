@@ -10,7 +10,7 @@ spec:
     use: ""
   endpoints:
     - name: gateway
-      host: qs-gateway.<cluster-host-dns-name>
+      host: qs-gateway.<CLUSTER_HOST>
   managerEndpoint: https://<eem-manager-gateway-route>
   gatewayGroupName: <gateway-group>
   gatewayID: <gateway-id>
