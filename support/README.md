@@ -62,7 +62,7 @@ Specifying namespaces:
     --flink-namespace'': the namespace from which the flink data is collected.
 ```
 
-Examples:
+#### Examples:
 
 ```shell
 # Gathering restricted Event Endpoint Management diagnostics for an instance running in the 'myeem' namespace
@@ -73,3 +73,41 @@ Examples:
 ./restricted-must-gather.sh -m eventprocessing,flink --ep-namespace myepns --flink-namespace myflinkns
 ```
 
+
+## Manual Diagnostic Collection
+
+If you are experiencing problems with using either the recommended must gather tooling or the restricted must gather
+script, please try to capture and supply relevant resources from your cluster pertaining to the problem you are experiencing.
+
+As a minimum, please provide relevant operator and instance pod logs along with the instance custom resource (CR).
+
+#### Useful commands:
+
+```shell
+# Capture a listing of all pods in the namespace
+kubectl get pods -n <INSTANCE_NAMESPACE> -o wide >> pod-list.log
+
+# Capture detailed output about the state of all pods in the namespace
+kubectl get pods -n <INSTANCE_NAMESPACE> -o yaml >> pod-details.log
+
+# Capture individual pod logs, you should capture both the operator and pods related to the instance
+# remember your operator pod might be in a different namespace
+kubectl logs <POD_NAME> -n <INSTANCE_NAMESPACE> >> <POD_NAME>.log
+
+# Capture eventstreams instances and status
+kubectl get eventstreams -n <EVENTSTREAMS_INSTANCE_NAMESPACE> -o yaml >> all-eventstreams-details.log
+
+# Capture eventprocessing instances and status
+kubectl get eventprocessings -n <EVENTPROCESSING_INSTANCE_NAMESPACE> -o yaml >> all-eventprocessing-details.log
+
+# Capture flinkdeployment instances and status
+kubectl get flinkdeployments -n <FLINKDEPLOYMENT_INSTANCE_NAMESPACE> -o yaml >> all-flinkdeployments-details.log
+
+# Capture eventendpointmanagement instances and status
+kubectl get eventendpointmanagements -n <EEM_INSTANCE_NAMESPACE> -o yaml >> all-eems-details.log
+
+# Capture eventgateway instances and status
+kubectl get eventgateways -n <EGW_INSTANCE_NAMESPACE> -o yaml >> all-egws-details.log
+```
+
+It is highly likely the support team will ask you to collect further diagnostic information.
