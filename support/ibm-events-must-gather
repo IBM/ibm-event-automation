@@ -7,13 +7,15 @@
 
 function compactUsage() {
     echo "Usage:"
-    echo "ibm-events-must-gather [-m GATHER_MODULES] [-n NAMESPACE | --es-namespace NAMESPACE | --eem-namespace NAMESPACE | --ep-namespace NAMESPACE | --flink-namespace NAMESPACE] [-i IMAGE] [-h]"
+    echo "ibm-events-must-gather [-m GATHER_MODULES] [-n NAMESPACE | --es-namespace NAMESPACE | --eem-namespace NAMESPACE | --ep-namespace NAMESPACE | --flink-namespace NAMESPACE] [--mustgather-namespace NAMESPACE] [--image-pull-secret SECRET] [-i IMAGE] [-h]"
     echo ""
     echo "Options:"
     echo "  -h: Show full help message."
     echo "  -i: The address of the image to be used for the gather. By default this uses icr.io/cpopen/ibm-events-must-gather."
     echo "  -m: Define the data module(s) that specifies what type of information is collected. Run with -h, to see full list of available data modules."
     echo "  -n: Specify the namespace from which the data is collected. If specifying more than one of eventstreams, eem, eventprocessing and flink modules, individual namespace flags must be used."
+    echo "  --mustgather-namespace: Specify the namespace for mustgather pod."
+    echo "  --image-pull-secret: Specify single image pull secret."
     echo "  --es-namespace: The namespace from which the eventstreams data is collected."
     echo "  --eem-namespace: The namespace from which the eem data is collected."
     echo "  --ep-namespace: The namespace from which the eventprocessing data is collected."
@@ -78,6 +80,14 @@ function usage() {
     echo "    --ep-namespace: the namespace from which the eventprocessing data is collected."
     echo "    --flink-namespace: the namespace from which the flink data is collected."
     echo ""
+    echo "Specifying must gather pod namespace:"
+    echo "  to specify namespace for mustgather pod, specify the relevant namespace"
+    echo "  using the --mustgather-namespace flag."
+    echo ""
+    echo "Specifying image pull secret:"
+    echo "  to specify image pull secret, specify the relevant single image pull secret"
+    echo "  using the --image-pull-secret flag."
+    echo ""
     echo ""
     echo "Examples: "
     echo "# Gather information on the Event Streams instance in the \"es\" namespace."
@@ -89,6 +99,9 @@ function usage() {
     echo "# Gather information on the Event Processing instance in the \"processing\" namespace as well as cluster logs information in an offline (airgapped) environment. "
     echo "event-streams-must-gather -m eventprocessing,system -n processing -i <private-registry:tag> "
     echo ""
+    echo "# Gather information on the Event Streams instance in the \"es\" namespace, must gather pod in the \"mustgathernamespace\" namespace and with image-pull-secret as \"imagepullsecret\". "
+    echo "ibm-events-must-gather -m eventstreams -n es --mustgather-namespace mustgathernamespace --image-pull-secret imagepullsecret"
+    echo ""
 }
 
 function teardown ()
@@ -97,7 +110,9 @@ function teardown ()
   kubectl delete -f  role.yaml
   kubectl delete -f  service-account.yaml
   kubectl delete -f  role-binding.yaml
-  kubectl delete -f  namespace.yaml
+  if [ -z "${mustgatherPodNamespace}" ]; then
+    kubectl delete -f  namespace.yaml
+  fi
 
   rm -rf must-gather-job.yaml
   rm -rf role.yaml
@@ -108,7 +123,7 @@ function teardown ()
 
 function trapCtrlc ()
 {
-  echo "    Ctrl+c caught proceeding to abandon and tear down resources."  
+  echo "    Ctrl+c caught proceeding to abandon and tear down resources."
   teardown
   echo "Tear down complete."
   exit 2
@@ -117,12 +132,16 @@ function trapCtrlc ()
 function setup ()
 {
   # Set up -  need to build a service account and other bits to allow kubectl to run from the created pods
-  namespaceUid=$(openssl rand -base64 20 | tr -dc a-z0-9 | head -c 6)
-  if [ -z $test ]
-  then
-    export mustgatherNamespace="ibm-events-must-gather-${namespaceUid}"
+  if [ -z "${mustgatherPodNamespace}" ]; then
+    namespaceUid=$(openssl rand -base64 20 | tr -dc a-z0-9 | head -c 6)
+    if [ -z $test ]
+    then
+      export mustgatherNamespace="ibm-events-must-gather-${namespaceUid}"
+    else
+      export mustgatherNamespace="ibm-events-must-gather-test"
+    fi
   else
-    export mustgatherNamespace="ibm-events-must-gather-test"
+      export mustgatherNamespace=${mustgatherPodNamespace}
   fi
 
   cp -a ./template-yaml/. .
@@ -131,6 +150,9 @@ function setup ()
   ${SED} -i "s|MUSTGATHER_NAMESPACE_PLACEHOLDER|${mustgatherNamespace}|g" role-binding.yaml
   ${SED} -i "s|MUSTGATHER_NAMESPACE_PLACEHOLDER|${mustgatherNamespace}|g" service-account.yaml
   ${SED} -i "s|MUSTGATHER_NAMESPACE_PLACEHOLDER|${mustgatherNamespace}|g" must-gather-job.yaml
+  if [ -n "${imagePullSecret}" ]; then
+    ${SED} -i -e '$aimagePullSecrets:\n  - name: '${imagePullSecret} service-account.yaml
+  fi
 
   if [ "${products}" -gt 1 ]; then
     gatherCommand="gather -m ${gatherModules} "
@@ -157,7 +179,7 @@ function setup ()
 
   ${SED} -i "s|GATHER_IMAGE_PLACEHOLDER|${gatherImage}|g" must-gather-job.yaml
   ${SED} -i "s|COPY_IMAGE_PLACEHOLDER|${gatherImage}|g" must-gather-job.yaml
-  
+
   # Create namespace
 
   kubectl apply -f namespace.yaml
@@ -182,6 +204,8 @@ esNamespace=""
 eemNamespace=""
 epNamespace=""
 flinkNamespace=""
+mustgatherPodNamespace=""
+imagePullSecret=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -198,6 +222,12 @@ while [[ $# -gt 0 ]]; do
           shift 2
           ;;
     "-i") image="$2"
+          shift 2
+          ;;
+    "--mustgather-namespace") mustgatherPodNamespace="$2"
+          shift 2
+          ;;
+    "--image-pull-secret") imagePullSecret="$2"
           shift 2
           ;;
     "--es-namespace") esNamespace="$2"
