@@ -19,7 +19,9 @@ spec:
     license: ""
     use: ""
   adminApi: {}
-  adminUI: {}
+  adminUI:
+    authentication:
+      - type: integrationKeycloak
   apicurioRegistry: {}
   collector: {}
   restProducer: {}
@@ -27,9 +29,7 @@ spec:
     kafka:
       replicas: 3
       authorization:
-        type: custom
-        authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
-        supportsAdminApi: true
+        type: simple
       config:
         inter.broker.protocol.version: "3.5"
         log.cleaner.threads: 6
@@ -81,6 +81,3 @@ spec:
         type: persistent-claim
         size: 4Gi
         class: enter-storage-class-name-here
-  requestIbmServices:
-    iam: true
-    monitoring: true
