@@ -19,7 +19,9 @@ spec:
     license: ""
     use: ""
   adminApi: {}
-  adminUI: {}
+  adminUI:
+    authentication:
+      - type: integrationKeycloak
   apicurioRegistry: {}
   collector: {}
   restProducer: {}
@@ -56,6 +58,3 @@ spec:
             name: light-insecure-metrics-config
       storage:
         type: ephemeral
-  requestIbmServices:
-    iam: false
-    monitoring: false

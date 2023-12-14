@@ -48,9 +48,7 @@ spec:
     kafka:
       replicas: 3
       authorization:
-        type: custom
-        supportsAdminApi: true
-        authorizerClass: com.ibm.eventstreams.runas.authorizer.RunAsAuthorizer
+        type: simple
       config:
         inter.broker.protocol.version: "3.5"
         log.cleaner.threads: 6
