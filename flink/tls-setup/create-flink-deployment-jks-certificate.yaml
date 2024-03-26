@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <flink-deployment-name>-cert-password
+  namespace: <flink-namespace>
+type: Opaque
+data:
+  password: <Base64 encoded password>
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: <flink-deployment-name>-cert
+  namespace: <flink-namespace>
+spec:
+  dnsNames:
+    - '*.<flink-namespace>.svc'
+    - '*.svc.cluster.local'
+    - '<flink-deployment-name>-rest'
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef:
+        name: <flink-deployment-name>-cert-password
+        key: password
+  issuerRef:
+    kind: ClusterIssuer
+    name: ea-cluster-issuer
+  commonName: <flink-deployment-name>
+  secretName: <flink-deployment-name>-cert
+---

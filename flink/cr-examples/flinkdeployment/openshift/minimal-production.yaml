@@ -23,6 +23,13 @@ spec:
     state.savepoints.dir: 'file:///opt/flink/volume/flink-sp'
     taskmanager.numberOfTaskSlots: '10'
     table.exec.source.idle-timeout: '30 s'
+    security.ssl.enabled: 'true'
+    security.ssl.truststore: /opt/flink/tls-cert/truststore.jks
+    security.ssl.truststore-password: <jks-password>
+    security.ssl.keystore: /opt/flink/tls-cert/keystore.jks
+    security.ssl.keystore-password: <jks-password>
+    security.ssl.key-password: <jks-password>
+    kubernetes.secrets: '<jks-secret>:/opt/flink/tls-cert'
   serviceAccount: flink
   podTemplate:
     apiVersion: v1
