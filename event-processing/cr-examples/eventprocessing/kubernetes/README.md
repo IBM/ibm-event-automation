@@ -17,7 +17,7 @@ To find out more about the samples see [the documentation](https://ibm.github.io
       - OIDC auth configuration template
       - Customized TLS configuration including, root CA and UI certificate
       - Persistent storage
-      - Connect to a secure flink deployment
+      - Connect to a secure Flink deployment
 
 
 - [quick-start.yaml](./quick-start.yaml) : A sample yaml file for development environments.
