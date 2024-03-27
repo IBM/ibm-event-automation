@@ -5,6 +5,8 @@ This directory hosts samples of the `flinkdeployment` custom resource.
 To use the samples, accept the terms of the [license agreement](https://ibm.biz/ea-license) by setting
 `spec.flinkConfiguration.license.accept` to 'true'.
 
+** Note ** All the samples except quickstart require you to have created a secret containing a jks keystore and truststore see [tls-setup](../../../tls-setup) 
+
 To find out more about the samples, see the [documentation](https://ibm.github.io/event-automation/ep/installing/planning/#flink-sample-deployments).
 
 ### Samples Overview

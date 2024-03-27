@@ -9,6 +9,11 @@ spec:
     use: EventAutomationProduction
   flink:
     endpoint: session-cluster-prod-rest:8081
+    tls:
+      secretName: <jks-truststore-secret>
+      secretKeyRef:
+        name: <truststore-password-secret>
+        key: <key-containing-password>
   authoring:
     storage:
       type: persistent-claim
