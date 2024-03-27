@@ -6,7 +6,7 @@ metadata:
   namespace: <flink-namespace>
 type: Opaque
 data:
-  password: <Base64 encoded password>
+  password: <base64-encoded-password>
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
