@@ -7,15 +7,24 @@ apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaConnect
 metadata:
   name: non-prod
+  labels:
+    backup.eventstreams.ibm.com/component: kafkaconnect
 #  annotations:
 #  # use-connector-resources configures this KafkaConnect
 #  # to use KafkaConnector resources to avoid
 #  # needing to call the Connect REST API directly
 #    eventstreams.ibm.com/use-connector-resources: "true"
-  labels:
-    backup.eventstreams.ibm.com/component: kafkaconnect
 spec:
   template:
+    connectContainer:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
     pod:
       metadata:
         annotations:
@@ -28,6 +37,17 @@ spec:
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
           cloudpakName: IBM Cloud Pak for Integration
           productCloudpakRatio: "2:1"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                      - s390x
+                      - ppc64le
   bootstrapServers: my-cluster-kafka-bootstrap:9093
   tls:
     trustedCertificates:
