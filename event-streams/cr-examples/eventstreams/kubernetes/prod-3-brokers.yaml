@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2020, 2023
+# © Copyright IBM Corp. 2020, 2023, 2024
 #
 ###############################################################################
 apiVersion: eventstreams.ibm.com/v1beta2
@@ -12,8 +12,8 @@ spec:
   license:
     # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
-    license: ""
-    use: ""
+    license: "L-HRZF-DWHH7A"
+    use: "EventAutomationProduction"
   adminApi:
     endpoints:
       - name: ingress
