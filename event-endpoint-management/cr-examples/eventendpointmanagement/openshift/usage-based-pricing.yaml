@@ -2,6 +2,8 @@ apiVersion: events.ibm.com/v1beta1
 kind: EventEndpointManagement
 metadata:
   name: ubp-manager
+  labels:
+    backup.events.ibm.com/component: eim
 spec:
   license:
     accept: false
