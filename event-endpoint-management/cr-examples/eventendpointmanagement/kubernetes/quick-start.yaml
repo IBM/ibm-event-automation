@@ -3,7 +3,7 @@ kind: EventEndpointManagement
 metadata:
   name: quick-start-manager
   labels:
-    backup.events.ibm.com/component: eim
+    backup.events.ibm.com/component: eventendpointmanagement
 spec:
   license:
     accept: false

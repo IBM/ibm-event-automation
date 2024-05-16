@@ -3,7 +3,7 @@ kind: EventGateway
 metadata:
   name: quick-start-gw
   labels:
-    backup.events.ibm.com/component: eim
+    backup.events.ibm.com/component: eventgateway
 spec:
   license:
     accept: false
