@@ -347,7 +347,7 @@ fi
 
 if [ $KUBECTL_PRESENCE -eq 1 ] || [ $OPENSSL_PRESENCE -eq 1 ] || [ $GNU_SED_PRESENCE -eq 1 ]
 then
-      echo 'You must have kubectl (or oc) openssl and sed (GNU sed) installed to run diagnostics. On linux (and bash for windows) GNU sed is called sed, for mac OS GNU sed is called gsed'
+      echo 'You must have kubectl, openssl and sed (GNU sed) installed to run diagnostics. On linux (and bash for windows) GNU sed is called sed, for mac OS GNU sed is called gsed'
       exit 6
 fi
 
