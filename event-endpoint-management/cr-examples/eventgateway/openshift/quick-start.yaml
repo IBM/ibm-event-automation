@@ -11,6 +11,7 @@ spec:
   managerEndpoint: https://<eem-manager-gateway-route>
   gatewayGroupName: <gateway-group>
   gatewayID: <gateway-id>
+  maxNumKafkaBrokers: 3
   tls:
     caSecretName: <root-ca-secret-name>
   template:
