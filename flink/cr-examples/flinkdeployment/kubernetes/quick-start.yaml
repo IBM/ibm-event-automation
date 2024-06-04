@@ -17,6 +17,10 @@ spec:
     state.checkpoints.num-retained: '3'
     taskmanager.numberOfTaskSlots: '4'
     table.exec.source.idle-timeout: '30 s'
+    restart-strategy: failure-rate
+    restart-strategy.failure-rate.max-failures-per-interval: '5'
+    restart-strategy.failure-rate.failure-rate-interval: '5 min'
+    restart-strategy.failure-rate.delay: '30 s'
   serviceAccount: flink
   podTemplate:
     apiVersion: v1
