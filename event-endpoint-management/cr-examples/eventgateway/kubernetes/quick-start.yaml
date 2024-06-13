@@ -12,6 +12,7 @@ spec:
     - name: gateway
       host: qs-gateway.<CLUSTER_HOST>
   managerEndpoint: https://<eem-manager-gateway-route>
+  maxNumKafkaBrokers: 3
   gatewayGroupName: <gateway-group>
   gatewayID: <gateway-id>
   tls:
