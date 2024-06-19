@@ -5,7 +5,8 @@ This repository contains examples and samples that demonstrate how to use Flink 
 
 - Java 11
 - Java Integrated Development Environment (IDE)
-- [Docker](https://github.com/docker/compose/releases) version 2.24.5 or later 
+- [Docker](https://github.com/docker/compose/releases) version 2.24.5 or later
+- `linux/amd64` platform.
 
 ## Deploying and running the functions on a Flink cluster
 
