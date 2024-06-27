@@ -2,12 +2,14 @@ apiVersion: events.ibm.com/v1beta1
 kind: EventEndpointManagement
 metadata:
   name: quick-start-manager
+  labels:
+    backup.events.ibm.com/component: eventendpointmanagement
 spec:
   license:
     accept: false
-    license: ""
-    metric: ""
-    use: ""
+    license: ''
+    metric: ''
+    use: ''
   manager:
     endpoints:
       - name: ui
@@ -27,8 +29,8 @@ spec:
             - name: manager
               resources:
                 requests:
-                  cpu: '1'
+                  cpu: '0.25'
                   memory: 256Mi
                 limits:
-                  cpu: '1'
-                  memory: 1Gi
+                  cpu: '0.5'
+                  memory: 512Mi

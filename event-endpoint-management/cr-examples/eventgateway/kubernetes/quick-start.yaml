@@ -2,16 +2,19 @@ apiVersion: events.ibm.com/v1beta1
 kind: EventGateway
 metadata:
   name: quick-start-gw
+  labels:
+    backup.events.ibm.com/component: eventgateway
 spec:
   license:
     accept: false
-    license: ""
-    metric: ""
-    use: ""
+    license: ''
+    metric: ''
+    use: ''
   endpoints:
     - name: gateway
       host: qs-gateway.<CLUSTER_HOST>
   managerEndpoint: https://<eem-manager-gateway-route>
+  maxNumKafkaBrokers: 3
   gatewayGroupName: <gateway-group>
   gatewayID: <gateway-id>
   tls:
