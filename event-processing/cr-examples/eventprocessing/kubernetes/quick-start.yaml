@@ -1,12 +1,3 @@
-# {
-#   "description": "Quick start sample with no persistence and reduced resources",
-#   "name": "Quick start",
-#   "resources": {
-#     "cpu": "0.5",
-#     "memory": "512 Mb",
-#     "vpc": "0.5"
-#   }
-# }
 apiVersion: events.ibm.com/v1beta1
 kind: EventProcessing
 metadata:
@@ -14,7 +5,7 @@ metadata:
 spec:
   license:
     accept: false
-    license: ""
+    license: ''
     use: EventAutomationNonProduction
   flink:
     endpoint: session-cluster-quick-start-rest:8081
