@@ -2,12 +2,14 @@ apiVersion: events.ibm.com/v1beta1
 kind: EventEndpointManagement
 metadata:
   name: production-manager
+  labels:
+    backup.events.ibm.com/component: eventendpointmanagement
 spec:
   license:
     accept: false
-    license: ""
-    metric: ""
-    use: ""
+    license: ''
+    metric: ''
+    use: ''
   manager:
     endpoints:
       - name: ui

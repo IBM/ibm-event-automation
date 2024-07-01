@@ -2,16 +2,19 @@ apiVersion: events.ibm.com/v1beta1
 kind: EventGateway
 metadata:
   name: production-gw
+  labels:
+    backup.events.ibm.com/component: eventgateway
 spec:
   license:
     accept: false
-    license: ""
-    metric: ""
-    use: ""
+    license: ''
+    metric: ''
+    use: ''
   endpoints:
     - name: gateway
       host: prod-gateway.<CLUSTER_HOST>
   managerEndpoint: https://<eem-manager-gateway-route>
+  maxNumKafkaBrokers: 20
   gatewayGroupName: <gateway-group>
   gatewayID: <gateway-id>
   tls:
