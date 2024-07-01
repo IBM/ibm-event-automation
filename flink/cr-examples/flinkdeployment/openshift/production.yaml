@@ -5,7 +5,7 @@ metadata:
 spec:
   flinkConfiguration:
     license.use: EventAutomationProduction
-    license.license: L-HRZF-DWHH7A
+    license.license: 'L-HRZF-DWHH7A'
     license.accept: 'false'
     high-availability.type: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
     high-availability.storageDir: 'file:///opt/flink/volume/flink-ha'
@@ -41,15 +41,15 @@ spec:
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 80
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: type
-                  operator: In
-                  values:
-                  - flink-native-kubernetes
-              topologyKey: kubernetes.io/hostname
+            - weight: 80
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: type
+                      operator: In
+                      values:
+                        - flink-native-kubernetes
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: flink-main-container
           volumeMounts:

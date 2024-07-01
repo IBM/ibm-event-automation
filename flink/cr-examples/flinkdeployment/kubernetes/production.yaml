@@ -1,16 +1,12 @@
-# {
-#   "description": "Suitable for large workloads and High Availability. Note that this sample has large CPU and memory requirements. Accept the license agreement https://ibm.biz/ea-license by setting the configuration parameter license.accept to 'true'; otherwise the deployment fails. This sample uses a PersistentVolumeClaim (PVC), thus there are manual prerequisites for deploying the PVC. For details, see https://ibm.biz/ep-installing-flink",
-#   "name": "Production"
-# }
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
   name: session-cluster-prod
 spec:
   flinkConfiguration:
-    license.use: ""
-    license.license: ""
-    license.accept: ""
+    license.use: EventAutomationProduction
+    license.license: 'L-HRZF-DWHH7A'
+    license.accept: 'false'
     high-availability.type: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
     high-availability.storageDir: 'file:///opt/flink/volume/flink-ha'
     restart-strategy: failure-rate
@@ -47,15 +43,15 @@ spec:
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 80
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: type
-                  operator: In
-                  values:
-                  - flink-native-kubernetes
-              topologyKey: kubernetes.io/hostname
+            - weight: 80
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: type
+                      operator: In
+                      values:
+                        - flink-native-kubernetes
+                topologyKey: kubernetes.io/hostname
       containers:
         - name: flink-main-container
           volumeMounts:

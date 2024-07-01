@@ -1,8 +1,3 @@
-
-# {
-#   "description": "Quick start sample without persistent storage. Suitable for tiny workloads that do not require reliability. Accept the license agreement https://ibm.biz/ea-license by setting the configuration parameter license.accept to 'true'; otherwise the deployment fails. For details, see https://ibm.biz/ep-installing-flink",
-#   "name": "Quick start"
-# }
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
@@ -10,7 +5,7 @@ metadata:
 spec:
   flinkConfiguration:
     license.use: EventAutomationNonProduction
-    license.license: L-HRZF-DWHH7A
+    license.license: 'L-HRZF-DWHH7A'
     license.accept: 'false'
     execution.checkpointing.interval: '5000'
     state.backend.type: rocksdb
