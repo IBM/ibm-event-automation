@@ -5,7 +5,7 @@ metadata:
 spec:
   flinkConfiguration:
     license.use: EventAutomationNonProduction
-    license.license: 'L-HRZF-DWHH7A'
+    license.license: 'L-KCVZ-JL5CRM'
     license.accept: 'false'
     execution.checkpointing.interval: '5000'
     state.backend.type: rocksdb
