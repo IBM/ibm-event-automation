@@ -5,7 +5,7 @@ metadata:
 spec:
   license:
     accept: false
-    license: ''
+    license: 'L-KCVZ-JL5CRM'
     use: EventAutomationNonProduction
   flink:
     endpoint: session-cluster-quick-start-rest:8081
