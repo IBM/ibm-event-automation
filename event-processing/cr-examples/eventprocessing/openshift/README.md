@@ -5,7 +5,6 @@ and are non-functional without modification.
 
 To utilise the samples, you will need to:
 
-- Specify the license and license use
 - Accept the terms of the license
 - Replace all placeholder values indicated by angled brackets, for example: `<storage-class>`
 
