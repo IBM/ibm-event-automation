@@ -7,9 +7,9 @@ metadata:
 spec:
   license:
     accept: false
-    license: ''
-    metric: ''
-    use: ''
+    license: 'L-KCVZ-JL5CRM'
+    metric: VIRTUAL_PROCESSOR_CORE
+    use: EventAutomationProduction
   managerEndpoint: https://<eem-manager-gateway-route>
   maxNumKafkaBrokers: 20
   gatewayGroupName: <gateway-group>
