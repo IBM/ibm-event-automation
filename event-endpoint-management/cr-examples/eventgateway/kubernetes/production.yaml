@@ -7,9 +7,9 @@ metadata:
 spec:
   license:
     accept: false
-    license: ''
-    metric: ''
-    use: ''
+    license: 'L-KCVZ-JL5CRM'
+    metric: VIRTUAL_PROCESSOR_CORE
+    use: EventAutomationProduction
   endpoints:
     - name: gateway
       host: prod-gateway.<CLUSTER_HOST>
