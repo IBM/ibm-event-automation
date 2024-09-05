@@ -1,0 +1,17 @@
+###############################################################################
+#
+# © Copyright IBM Corp. 2023
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaTopic
+metadata:
+  name: my-topic
+  labels:
+    eventstreams.ibm.com/cluster: <cluster-name>
+    backup.eventstreams.ibm.com/component: kafkatopic
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    min.insync.replicas: '1'
