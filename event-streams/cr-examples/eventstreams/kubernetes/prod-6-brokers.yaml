@@ -12,7 +12,7 @@ spec:
   license:
     # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
-    license: "L-HRZF-DWHH7A"
+    license: "L-KCVZ-JL5CRM"
     use: "EventAutomationProduction"
   adminApi:
     endpoints:
