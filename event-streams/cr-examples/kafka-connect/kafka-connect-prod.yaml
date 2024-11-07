@@ -6,14 +6,11 @@
 apiVersion: eventstreams.ibm.com/v1beta2
 kind: KafkaConnect
 metadata:
-  name: non-prod
+  name: connect-prod
+  annotations:
+    eventstreams.ibm.com/use-connector-resources: "true"
   labels:
     backup.eventstreams.ibm.com/component: kafkaconnect
-#  annotations:
-#  # use-connector-resources configures this KafkaConnect
-#  # to use KafkaConnector resources to avoid
-#  # needing to call the Connect REST API directly
-#    eventstreams.ibm.com/use-connector-resources: "true"
 spec:
   template:
     connectContainer:
@@ -28,15 +25,15 @@ spec:
     pod:
       metadata:
         annotations:
-          eventstreams.production.type: CloudPakForIntegrationNonProduction
+          eventstreams.production.type: CloudPakForIntegrationProduction
           productID: 2a79e49111f44ec3acd89608e56138f5
-          productName: IBM Event Streams for Non Production
+          productName: IBM Event Streams for Production
           productVersion: EVENTSTREAMS_PRODUCT_VERSION
           productMetric: VIRTUAL_PROCESSOR_CORE
           productChargedContainers: <ADD-NAME-OF-KAFKA-CONNECT-CR>-connect
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
           cloudpakName: IBM Cloud Pak for Integration
-          productCloudpakRatio: "2:1"
+          productCloudpakRatio: "1:1"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

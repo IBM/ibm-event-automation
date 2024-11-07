@@ -1,0 +1,21 @@
+###############################################################################
+#
+# © Copyright IBM Corp. 2024
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaConnector
+metadata:
+  name: basic-connector
+  labels:
+    eventstreams.ibm.com/cluster: <kafka_connect_name>
+    backup.eventstreams.ibm.com/component: kafkaconnector
+spec:
+  class: ''
+  tasksMax: 1
+  autoRestart:
+    enabled: true
+    maxRestarts: 10
+  state: running
+  config:
+    topic: ''
