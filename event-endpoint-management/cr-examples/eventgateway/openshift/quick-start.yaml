@@ -7,7 +7,7 @@ metadata:
 spec:
   license:
     accept: false
-    license: 'L-KCVZ-JL5CRM'
+    license: 'L-AUKS-FKVXVL'
     metric: VIRTUAL_PROCESSOR_CORE
     use: EventAutomationNonProduction
   managerEndpoint: https://<eem-manager-gateway-route>
