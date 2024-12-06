@@ -26,8 +26,8 @@ spec:
       metadata:
         annotations:
           eventstreams.production.type: CloudPakForIntegrationProduction
-          productID: 2a79e49111f44ec3acd89608e56138f5
-          productName: IBM Event Streams for Production
+          productID: 2cba508800504d0abfa48a0e2c4ecbe2
+          productName: IBM Event Streams
           productVersion: EVENTSTREAMS_PRODUCT_VERSION
           productMetric: VIRTUAL_PROCESSOR_CORE
           productChargedContainers: <ADD-NAME-OF-KAFKA-CONNECT-CR>-connect
@@ -45,11 +45,11 @@ spec:
                       - amd64
                       - s390x
                       - ppc64le
-  bootstrapServers: my-cluster-kafka-bootstrap:9093
+  # bootstrapServers: my-cluster-kafka-bootstrap:9093
   tls:
     trustedCertificates:
-      - secretName: my-cluster-cluster-ca-cert
-        certificate: ca.crt
+      - certificate: ca.crt
+        # secretName: <eventstreams-instance>-cluster-ca-cert
   config:
     group.id: connect-cluster
     offset.storage.topic: connect-cluster-offsets

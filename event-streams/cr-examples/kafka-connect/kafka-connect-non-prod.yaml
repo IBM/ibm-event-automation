@@ -45,11 +45,11 @@ spec:
                       - amd64
                       - s390x
                       - ppc64le
-  bootstrapServers: my-cluster-kafka-bootstrap:9093
+  # bootstrapServers: my-cluster-kafka-bootstrap:9093
   tls:
     trustedCertificates:
-      - secretName: my-cluster-cluster-ca-cert
-        certificate: ca.crt
+      - certificate: ca.crt
+        # secretName: <eventstreams-instance>-cluster-ca-cert
   config:
     group.id: connect-cluster
     offset.storage.topic: connect-cluster-offsets
