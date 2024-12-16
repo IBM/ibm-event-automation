@@ -3,7 +3,6 @@ kind: FlinkDeployment
 metadata:
   name: application-cluster-prod
 spec:
-  image: <image built FROM icr.io/cpopen/ibm-eventautomation-flink/ibm-eventautomation-flink>
   flinkConfiguration:
     license.use: EventAutomationProduction
     license.license: 'L-KCVZ-JL5CRM'
@@ -32,6 +31,7 @@ spec:
     security.ssl.keystore-password: <jks-password>
     security.ssl.key-password: <jks-password>
     kubernetes.secrets: '<jks-secret>:/opt/flink/tls-cert'
+    classloader.resolve-order: 'parent-first'
   serviceAccount: flink
   podTemplate:
     apiVersion: v1
@@ -58,12 +58,23 @@ spec:
               mountPath: /opt/flink/log
             - name: flink-volume
               mountPath: /opt/flink/volume
+            - name: flow-volume
+              mountPath: /opt/flink/ibm-flow/flow.json
+              subPath: flow.json
+              readOnly: true
+            - name: flow-volume
+              mountPath: /opt/flink/ibm-flow/config.yaml
+              subPath: config.yaml
+              readOnly: true
       volumes:
         - name: flink-logs
           emptyDir: {}
         - name: flink-volume
           persistentVolumeClaim:
             claimName: ibm-flink-pvc
+        - name: flow-volume
+          secret:
+            secretName: application-cluster-prod
   jobManager:
     replicas: 2
     resource:
@@ -74,8 +85,8 @@ spec:
       memory: '4096m'
       cpu: 2
   job:
-    jarURI: <insert jar file name here>
-    args: ['<insert path for statements.sql here>']
+    jarURI: local:///opt/flink/ibm-flow/ibm-ep-flow-deployer.jar
+    args: []
     parallelism: 1
     state: running
     upgradeMode: savepoint
