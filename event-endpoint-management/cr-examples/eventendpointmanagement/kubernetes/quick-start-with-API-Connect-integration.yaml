@@ -24,6 +24,10 @@ spec:
       authType: LOCAL
     storage:
       type: ephemeral
+    tls:
+      trustedCertificates:
+        - certificate: ca.crt
+          secretName: <name of secret containing the ca.crt of your API Connect instance, required if using a different CA to EEM>
     apic:
       tls: false
       clientSubjectDN: <common-name>
