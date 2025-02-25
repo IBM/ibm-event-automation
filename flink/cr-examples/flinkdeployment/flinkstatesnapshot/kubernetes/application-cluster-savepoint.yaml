@@ -1,0 +1,14 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkStateSnapshot
+metadata:
+  name: application-cluster-prod-savepoint
+spec:
+  backoffLimit: 1
+  jobReference:
+    kind: FlinkDeployment
+    name: application-cluster-prod
+  savepoint:
+    alreadyExists: false
+    disposeOnDelete: false
+    formatType: CANONICAL
+    path: /opt/flink/volume/flink-sp
