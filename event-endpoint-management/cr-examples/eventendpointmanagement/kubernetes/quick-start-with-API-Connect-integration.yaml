@@ -20,6 +20,8 @@ spec:
         host: qs-eem-admin.<CLUSTER_HOST>
       - name: apic
         host: qs-apic.<CLUSTER_HOST>
+      - name: server
+        host: eem.qs-eem-server.<CLUSTER_HOST>
     authConfig:
       authType: LOCAL
     storage:

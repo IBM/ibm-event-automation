@@ -18,6 +18,8 @@ spec:
         host: prod-eem-gateway.<CLUSTER_HOST>
       - name: admin
         host: prod-eem-admin.<CLUSTER_HOST>
+      - name: server
+        host: eem.prod-eem-server.<CLUSTER_HOST>
     authConfig:
       authType: OIDC
       oidcConfig:
