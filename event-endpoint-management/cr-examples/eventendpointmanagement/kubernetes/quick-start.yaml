@@ -18,6 +18,8 @@ spec:
         host: qs-eem-gateway.<CLUSTER_HOST>
       - name: admin
         host: qs-eem-admin.<CLUSTER_HOST>
+      - name: server
+        host: eem.qs-eem-server.<CLUSTER_HOST>
     authConfig:
       authType: LOCAL
     storage:
