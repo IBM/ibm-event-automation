@@ -9,19 +9,19 @@ spec:
     license.accept: 'false'
     high-availability.type: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
     high-availability.storageDir: 'file:///opt/flink/volume/flink-ha'
-    restart-strategy: failure-rate
+    restart-strategy.type: failure-rate
     restart-strategy.failure-rate.max-failures-per-interval: '10'
     restart-strategy.failure-rate.failure-rate-interval: '10 min'
     restart-strategy.failure-rate.delay: '30 s'
     execution.checkpointing.interval: '5000'
-    execution.checkpointing.unaligned: 'false'
+    execution.checkpointing.unaligned.enabled: 'false'
     state.backend.type: rocksdb
     state.backend.rocksdb.thread.num: '10'
-    state.backend.incremental: 'true'
+    execution.checkpointing.incremental: 'true'
     state.backend.rocksdb.use-bloom-filter: 'true'
-    state.checkpoints.dir: 'file:///opt/flink/volume/flink-cp'
-    state.checkpoints.num-retained: '3'
-    state.savepoints.dir: 'file:///opt/flink/volume/flink-sp'
+    execution.checkpointing.dir: 'file:///opt/flink/volume/flink-cp'
+    execution.checkpointing.num-retained: '3'
+    execution.checkpointing.savepoint-dir: 'file:///opt/flink/volume/flink-sp'
     taskmanager.numberOfTaskSlots: '2'
     table.exec.source.idle-timeout: '30 s'
     security.ssl.enabled: 'true'
@@ -31,7 +31,6 @@ spec:
     security.ssl.keystore-password: <jks-password>
     security.ssl.key-password: <jks-password>
     kubernetes.secrets: '<jks-secret>:/opt/flink/tls-cert'
-    classloader.resolve-order: 'parent-first'
   serviceAccount: flink
   podTemplate:
     apiVersion: v1
