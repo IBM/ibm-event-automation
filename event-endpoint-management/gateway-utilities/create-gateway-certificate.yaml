@@ -1,0 +1,26 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: <gateway-group>-<gateway-id>-cert
+spec:
+  labels:
+    app: <gateway-group>-<gateway-id>
+    gatewayGroup: <gateway-group>
+    gatewayId: <gateway-id>
+  dnsNames:
+    - '*.<cluster-dns-address>'
+  duration: 2160h # 90 days
+  issuerRef:
+    kind: ClusterIssuer
+    name: gateway-cluster-issuer
+  privateKey:
+    algorithm: RSA
+    rotationPolicy: Always
+  secretName: <gateway-group>-<gateway-id>-certs
+  subject:
+    organizations:
+      - Gateway
+  usages:
+    - client auth
+    - digital signature
+    - server auth
