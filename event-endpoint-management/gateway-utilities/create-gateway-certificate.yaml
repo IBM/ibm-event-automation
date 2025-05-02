@@ -2,13 +2,13 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: <gateway-group>-<gateway-id>-cert
-spec:
   labels:
     app: <gateway-group>-<gateway-id>
     gatewayGroup: <gateway-group>
     gatewayId: <gateway-id>
+spec:
   dnsNames:
-    - '*.<cluster-dns-address>'
+    - '*.<cluster-dns>'
   duration: 2160h # 90 days
   issuerRef:
     kind: ClusterIssuer
@@ -17,6 +17,11 @@ spec:
     algorithm: RSA
     rotationPolicy: Always
   secretName: <gateway-group>-<gateway-id>-certs
+  secretTemplate:
+    labels:
+      app: <gateway-group>-<gateway-id>
+      gatewayGroup: <gateway-group>
+      gatewayId: <gateway-id>
   subject:
     organizations:
       - Gateway

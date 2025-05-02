@@ -100,7 +100,7 @@ cp "${CA_DIR}"/cluster-ca.pem "${CA_DIR}"/tls.crt
 cp "${CA_DIR}"/cluster-ca-key.pem "${CA_DIR}"/tls.key
 
 echo "2) Creating Kafka client certificate for Gateway"
-generate "gateway-kafka-client" "localhost,gateway"
+generate "gateway-kafka-client" $HOSTNAME
 
 # Example providing overrides to additional subjects
 # generate "example" "*.<cluster-host-dns>" "/C=UK/ST=England/L=Hampshire/O=IBM/OU=EEM/STREET=DWEST/DC=GWCLIENT/UID=TEST"

@@ -3,6 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: cluster-selfsigned-issuer
+  namespace: cert-manager
 spec:
   selfSigned: {}
 ---
@@ -10,6 +11,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: gateway-ca-cert
+  namespace: cert-manager
 spec:
   duration: 17520h # 2years
   issuerRef:
@@ -20,7 +22,7 @@ spec:
   secretName: gateway-ca-cert
   subject:
     organizations:
-      - GATEWAY CA
+      - GATEWAYCA
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
