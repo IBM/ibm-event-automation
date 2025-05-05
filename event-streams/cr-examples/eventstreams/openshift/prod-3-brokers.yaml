@@ -25,7 +25,6 @@ spec:
   restProducer: {}
   strimziOverrides:
     kafka:
-      replicas: 3
       authorization:
         type: simple
       config:
@@ -57,17 +56,6 @@ spec:
           configMapKeyRef:
             key: kafka-metrics-config.yaml
             name: prod-3-brokers-metrics-config
-      resources:
-        requests:
-          memory: 8096Mi
-          cpu: 2000m
-        limits:
-          memory: 8096Mi
-          cpu: 2000m
-      storage:
-        type: persistent-claim
-        size: 10Gi
-        class: ''
     zookeeper:
       replicas: 3
       metricsConfig:
@@ -80,3 +68,19 @@ spec:
         type: persistent-claim
         size: 4Gi
         class: ''
+    nodePools:
+      - name: kafka
+        replicas: 3
+        storage:
+          type: persistent-claim
+          size: 2Gi
+          class: ''
+        roles:
+          - broker
+        resources:
+          requests:
+            memory: 8096Mi
+            cpu: 2000m
+          limits:
+            memory: 8096Mi
+            cpu: 2000m

@@ -25,7 +25,6 @@ spec:
   restProducer: {}
   strimziOverrides:
     kafka:
-      replicas: 3
       authorization:
         type: simple
       config:
@@ -57,8 +56,6 @@ spec:
           configMapKeyRef:
             key: kafka-metrics-config.yaml
             name: development-metrics-config
-      storage:
-        type: ephemeral
     zookeeper:
       replicas: 3
       metricsConfig:
@@ -69,3 +66,10 @@ spec:
             name: development-metrics-config
       storage:
         type: ephemeral
+    nodePools:
+      - name: kafka
+        replicas: 3
+        storage:
+          type: ephemeral
+        roles:
+          - broker

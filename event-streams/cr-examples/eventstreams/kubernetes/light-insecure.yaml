@@ -29,7 +29,6 @@ spec:
     internalTls: NONE
   strimziOverrides:
     kafka:
-      replicas: 1
       config:
         inter.broker.protocol.version: "3.9"
         offsets.topic.replication.factor: 1
@@ -47,8 +46,6 @@ spec:
           configMapKeyRef:
             key: kafka-metrics-config.yaml
             name: light-insecure-metrics-config
-      storage:
-        type: ephemeral
     zookeeper:
       replicas: 1
       metricsConfig:
@@ -59,3 +56,11 @@ spec:
             name: light-insecure-metrics-config
       storage:
         type: ephemeral
+    nodePools:
+      - name: kafka
+        replicas: 1
+        storage:
+          type: ephemeral
+        roles:
+          - broker
+
