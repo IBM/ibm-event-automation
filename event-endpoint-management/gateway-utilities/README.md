@@ -1,6 +1,6 @@
 # Event Gateway Utilities
 
-Some utilities to help create certificates for you Event Gateways. These are just samples and should not be used in a production environment.
+Some utilities to help create certificates for your Event Gateways. These are just samples and should not be used in a production environment.
 
 | File                 | Description |
 | ------------- | ----------- |
