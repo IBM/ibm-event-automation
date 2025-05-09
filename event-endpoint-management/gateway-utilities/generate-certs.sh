@@ -57,7 +57,6 @@ generate() {
   echo "${SUBJECT_ALT_NAMES}"
 
   openssl_genrsa -out "${CERT_DIR}"/"${COMMON_NAME}"-key.pem 2048
-  openssl pkcs8 -topk8 -inform PEM -in "${CERT_DIR}"/"${COMMON_NAME}"-key.pem -out "${CERT_DIR}"/"${COMMON_NAME}"-pkcs8.pem -nocrypt
   openssl req -new \
     -key "${CERT_DIR}"/"${COMMON_NAME}"-key.pem \
     -out "${CERT_DIR}"/"${COMMON_NAME}".csr \
@@ -76,7 +75,6 @@ generate() {
     -extfile <(cat /etc/ssl/openssl.cnf \
         <(printf "\n[SAN]\nsubjectAltName=${SUBJECT_ALT_NAMES}")) \
     -out "${CERT_DIR}"/"${COMMON_NAME}".pem
-  openssl pkcs12 -export -in "${CERT_DIR}"/"${COMMON_NAME}".pem -inkey "${CERT_DIR}"/"${COMMON_NAME}"-key.pem -out "${CERT_DIR}"/"${COMMON_NAME}".p12 -passout pass:password
 }
 
 
@@ -94,10 +92,7 @@ setupdir ${CA_DIR}
 
 echo "1) Creating CA"
 openssl req -x509 -out "${CA_DIR}"/cluster-ca.pem -keyout "${CA_DIR}"/cluster-ca-key.pem -newkey rsa:2048 -nodes -sha256 -subj "/CN=${CA_HOSTNAME}" -extensions EXT -config <( printf "[dn]\nCN=${CA_HOSTNAME}\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:${CA_HOSTNAME}\nbasicConstraints=critical,CA:TRUE\nkeyUsage=digitalSignature,keyCertSign\nextendedKeyUsage=serverAuth")
-cat < "${CA_DIR}"/cluster-ca.pem | base64 > "${CA_DIR}"/cluster-ca.b64
-keytool -import -trustcacerts -alias root -file "${CA_DIR}"/cluster-ca.pem -keystore "${CA_DIR}"/keystore.jks -noprompt -storepass password
-cp "${CA_DIR}"/cluster-ca.pem "${CA_DIR}"/tls.crt
-cp "${CA_DIR}"/cluster-ca-key.pem "${CA_DIR}"/tls.key
+
 
 echo "2) Creating Kafka client certificate for Gateway"
 generate "gateway-kafka-client" $HOSTNAME
