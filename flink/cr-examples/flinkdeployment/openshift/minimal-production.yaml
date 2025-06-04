@@ -5,7 +5,7 @@ metadata:
 spec:
   flinkConfiguration:
     license.use: EventAutomationProduction
-    license.license: 'L-AUKS-FKVXVL'
+    license.license: 'L-CYBH-K48BZQ'
     license.accept: 'false'
     high-availability.type: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
     high-availability.storageDir: 'file:///opt/flink/volume/flink-ha'
