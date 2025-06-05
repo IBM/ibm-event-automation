@@ -27,7 +27,7 @@ services:
         jobmanager.rpc.address: sp-flink
       IBM_LICENSE_ACCEPT: "true"
       IBM_LICENSE_USE: "EventAutomationNonProduction"
-      IBM_LICENSE_LICENSE: "L-AUKS-FKVXVL"
+      IBM_LICENSE_LICENSE: "L-CYBH-K48BZQ"
     volumes:
       - type: bind
         source: ..
@@ -47,6 +47,6 @@ services:
         task.cancellation.timeout: 0
       IBM_LICENSE_ACCEPT: "true"
       IBM_LICENSE_USE: "EventAutomationNonProduction"
-      IBM_LICENSE_LICENSE: "L-AUKS-FKVXVL"
+      IBM_LICENSE_LICENSE: "L-CYBH-K48BZQ"
     deploy:
       replicas: 1

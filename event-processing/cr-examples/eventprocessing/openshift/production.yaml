@@ -5,7 +5,7 @@ metadata:
 spec:
   license:
     accept: false
-    license: 'L-AUKS-FKVXVL'
+    license: 'L-CYBH-K48BZQ'
     use: EventAutomationProduction
   flink:
     endpoint: session-cluster-prod-rest:8081
