@@ -12,7 +12,7 @@ spec:
   license:
     # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
-    license: "L-AUKS-FKVXVL"
+    license: "L-CYBH-K48BZQ"
     use: "EventAutomationProduction"
   adminApi:
     endpoints:
@@ -50,7 +50,6 @@ spec:
       authorization:
         type: simple
       config:
-        inter.broker.protocol.version: "3.9"
         log.cleaner.threads: 6
         num.io.threads: 24
         num.network.threads: 9
@@ -68,19 +67,7 @@ spec:
           configuration:
             bootstrap:
               host: <HOSTNAME/IP-ADDRESS>
-            brokers:
-              - broker: 0
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 1
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 2
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 3
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 4
-                host: <HOSTNAME/IP-ADDRESS>
-              - broker: 5
-                host: <HOSTNAME/IP-ADDRESS>
+            hostTemplate: broker-{nodeId}.<HOSTNAME/IP-ADDRESS>
             class: <INGRESS-CLASS>
         - name: tls
           port: 9093
@@ -94,25 +81,13 @@ spec:
           configMapKeyRef:
             key: kafka-metrics-config.yaml
             name: prod-6-brokers-metrics-config
-    zookeeper:
-      replicas: 3
-      metricsConfig:
-        type: jmxPrometheusExporter
-        valueFrom:
-          configMapKeyRef:
-            key: zookeeper-metrics-config.yaml
-            name: prod-6-brokers-metrics-config
-      storage:
-        type: persistent-claim
-        size: 4Gi
-        class: <STORAGE-CLASS>
     nodePools:
       - name: kafka
         replicas: 6
         storage:
           type: persistent-claim
           size: 2Gi
-          class: <STORAGE-CLASS>
+          class: ''
         roles:
           - broker
         resources:
@@ -122,4 +97,11 @@ spec:
           limits:
             memory: 8096Mi
             cpu: 2000m
-
+      - name: controller
+        replicas: 3
+        storage:
+          type: persistent-claim
+          size: 4Gi
+          class: ''
+        roles:
+          - controller

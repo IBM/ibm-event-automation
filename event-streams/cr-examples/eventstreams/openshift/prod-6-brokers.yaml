@@ -14,7 +14,7 @@ spec:
   license:
     # By installing this product you accept the license terms at https://ibm.biz/ea-license
     accept: false
-    license: "L-AUKS-FKVXVL"
+    license: "L-CYBH-K48BZQ"
     use: "EventAutomationProduction"
   adminApi: {}
   adminUI:
@@ -28,7 +28,6 @@ spec:
       authorization:
         type: simple
       config:
-        inter.broker.protocol.version: "3.9"
         log.cleaner.threads: 6
         num.io.threads: 24
         num.network.threads: 9
@@ -55,18 +54,6 @@ spec:
           configMapKeyRef:
             key: kafka-metrics-config.yaml
             name: prod-6-brokers-metrics-config
-    zookeeper:
-      replicas: 3
-      metricsConfig:
-        type: jmxPrometheusExporter
-        valueFrom:
-          configMapKeyRef:
-            key: zookeeper-metrics-config.yaml
-            name: prod-6-brokers-metrics-config
-      storage:
-        type: persistent-claim
-        size: 4Gi
-        class: ''
     nodePools:
       - name: kafka
         replicas: 6
@@ -83,3 +70,11 @@ spec:
           limits:
             memory: 8096Mi
             cpu: 2000m
+      - name: controller
+        replicas: 3
+        storage:
+          type: persistent-claim
+          size: 4Gi
+          class: ''
+        roles:
+          - controller
