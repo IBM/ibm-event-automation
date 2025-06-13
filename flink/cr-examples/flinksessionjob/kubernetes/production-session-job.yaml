@@ -1,0 +1,10 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkSessionJob
+metadata:
+  name: prod-session-job
+spec:
+  deploymentName: session-cluster-prod
+  job:
+    jarURI: '<URI of the job jar>'
+    parallelism: 1
+    upgradeMode: savepoint
