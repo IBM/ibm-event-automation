@@ -1,0 +1,10 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkSessionJob
+metadata:
+  name: quick-start-session-job
+spec:
+  deploymentName: session-cluster-quick-start
+  job:
+    jarURI: '<URI of the job jar>'
+    parallelism: 1
+    upgradeMode: stateless
