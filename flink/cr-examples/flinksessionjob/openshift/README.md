@@ -6,8 +6,8 @@ This directory hosts samples of the `flinksessionjob` custom resource.
 
 ### Samples Overview
 
-- [quick-start-session-job.yaml](./quick-start-session-job.yaml): This creates a flink session job in the [session-cluster-quick-start](../../flinkdeployment/kubernetes/quick-start.yaml) deployment.
+- [quick-start-session-job.yaml](./quick-start-session-job.yaml): This creates a flink session job in the [session-cluster-quick-start](../../flinkdeployment/openshift/quick-start.yaml) deployment.
 
-- [production-session-job.yaml](./production-session-job.yaml): This creates a flink session job in the [session-cluster-prod](../../flinkdeployment/kubernetes/production.yaml) deployment
+- [production-session-job.yaml](./production-session-job.yaml): This creates a flink session job in the [session-cluster-prod](../../flinkdeployment/openshift/production.yaml) deployment
 
-- [minimal-production-session-job.yaml](./minimal-production-session-job.yaml): This creates a flink session job in the [session-cluster-minimal-prod](../../flinkdeployment/kubernetes/minimal-production.yaml) deployment
+- [minimal-production-session-job.yaml](./minimal-production-session-job.yaml): This creates a flink session job in the [session-cluster-minimal-prod](../../flinkdeployment/openshift/minimal-production.yaml) deployment
