@@ -67,13 +67,7 @@ spec:
           configuration:
             bootstrap:
               host: <HOSTNAME>
-            brokers:
-              - broker: 0
-                host: <HOSTNAME>
-              - broker: 1
-                host: <HOSTNAME>
-              - broker: 2
-                host: <HOSTNAME>
+            hostTemplate: broker-{nodeId}.<HOSTNAME>
             class: <INGRESS-CLASS>
         - name: tls
           port: 9093

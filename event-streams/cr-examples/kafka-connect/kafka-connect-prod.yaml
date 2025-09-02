@@ -30,7 +30,7 @@ spec:
           productName: IBM Event Streams
           productVersion: EVENTSTREAMS_PRODUCT_VERSION
           productMetric: VIRTUAL_PROCESSOR_CORE
-          productChargedContainers: <ADD-NAME-OF-KAFKA-CONNECT-CR>-connect
+          productChargedContainers: "All"
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
           cloudpakName: IBM Cloud Pak for Integration
           productCloudpakRatio: "1:1"
