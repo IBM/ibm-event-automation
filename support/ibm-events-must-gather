@@ -18,7 +18,7 @@ function compactUsage() {
     echo "  --mustgather-namespace: Specify the namespace for mustgather pod."
     echo "  --image-pull-secret: Specify single image pull secret."
     echo "  --es-namespace: The namespace from which the eventstreams data is collected."
-    echo "  --eem-namespace: The namespace from which the eem data is collected."
+    echo "  --eem-namespace: The namespace from which the eem manager data is collected. EventGateway data will be collected cluster-wide."
     echo "  --ep-namespace: The namespace from which the eventprocessing data is collected."
     echo "  --flink-namespace: The namespace from which the flink data is collected."
 }
@@ -77,7 +77,7 @@ function usage() {
     echo "  If multiple products are being specified, then you MUST utilise the individual namespace flags for each module:"
     echo ""
     echo "    --es-namespace: the namespace from which the eventstreams data is collected."
-    echo "    --eem-namespace: the namespace from which the eem data is collected."
+    echo "    --eem-namespace: the namespace from which the eem manager data is collected. EventGateway data will be collected cluster-wide."
     echo "    --ep-namespace: the namespace from which the eventprocessing data is collected."
     echo "    --flink-namespace: the namespace from which the flink data is collected."
     echo ""
