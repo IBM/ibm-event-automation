@@ -15,7 +15,7 @@ Options:
   -m|--modules'': Define the data module that specifies what type of information is collected. For more information, see Available data modules.
   -n|--namespace'': Specify the namespace from which the data is collected.  If specifying more than one of eventstreams, eem, eventprocessing and flink modules, individual namespace flags must be used
   --es-namespace'': the namespace from which the eventstreams data is collected.
-  --eem-namespace'': the namespace from which the eem data is collected.
+  --eem-namespace'': the namespace from which the eem manager data is collected. EventGateway data will be collected cluster-wide.
   --ep-namespace'': the namespace from which the eventprocessing data is collected.
   --flink-namespace'': the namespace from which the flink data is collected.
   -h|--help: Display the help message.
@@ -38,7 +38,7 @@ Specifying namespaces:
   If multiple products are being specified, then you MUST utilise the individual namespace flags for each module:
 
     --es-namespace'': the namespace from which the eventstreams data is collected.
-    --eem-namespace'': the namespace from which the eem data is collected.
+    --eem-namespace'': the namespace from which the eem manager data is collected. EventGateway data will be collected cluster-wide.
     --ep-namespace'': the namespace from which the eventprocessing data is collected.
     --flink-namespace'': the namespace from which the flink data is collected.
 "
