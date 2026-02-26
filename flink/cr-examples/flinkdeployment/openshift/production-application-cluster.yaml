@@ -24,7 +24,8 @@ spec:
     execution.checkpointing.savepoint-dir: 'file:///opt/flink/volume/flink-sp'
     taskmanager.numberOfTaskSlots: '2'
     table.exec.source.idle-timeout: '30 s'
-    security.ssl.enabled: 'true'
+    security.ssl.rest.enabled: 'true'
+    security.ssl.internal.enabled: 'true'
     security.ssl.truststore: /opt/flink/tls-cert/truststore.jks
     security.ssl.truststore-password: <jks-password>
     security.ssl.keystore: /opt/flink/tls-cert/keystore.jks
