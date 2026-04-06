@@ -1,0 +1,74 @@
+###############################################################################
+#
+# © Copyright IBM Corp. 2020, 2023, 2026
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1beta2
+kind: KafkaConnect
+metadata:
+  annotations:
+    eventstreams.ibm.com/use-connector-resources: 'true'
+  name: connect-scram
+  namespace: es-sample
+  labels:
+    backup.eventstreams.ibm.com/component: kafkaconnect
+spec:
+  authentication:
+    passwordSecret:
+      password: password
+      secretName: <kafka-user-secret>
+    type: scram-sha-512
+    username: <kafka-user>
+  bootstrapServers: <bootstrapServers>
+  build:
+    output:
+      image: '<my-image-registry.my-kafka-connect-image:latest>'
+      pushSecret: <image-push-secret>
+      type: docker
+    plugins:
+      - artifacts:
+          - type: <artifact-type>
+            url: <artifact-url>
+        name: kafka-connect-plugin
+  config:
+    config.providers: 'file,env,directory'
+    config.providers.directory.class: org.apache.kafka.common.config.provider.DirectoryConfigProvider
+    config.providers.env.class: org.apache.kafka.common.config.provider.EnvVarConfigProvider
+    config.providers.file.class: org.apache.kafka.common.config.provider.FileConfigProvider
+    config.storage.topic: kafkaConnect-scram-configs
+    group.id: kafkaConnect-scram
+    offset.storage.topic: kafkaConnect-scram-offsets
+    status.storage.topic: kafkaConnect-scram-status
+  replicas: 1
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+  template:
+    connectContainer:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+    pod:
+      imagePullSecrets:
+        - name: <image-pull-secret>
+      metadata:
+        annotations:
+          cloudpakId: c8b82d189e7545f0892db9ef2731b90d
+          productVersion: 12.3.0
+          productID: 2cba508800504d0abfa48a0e2c4ecbe2
+          cloudpakName: IBM Cloud Pak for Integration
+          productChargedContainers: All
+          productCloudpakRatio: '1:1'
+          productName: IBM Event Streams
+          eventstreams.production.type: CloudPakForIntegrationProduction
+          productMetric: VIRTUAL_PROCESSOR_CORE
+  tls:
+    trustedCertificates:
+      - certificate: ca.crt
+        secretName: <event-streams-instance-name>-cluster-ca-cert
