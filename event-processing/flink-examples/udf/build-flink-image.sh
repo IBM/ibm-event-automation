@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2024 IBM Corp. All Rights Reserved.
+# Copyright 2024, 2026 IBM Corp. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,33 +18,33 @@ set -e
 
 function usage() {
   echo "Augments an IBM Flink image with the User-Defined Functions (UDF) JAR."
-  echo "Syntax: $(basename ${0}) <IBM_FLINK_IMAGE>"
+  echo "Syntax: $(basename "${0}") <IBM_FLINK_IMAGE>"
 }
 
-function udfJarName() {
-  local projectAbsolutePath=$(cd "$(dirname "$0")" && pwd)
-  local artifactId=$(mvn help:evaluate -Dexpression="project.artifactId" -q -DforceStdout -f "${projectAbsolutePath}/pom.xml")
-  local version=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout -f "${projectAbsolutePath}/pom.xml")
-  printf "%s-%s.jar" ${artifactId} ${version}
+function udfJar() {
+  local projectAbsolutePath="$1"
+  local artifactId
+  local version
+  artifactId="$(mvn help:evaluate -Dexpression="project.artifactId" -q -DforceStdout -f "${projectAbsolutePath}/pom.xml")"
+  version="$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout -f "${projectAbsolutePath}/pom.xml")"
+  printf "%s-%s.jar" "${artifactId}" "${version}"
 }
 
 function main() {
-  local projectAbsolutePath=$(cd "$(dirname "$0")" && pwd)
+  local ibmflinkImage=${1:?"Error: No IBM Flink image provided."}
+  local projectAbsolutePath
+  local udfJarName
+  local udfJarPath
 
-  local ibmflinkImage=${1}
-  if [ -z "${ibmflinkImage}" ]; then
-    echo >&2 "Error: No IBM Flink image provided."
-    usage
+  projectAbsolutePath="$(cd "$(dirname "$0")" && pwd)"
+  udfJarName="$(udfJar "${projectAbsolutePath}")"
+  udfJarPath="${projectAbsolutePath}/target/$udfJarName"
+  if [ ! -f "${udfJarPath}" ]; then
+    echo >&2 "Error: file ${udfJarPath} not found, build the Maven project first."
     exit 1
   fi
 
-  local udfJar="${projectAbsolutePath}/target/$(udfJarName)"
-  if [ ! -f "${udfJar}" ]; then
-    echo >&2 "Error: file ${udfJar} not found, build the Maven project first."
-    exit 1
-  fi
-
-  docker build ${projectAbsolutePath} -t flink-with-udf:latest --build-arg UDF_JAR="${udfJarName}" --build-arg FLINK_IMAGE="${ibmflinkImage}"
+  docker build "${projectAbsolutePath}" -t flink-with-udf:latest --build-arg UDF_JAR="${udfJarName}" --build-arg FLINK_IMAGE="${ibmflinkImage}"
 }
 
 main "$@"

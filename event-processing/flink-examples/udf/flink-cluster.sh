@@ -57,7 +57,7 @@ function main() {
         exit 1
       fi
       echo "Executing ${sqlFile}... (it might take a few minutes to complete)"
-      docker compose -f ${currentDir}/docker-compose/docker-compose.yaml exec sp-flink bash -c "/opt/flink/bin/sql-client.sh -f /var/host/${sqlFile}"
+      docker compose -f ${currentDir}/docker-compose/docker-compose.yaml exec sp-flink bash -c "/opt/flink/bin/sql-client.sh --jar /opt/flink/ibm-ep-job-dependencies/ibm-ep-job-dependencies.jar -f /var/host/${sqlFile}"
       ;;
      
     *)
