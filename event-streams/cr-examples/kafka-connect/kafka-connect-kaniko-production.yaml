@@ -1,4 +1,9 @@
-apiVersion: eventstreams.ibm.com/v1beta2
+###############################################################################
+#
+# © Copyright IBM Corp. 2026
+#
+###############################################################################
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaConnect
 metadata:
   name: prod
@@ -42,11 +47,11 @@ spec:
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
           cloudpakName: IBM Cloud Pak for Integration
           productCloudpakRatio: "1:1"
+  groupId: connect-cluster
+  offsetStorageTopic: connect-cluster-offsets
+  configStorageTopic: connect-cluster-configs
+  statusStorageTopic: connect-cluster-status
   config:
-    group.id: connect-cluster
-    offset.storage.topic: connect-cluster-offsets
-    config.storage.topic: connect-cluster-configs
-    status.storage.topic: connect-cluster-status
     config.storage.replication.factor: 3
     offset.storage.replication.factor: 3
     status.storage.replication.factor: 3

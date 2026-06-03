@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2024
+# © Copyright IBM Corp. 2024, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaConnector
 metadata:
   name: basic-connector

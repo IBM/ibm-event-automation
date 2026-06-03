@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2020, 2023
+# © Copyright IBM Corp. 2020, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaUser
 # This kafka user generates SCRAM-SHA-512 credentials for a producer application.
 # It grants permissions to produce to topic testtopic1 only.

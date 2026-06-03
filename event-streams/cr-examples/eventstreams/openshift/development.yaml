@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2020, 2023, 2024
+# © Copyright IBM Corp. 2020, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: EventStreams
 metadata:
   name: development

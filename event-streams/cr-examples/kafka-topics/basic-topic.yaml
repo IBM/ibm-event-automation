@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2023
+# © Copyright IBM Corp. 2023, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaTopic
 metadata:
   name: basic-topic

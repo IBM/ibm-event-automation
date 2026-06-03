@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2020, 2023, 2026
+# © Copyright IBM Corp. 2020, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaConnect
 metadata:
   annotations:
@@ -30,15 +30,15 @@ spec:
           - type: <artifact-type>
             url: <artifact-url>
         name: my-kafkaconnect-tls
+  groupId: kafkaConnect-tls
+  offsetStorageTopic: kafkaConnect-tls-offsets
+  configStorageTopic: kafkaConnect-tls-configs
+  statusStorageTopic: kafkaConnect-tls-status
   config:
     config.providers: 'file,env,directory'
     config.providers.directory.class: org.apache.kafka.common.config.provider.DirectoryConfigProvider
     config.providers.env.class: org.apache.kafka.common.config.provider.EnvVarConfigProvider
     config.providers.file.class: org.apache.kafka.common.config.provider.FileConfigProvider
-    config.storage.topic: kafkaConnect-tls-configs
-    group.id: kafkaConnect-tls
-    offset.storage.topic: kafkaConnect-tls-offsets
-    status.storage.topic: kafkaConnect-tls-status
   replicas: 1
   resources:
     limits:
