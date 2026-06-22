@@ -15,7 +15,7 @@ spec:
           eventstreams.production.type: CloudPakForIntegrationNonProduction
           productID: 2a79e49111f44ec3acd89608e56138f5
           productName: IBM Event Streams for Non Production
-          productVersion: EVENTSTREAMS_PRODUCT_VERSION
+          productVersion: <EVENTSTREAMS_PRODUCT_VERSION>
           productMetric: VIRTUAL_PROCESSOR_CORE
           productChargedContainers: "All"
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d

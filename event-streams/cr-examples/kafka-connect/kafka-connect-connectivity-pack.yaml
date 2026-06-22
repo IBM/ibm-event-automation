@@ -69,7 +69,7 @@ spec:
       metadata:
         annotations:
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
-          productVersion: 12.3.0
+          productVersion: <EVENTSTREAMS_PRODUCT_VERSION>
           productID: 2cba508800504d0abfa48a0e2c4ecbe2
           cloudpakName: IBM Cloud Pak for Integration
           productChargedContainers: All
