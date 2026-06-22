@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2020, 2023
+# © Copyright IBM Corp. 2020, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaMirrorMaker2
 metadata:
   name: non-prod
@@ -15,33 +15,32 @@ spec:
           eventstreams.production.type: CloudPakForIntegrationNonProduction
           productID: 2a79e49111f44ec3acd89608e56138f5
           productName: IBM Event Streams for Non Production
-          productVersion: EVENTSTREAMS_PRODUCT_VERSION
+          productVersion: <EVENTSTREAMS_PRODUCT_VERSION>
           productMetric: VIRTUAL_PROCESSOR_CORE
           productChargedContainers: "All"
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
           cloudpakName: IBM Cloud Pak for Integration
           productCloudpakRatio: "2:1"
-  connectCluster: "my-cluster-target"
-  clusters:
-    - alias: "my-cluster-source"
-      bootstrapServers: my-cluster-source-kafka-bootstrap:9092
-    - alias: "my-cluster-target"
-      bootstrapServers: my-cluster-target-kafka-bootstrap:9092
-      config:
-        config.storage.replication.factor: 1
-        offset.storage.replication.factor: 1
-        status.storage.replication.factor: 1
+  target:
+    alias: "my-cluster-target"
+    bootstrapServers: my-cluster-target-kafka-bootstrap:9092
+    groupId: connect-cluster
+    configStorageTopic: connect-cluster-configs
+    offsetStorageTopic: connect-cluster-offsets
+    statusStorageTopic: connect-cluster-status
+    config:
+      config.storage.replication.factor: 1
+      offset.storage.replication.factor: 1
+      status.storage.replication.factor: 1
   mirrors:
-    - sourceCluster: "my-cluster-source"
-      targetCluster: "my-cluster-target"
+    - source:
+        alias: "my-cluster-source"
+        bootstrapServers: my-cluster-source-kafka-bootstrap:9092
       sourceConnector:
         config:
           replication.factor: 1
           offset-syncs.topic.replication.factor: 1
           sync.topic.acls.enabled: "false"
-      heartbeatConnector:
-        config:
-          heartbeats.topic.replication.factor: 1
       checkpointConnector:
         config:
           checkpoints.topic.replication.factor: 1

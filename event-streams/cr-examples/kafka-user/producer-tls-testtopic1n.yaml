@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2020, 2023
+# © Copyright IBM Corp. 2020, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaUser
 # This kafka user generates Mutual TLS credentials for a producer application.
 # It grants permissions to produce to any topic prefixed with testtopic1 e.g. testtopic1, testtopic10, testtopic123 etc

@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2020, 2023
+# © Copyright IBM Corp. 2020, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaConnect
 metadata:
   name: connect-non-prod
@@ -28,7 +28,7 @@ spec:
           eventstreams.production.type: CloudPakForIntegrationNonProduction
           productID: 2a79e49111f44ec3acd89608e56138f5
           productName: IBM Event Streams for Non Production
-          productVersion: EVENTSTREAMS_PRODUCT_VERSION
+          productVersion: <EVENTSTREAMS_PRODUCT_VERSION>
           productMetric: VIRTUAL_PROCESSOR_CORE
           productChargedContainers: "All"
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
@@ -50,11 +50,11 @@ spec:
     trustedCertificates:
       - certificate: ca.crt
         # secretName: <eventstreams-instance>-cluster-ca-cert
-  config:
-    group.id: connect-cluster
-    offset.storage.topic: connect-cluster-offsets
-    config.storage.topic: connect-cluster-configs
-    status.storage.topic: connect-cluster-status
+  groupId: connect-cluster
+  offsetStorageTopic: connect-cluster-offsets
+  configStorageTopic: connect-cluster-configs
+  statusStorageTopic: connect-cluster-status
+  config: {}
   replicas: 1
   resources:
     requests:

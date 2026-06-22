@@ -1,9 +1,9 @@
 ###############################################################################
 #
-# © Copyright IBM Corp. 2020, 2023, 2026
+# © Copyright IBM Corp. 2020, 2026
 #
 ###############################################################################
-apiVersion: eventstreams.ibm.com/v1beta2
+apiVersion: eventstreams.ibm.com/v1
 kind: KafkaConnect
 metadata:
   annotations:
@@ -30,15 +30,15 @@ spec:
           - type: jar
             url: 'https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/eventstreams/connectors/connectivitypack/<connectivity-pack-version>/connectivity-pack-connector-<connectivity-pack-version>-jar-with-dependencies.jar'
         name: connectivity-pack-connector
+  groupId: connectivity-pack
+  offsetStorageTopic: connectivity-pack-offsets
+  configStorageTopic: connectivity-pack-configs
+  statusStorageTopic: connectivity-pack-status
   config:
     config.providers: 'file,env,directory'
     config.providers.directory.class: org.apache.kafka.common.config.provider.DirectoryConfigProvider
     config.providers.env.class: org.apache.kafka.common.config.provider.EnvVarConfigProvider
     config.providers.file.class: org.apache.kafka.common.config.provider.FileConfigProvider
-    config.storage.topic: connectivity-pack-configs
-    group.id: connectivity-pack
-    offset.storage.topic: connectivity-pack-offsets
-    status.storage.topic: connectivity-pack-status
   replicas: 1
   resources:
     limits:
@@ -69,7 +69,7 @@ spec:
       metadata:
         annotations:
           cloudpakId: c8b82d189e7545f0892db9ef2731b90d
-          productVersion: 12.3.0
+          productVersion: <EVENTSTREAMS_PRODUCT_VERSION>
           productID: 2cba508800504d0abfa48a0e2c4ecbe2
           cloudpakName: IBM Cloud Pak for Integration
           productChargedContainers: All
