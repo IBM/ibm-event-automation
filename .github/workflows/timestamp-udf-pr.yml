@@ -1,0 +1,32 @@
+name: Timestamp UDF PR validation
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - event-processing/timestamp-udf/**
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test-timestamp-udf:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+
+      - name: Build and test timestamp UDF module
+        working-directory: event-processing/timestamp-udf
+        run: mvn --batch-mode clean verify
