@@ -132,3 +132,4 @@ Notes:
 - Pushing the tag alone does not publish the jar.
 - The release workflow only runs for tags starting with `timestamp-udf-v`.
 - The jar is published as a GitHub Release asset, not to a Maven repository.
+  
