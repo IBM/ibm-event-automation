@@ -1,0 +1,57 @@
+apiVersion: cmf.confluent.io/v1
+kind: FlinkApplication
+metadata:
+  name: ${APP_NAME}
+spec:
+  image: ${APP_IMAGE}
+  imagePullPolicy: Always
+  flinkVersion: v2_1
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: '2'
+    table.exec.source.idle-timeout: '30 s'
+    execution.checkpointing.interval: '5000'
+    execution.checkpointing.unaligned.enabled: 'false'
+    state.backend.type: rocksdb
+    state.backend.rocksdb.thread.num: '10'
+    execution.checkpointing.incremental: 'true'
+    state.backend.rocksdb.use-bloom-filter: 'true'
+    execution.checkpointing.dir: 'file:///opt/flink/volume/flink-cp'
+    execution.checkpointing.num-retained: '3'
+    execution.checkpointing.savepoint-dir: 'file:///opt/flink/volume/flink-sp'
+  serviceAccount: flink
+  podTemplate:
+    spec:
+      containers:
+        - name: flink-main-container
+          volumeMounts:
+            - name: flink-volume
+              mountPath: /opt/flink/volume
+      volumes:
+        - name: flink-volume
+          persistentVolumeClaim:
+            claimName: ${PVC_NAME}
+  jobManager:
+    resource:
+      memory: '2048m'
+      cpu: 1
+    podTemplate:
+      spec:
+        containers:
+          - name: flink-main-container
+            imagePullPolicy: Always
+  taskManager:
+    resource:
+      memory: '2048m'
+      cpu: 2
+    podTemplate:
+      spec:
+        containers:
+          - name: flink-main-container
+            imagePullPolicy: Always
+  job:
+    jarURI: local:///opt/flink/usrlib/sql-runner.jar
+    args: ["/opt/flink/usrlib/sql-scripts/flow.sql"]
+    state: running
+    parallelism: 1
+    upgradeMode: ${UPGRADE_MODE}
+    initialSavepointPath: ${SAVEPOINT_PATH}
