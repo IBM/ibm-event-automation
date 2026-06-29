@@ -6,8 +6,6 @@ on:
       - opened
       - synchronize
       - reopened
-    paths:
-      - event-processing/timestamp-udf/**
 
 permissions:
   contents: read
@@ -19,8 +17,18 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for timestamp-udf changes
+        id: changes
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q '^event-processing/timestamp-udf/' \
+            && echo "relevant=true" >> "${GITHUB_OUTPUT}" \
+            || echo "relevant=false" >> "${GITHUB_OUTPUT}"
 
       - name: Set up Java
+        if: steps.changes.outputs.relevant == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -28,5 +36,6 @@ jobs:
           cache: maven
 
       - name: Build and test timestamp UDF module
+        if: steps.changes.outputs.relevant == 'true'
         working-directory: event-processing/timestamp-udf
         run: mvn --batch-mode clean verify
