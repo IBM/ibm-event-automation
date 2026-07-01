@@ -15,7 +15,7 @@ This directory contains the migration tools to migrate your Event Processing flo
 
 The second type, custom Java applications, are straightforward to migrate. Follow the steps in the Confluent Platform for Apache Flink [documentation](https://docs.confluent.io/cp-flink/current/overview.html) for more information.
 
-Further documentation is available on the Event Automation [site](https://ibm.github.io/event-automation/) in due course.
+Further information is available on the Event Automation [documentation](https://ibm.github.io/event-automation/).
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ To use these scripts, you need a macOS or Linux-based machine to run the scripts
 
 ## Procedure
 
-Follow the steps in the Event Processing documentation to migrate. The overview of the steps are as follows:
+Follow the steps in the [Event Processing documentation](https://ibm.github.io/event-automation/) to migrate. The overview of the steps are as follows:
 
 1. Repackage the application components (`Dockerfile`)
 2. Migrate application state (`copy-savepoint.sh`)
