@@ -1,8 +1,10 @@
-apiVersion: cmf.confluent.io/v1
+apiVersion: platform.confluent.io/v1beta1
 kind: FlinkApplication
 metadata:
   name: ${APP_NAME}
+  namespace: ${NAMESPACE}
 spec:
+  flinkEnvironment: ${FLINK_ENV}
   image: ${APP_IMAGE}
   imagePullPolicy: Always
   flinkVersion: v2_1
@@ -26,10 +28,17 @@ spec:
           volumeMounts:
             - name: flink-volume
               mountPath: /opt/flink/volume
+            - name: flow-volume
+              mountPath: /opt/flink/ibm-flow/flow.sql
+              subPath: flow.sql
+              readOnly: true
       volumes:
         - name: flink-volume
           persistentVolumeClaim:
             claimName: ${PVC_NAME}
+        - name: flow-volume
+          secret:
+            secretName: ${APP_NAME}
   jobManager:
     resource:
       memory: '2048m'
@@ -50,8 +59,11 @@ spec:
             imagePullPolicy: Always
   job:
     jarURI: local:///opt/flink/usrlib/sql-runner.jar
-    args: ["/opt/flink/usrlib/sql-scripts/flow.sql"]
+    args: ["/opt/flink/ibm-flow/flow.sql"]
     state: running
     parallelism: 1
     upgradeMode: ${UPGRADE_MODE}
     initialSavepointPath: ${SAVEPOINT_PATH}
+  cmfRestClassRef:
+    name: ${CMF_REST_CLASS}
+    namespace: ${CMF_REST_CLASS_NS}
