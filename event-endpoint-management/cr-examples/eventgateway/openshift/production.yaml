@@ -10,9 +10,20 @@ spec:
     license: 'L-CYBH-K48BZQ'
     metric: VIRTUAL_PROCESSOR_CORE
     use: EventAutomationProduction
-  managerEndpoint: https://<eem-manager-gateway-route>
-  maxNumKafkaBrokers: 20
+  manager:
+    endpoint: 'https://<eem-manager-server-endpoint>/gateway'
+    apiKey:
+      secretName: <apikey-secret-name>
+      key: apiKey
+  listeners:
+    - name: listener
+      port: 8092
+      tls:
+        caSecret:
+          secretName: <root-ca-secret-name>
+      groups:
+        - name: group
+          type: EXPLICIT
+          maxNumKafkaBrokers: 20
   gatewayGroupName: <gateway-group>
   gatewayID: <gateway-id>
-  tls:
-    caSecretName: <root-ca-secret-name>
