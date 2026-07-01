@@ -5,9 +5,9 @@
 #   ./deploy.sh [options]
 #
 # Options (all optional — omitted values are prompted interactively):
-#   --name                <name>       Application name (OpenShift resource name)
+#   --name                <name>       Application name (Kubernetes resource name)
 #   --image               <image>      Docker image, e.g. myregistry.io/flink-flow:v1
-#   --namespace           <namespace>  OpenShift namespace to deploy into
+#   --namespace           <namespace>  Kubernetes namespace to deploy into
 #   --flink-env           <env>        FlinkEnvironment CR name
 #   --pvc                 <pvc>        PersistentVolumeClaim name for Flink state storage
 #   --savepoint           <path>       Savepoint path for state migration (e.g. file:///opt/flink/...)
@@ -144,7 +144,7 @@ fi
 
 if [[ -z "$APP_NAME" ]]; then
   label "Application name"
-  hint "A short OpenShift resource name, e.g. 'customer-orders-flow'."
+  hint "A short Kubernetes resource name, e.g. 'customer-orders-flow'."
   hint "Must be unique within the namespace."
   APP_NAME=$(ask "Name")
   br
@@ -153,15 +153,15 @@ fi
 if [[ -z "$APP_IMAGE" ]]; then
   label "Image"
   hint "The image you built with the provided Dockerfile."
-  hint "Must be accessible from your OpenShift cluster, e.g. 'myregistry.io/flink-flow:v1'."
+  hint "Must be accessible from your Kubernetes cluster, e.g. 'myregistry.io/flink-flow:v1'."
   APP_IMAGE=$(ask "Image")
 fi
 
 if [[ -z "$NAMESPACE" ]]; then
-  header "OpenShift namespace"
+  header "Kubernetes namespace"
   br
   label "Namespace"
-  hint "The OpenShift namespace to deploy the FlinkApplication into."
+  hint "The Kubernetes namespace to deploy the FlinkApplication into."
   hint "List namespaces with: $KC get namespaces"
   NAMESPACE=$(ask "Namespace")
 fi
