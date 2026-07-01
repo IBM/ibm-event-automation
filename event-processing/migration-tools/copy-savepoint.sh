@@ -41,6 +41,7 @@ hint()    { echo "  ${yellow}$*${reset}"; }
 success() { echo "${green}$*${reset}"; }
 err()     { echo "${red}Error: $*${reset}" >&2; }
 br()      { echo ""; }
+kc()      { echo "  ${bold}+ $KC $*${reset}" >&2; $KC "$@"; }
 
 # =============================================================================
 # Detect kubectl vs oc
@@ -219,8 +220,8 @@ POD_SPEC_TEMPLATE='{
 cleanup() {
   br
   echo "Cleaning up temporary pods..."
-  $KC delete pod "$READER_POD" -n "$SRC_NAMESPACE" --ignore-not-found --wait=false 2>/dev/null || true
-  $KC delete pod "$WRITER_POD" -n "$DST_NAMESPACE" --ignore-not-found --wait=false 2>/dev/null || true
+  kc delete pod "$READER_POD" -n "$SRC_NAMESPACE" --ignore-not-found --wait=false 2>/dev/null || true
+  kc delete pod "$WRITER_POD" -n "$DST_NAMESPACE" --ignore-not-found --wait=false 2>/dev/null || true
   [[ -n "${LOCAL_TMPDIR:-}" && -d "$LOCAL_TMPDIR" ]] && rm -rf "$LOCAL_TMPDIR"
 }
 trap cleanup EXIT
@@ -228,7 +229,7 @@ trap cleanup EXIT
 wait_for_pod() {
   local pod="$1" ns="$2"
   echo "  Waiting for pod $pod to be ready..."
-  $KC wait pod "$pod" -n "$ns" --for=condition=Ready --timeout=120s
+  kc wait pod "$pod" -n "$ns" --for=condition=Ready --timeout=120s
 }
 
 # =============================================================================
@@ -238,7 +239,7 @@ header "Step 1 of 4 — Starting reader pod in $SRC_NAMESPACE"
 br
 
 READER_SPEC="${POD_SPEC_TEMPLATE/PVC_PLACEHOLDER/$SRC_PVC}"
-$KC run "$READER_POD" --image=busybox --restart=Never \
+kc run "$READER_POD" --image=busybox --restart=Never \
   --namespace="$SRC_NAMESPACE" \
   --overrides="$READER_SPEC" \
   -- sleep 3600
@@ -256,7 +257,7 @@ LOCAL_TMPDIR=$(mktemp -d)
 echo "  $SRC_NAMESPACE/$SRC_PVC:/data$SRC_PATH  →  $LOCAL_TMPDIR"
 
 # Use tar inside the pod — handles all paths including / cleanly
-$KC exec "$READER_POD" -n "$SRC_NAMESPACE" -- \
+kc exec "$READER_POD" -n "$SRC_NAMESPACE" -- \
   tar cf - -C "/data$SRC_PATH" . \
   | tar xf - -C "$LOCAL_TMPDIR" --no-same-owner
 
@@ -275,7 +276,7 @@ header "Step 3 of 4 — Starting writer pod in $DST_NAMESPACE"
 br
 
 WRITER_SPEC="${POD_SPEC_TEMPLATE/PVC_PLACEHOLDER/$DST_PVC}"
-$KC run "$WRITER_POD" --image=busybox --restart=Never \
+kc run "$WRITER_POD" --image=busybox --restart=Never \
   --namespace="$DST_NAMESPACE" \
   --overrides="$WRITER_SPEC" \
   -- sleep 3600
@@ -283,7 +284,7 @@ $KC run "$WRITER_POD" --image=busybox --restart=Never \
 wait_for_pod "$WRITER_POD" "$DST_NAMESPACE"
 
 # Ensure destination directory exists on the target PVC
-$KC exec "$WRITER_POD" -n "$DST_NAMESPACE" -- mkdir -p "/data$DST_PATH"
+kc exec "$WRITER_POD" -n "$DST_NAMESPACE" -- mkdir -p "/data$DST_PATH"
 
 # =============================================================================
 # Step 4: copy data from local disk to destination PVC
@@ -294,13 +295,13 @@ br
 echo "  $LOCAL_TMPDIR  →  $DST_NAMESPACE/$DST_PVC:/data$DST_PATH"
 
 tar cf - -C "$LOCAL_TMPDIR" . \
-  | $KC exec -i "$WRITER_POD" -n "$DST_NAMESPACE" -- \
+  | kc exec -i "$WRITER_POD" -n "$DST_NAMESPACE" -- \
       tar xf - -C "/data$DST_PATH" --no-same-owner
 
 # List every file now present at destination
 echo ""
 echo "  Files written to $DST_NAMESPACE/$DST_PVC:"
-$KC exec "$WRITER_POD" -n "$DST_NAMESPACE" -- \
+kc exec "$WRITER_POD" -n "$DST_NAMESPACE" -- \
   find "/data$DST_PATH" -type f | sort | while read -r f; do
   echo "    $f"
 done

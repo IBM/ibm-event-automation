@@ -1,35 +1,58 @@
 #!/usr/bin/env bash
-# deploy.sh — deploy a migrated IBM EP flow to Confluent Platform Flink
+# deploy.sh — deploy a migrated IBM EP flow to Confluent Platform for Apache Flink, using Confluent for Kubernetes
 #
 # Usage:
 #   ./deploy.sh [options]
 #
 # Options (all optional — omitted values are prompted interactively):
-#   --name        <name>       Application name (Kubernetes resource name)
-#   --image       <image>      Docker image, e.g. myregistry.io/flink-flow:v1
-#   --env         <env>        CMF environment name
-#   --pvc         <pvc>        PersistentVolumeClaim name for Flink state storage
-#   --savepoint   <path>       Savepoint path for state migration (e.g. file:///opt/flink/...)
-#                              Omit for a fresh deployment (no state restore).
-#   --dry-run                  Print the rendered YAML instead of submitting it.
+#   --name                <name>       Application name (Kubernetes resource name)
+#   --image               <image>      Docker image containing sql-runner.jar, e.g. myregistry.io/flink-runner:v1
+#   --sql                 <file>       Path to the exported flow.sql file
+#   --namespace           <namespace>  Kubernetes namespace to deploy into
+#   --flink-env           <env>        FlinkEnvironment CR name
+#   --pvc                 <pvc>        PersistentVolumeClaim name for Flink state storage
+#   --savepoint           <path>       Savepoint path for state migration (e.g. file:///opt/flink/...)
+#                                      Omit for a fresh deployment (no state restore).
+#   --cmfrestclass        <name>       CMFRestClass CR name (default: "default")
+#   --cmfrestclass-namespace <ns>      Namespace of the CMFRestClass CR (default: same as --namespace)
+#   --dry-run                          Print the rendered YAML instead of submitting it.
 #
 # Examples:
 #   # Interactive (prompts for all values):
 #   ./deploy.sh
 #
 #   # Fully non-interactive:
-#   ./deploy.sh --name my-flow --image myregistry.io/flink-flow:v1 --env test --pvc my-pvc
+#   ./deploy.sh --name my-flow --image myregistry.io/flink-runner:v1 \
+#     --sql ./flow.sql --namespace flink --flink-env my-env --pvc my-pvc
 #
 #   # With state migration:
-#   ./deploy.sh --name my-flow --image myregistry.io/flink-flow:v1 --env test --pvc my-pvc \
+#   ./deploy.sh --name my-flow --image myregistry.io/flink-runner:v1 \
+#     --sql ./flow.sql --namespace flink --flink-env my-env --pvc my-pvc \
 #     --savepoint file:///opt/flink/volume/flink-sp/savepoint-e574c6-638b6089cdd2
 #
-# Requires: confluent CLI, logged in and targeting the correct Kubernetes context.
+#   # With a non-default CMFRestClass in a different namespace:
+#   ./deploy.sh --name my-flow --image myregistry.io/flink-runner:v1 \
+#     --sql ./flow.sql --namespace flink --flink-env my-env --pvc my-pvc \
+#     --cmfrestclass my-class --cmfrestclass-namespace operator
+#
+# Requires: oc (preferred) or kubectl, logged in and targeting the correct cluster.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEMPLATE="$SCRIPT_DIR/FlinkApplication.yaml"
+
+# =============================================================================
+# Detect oc vs kubectl
+# =============================================================================
+if command -v oc &>/dev/null; then
+  KC=oc
+elif command -v kubectl &>/dev/null; then
+  KC=kubectl
+else
+  echo "Error: Neither 'oc' nor 'kubectl' found on PATH." >&2
+  exit 1
+fi
 
 # =============================================================================
 # Formatting
@@ -45,25 +68,34 @@ label()   { echo "${bold}$*${reset}"; }
 hint()    { echo "  ${yellow}$*${reset}"; }
 success() { echo "${green}$*${reset}"; }
 br()      { echo ""; }
+kc()      { echo "  ${bold}+ $KC $*${reset}" >&2; $KC "$@"; }
 
 # =============================================================================
 # Parse CLI flags
 # =============================================================================
 APP_NAME=""
 APP_IMAGE=""
-CMF_ENV=""
+SQL_FILE=""
+NAMESPACE=""
+FLINK_ENV=""
 PVC_NAME=""
 SAVEPOINT_PATH=""
+CMF_REST_CLASS=""
+CMF_REST_CLASS_NS=""
 DRY_RUN=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --name)       APP_NAME="$2";      shift 2 ;;
-    --image)      APP_IMAGE="$2";     shift 2 ;;
-    --env)        CMF_ENV="$2";       shift 2 ;;
-    --pvc)        PVC_NAME="$2";      shift 2 ;;
-    --savepoint)  SAVEPOINT_PATH="$2"; shift 2 ;;
-    --dry-run)    DRY_RUN=true;       shift   ;;
+    --name)                   APP_NAME="$2";          shift 2 ;;
+    --image)                  APP_IMAGE="$2";         shift 2 ;;
+    --sql)                    SQL_FILE="$2";          shift 2 ;;
+    --namespace)              NAMESPACE="$2";         shift 2 ;;
+    --flink-env)              FLINK_ENV="$2";         shift 2 ;;
+    --pvc)                    PVC_NAME="$2";          shift 2 ;;
+    --savepoint)              SAVEPOINT_PATH="$2";    shift 2 ;;
+    --cmfrestclass)           CMF_REST_CLASS="$2";    shift 2 ;;
+    --cmfrestclass-namespace) CMF_REST_CLASS_NS="$2"; shift 2 ;;
+    --dry-run)                DRY_RUN=true;           shift   ;;
     *) echo "Unknown option: $1" >&2; exit 1  ;;
   esac
 done
@@ -101,7 +133,7 @@ ask_yn() {
 # Collect any missing values interactively
 # =============================================================================
 interactive=false
-[[ -z "$APP_NAME" || -z "$APP_IMAGE" || -z "$CMF_ENV" || -z "$PVC_NAME" ]] && interactive=true
+[[ -z "$APP_NAME" || -z "$APP_IMAGE" || -z "$SQL_FILE" || -z "$NAMESPACE" || -z "$FLINK_ENV" || -z "$PVC_NAME" ]] && interactive=true
 
 if $interactive; then
   echo ""
@@ -124,17 +156,39 @@ fi
 
 if [[ -z "$APP_IMAGE" ]]; then
   label "Image"
-  hint "The image you built with the provided Dockerfile."
-  hint "Must be accessible from your Kubernetes cluster, e.g. 'myregistry.io/flink-flow:v1'."
+  hint "The common sql-runner image (does not contain the flow SQL)."
+  hint "Must be accessible from your Kubernetes cluster, e.g. 'myregistry.io/flink-runner:v1'."
   APP_IMAGE=$(ask "Image")
 fi
 
-if [[ -z "$CMF_ENV" ]]; then
-  header "CMF environment"
+if [[ -z "$SQL_FILE" ]]; then
+  header "Flow SQL"
   br
-  label "CMF environment name"
-  hint "List available environments with: confluent flink environment list"
-  CMF_ENV=$(ask "Environment name")
+  label "SQL file"
+  hint "Path to the flow.sql file exported from IBM Event Processing."
+  SQL_FILE=$(ask "SQL file path")
+fi
+
+if [[ ! -f "$SQL_FILE" ]]; then
+  echo "Error: SQL file not found: $SQL_FILE" >&2
+  exit 1
+fi
+
+if [[ -z "$NAMESPACE" ]]; then
+  header "Kubernetes namespace"
+  br
+  label "Namespace"
+  hint "The Kubernetes namespace to deploy the FlinkApplication into."
+  hint "List namespaces with: $KC get namespaces"
+  NAMESPACE=$(ask "Namespace")
+fi
+
+if [[ -z "$FLINK_ENV" ]]; then
+  header "Flink environment"
+  br
+  label "FlinkEnvironment CR name"
+  hint "List available environments with: $KC get flinkenvironment -A"
+  FLINK_ENV=$(ask "Flink environment name")
 fi
 
 if [[ -z "$PVC_NAME" ]]; then
@@ -175,12 +229,21 @@ fi
 # =============================================================================
 # Render template
 # =============================================================================
-export APP_NAME APP_IMAGE PVC_NAME UPGRADE_MODE SAVEPOINT_PATH
+# Apply defaults for optional CMFRestClass fields
+CMF_REST_CLASS="${CMF_REST_CLASS:-default}"
+CMF_REST_CLASS_NS="${CMF_REST_CLASS_NS:-}"
+
+export APP_NAME APP_IMAGE NAMESPACE FLINK_ENV PVC_NAME UPGRADE_MODE SAVEPOINT_PATH CMF_REST_CLASS CMF_REST_CLASS_NS
 
 rendered=$(envsubst < "$TEMPLATE")
 
 if [[ -z "$SAVEPOINT_PATH" ]]; then
   rendered=$(echo "$rendered" | grep -v '^\s*initialSavepointPath:')
+fi
+
+# Strip the cmfRestClassRef namespace line when using the default (same namespace)
+if [[ -z "$CMF_REST_CLASS_NS" ]]; then
+  rendered=$(echo "$rendered" | grep -v '^\s*namespace:\s*$')
 fi
 
 # =============================================================================
@@ -190,10 +253,13 @@ if $interactive || $DRY_RUN; then
   echo ""
   echo "────────────────────────────────────────────────────────"
   echo "${bold}Summary${reset}"
-  echo "  CMF environment  : ${bold}$CMF_ENV${reset}"
+  echo "  Namespace        : ${bold}$NAMESPACE${reset}"
+  echo "  Flink environment: ${bold}$FLINK_ENV${reset}"
   echo "  Application name : ${bold}$APP_NAME${reset}"
   echo "  Image            : ${bold}$APP_IMAGE${reset}"
+  echo "  SQL file         : ${bold}$SQL_FILE${reset}"
   echo "  PVC              : ${bold}$PVC_NAME${reset}"
+  echo "  CMFRestClass     : ${bold}${CMF_REST_CLASS:-default} (ns: ${CMF_REST_CLASS_NS:-$NAMESPACE})${reset}"
   if [[ -n "$SAVEPOINT_PATH" ]]; then
     echo "  Savepoint        : ${bold}$SAVEPOINT_PATH${reset}"
   else
@@ -221,15 +287,29 @@ fi
 # Submit
 # =============================================================================
 br
+echo "Creating flow SQL secret..."
+kc create secret generic "$APP_NAME" \
+  --from-file=flow.sql="$SQL_FILE" \
+  --namespace="$NAMESPACE" \
+  --dry-run=client -o yaml | kc apply -f -
+
+br
 echo "Submitting FlinkApplication..."
 
 tmpfile=$(mktemp /tmp/flink-application-XXXXXX.yaml)
 trap 'rm -f "$tmpfile"' EXIT
 echo "$rendered" > "$tmpfile"
 
-confluent --environment "$CMF_ENV" flink application create "$tmpfile"
+kc apply -f "$tmpfile"
+
+br
+echo "Setting ownerReference on secret (so it is deleted with the FlinkApplication)..."
+app_uid=$($KC get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}')
+kc patch secret "$APP_NAME" -n "$NAMESPACE" \
+  --type=json \
+  -p "[{\"op\":\"replace\",\"path\":\"/metadata/ownerReferences\",\"value\":[{\"apiVersion\":\"platform.confluent.io/v1beta1\",\"kind\":\"FlinkApplication\",\"name\":\"$APP_NAME\",\"uid\":\"$app_uid\",\"blockOwnerDeletion\":true,\"controller\":false}]}]"
 
 br
 success "Done."
 echo "Monitor your application with:"
-echo "  confluent --environment $CMF_ENV flink application describe $APP_NAME"
+echo "  $KC get flinkApplication $APP_NAME -n $NAMESPACE -o yaml"
