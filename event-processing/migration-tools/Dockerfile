@@ -1,9 +1,11 @@
 # Multi-stage Dockerfile for migrating IBM Event Automation flows to Confluent Platform Flink
-# This Dockerfile builds a custom image containing:
+# This Dockerfile builds a common runner image containing:
 # - Apache Flink SQL Runner (modified for Confluent dependencies)
 # - Confluent-supported connectors (Kafka, JDBC, File)
 # - Required dependencies (kafka-clients)
-# - Customer's flow.sql file
+#
+# The flow SQL is NOT baked into this image. Instead, supply it at deploy time
+# via deploy.sh --sql, which mounts it as a Kubernetes secret.
 
 # Build arguments for version control
 # CONFLUENT_FLINK_VERSION      — cp-flink Docker image tag (includes platform suffix)
@@ -18,9 +20,6 @@ ARG JDBC_DRIVER_VERSION=2.1.2-cp1
 ARG FILE_SINK_VERSION=2.1.2-cp1
 ARG APACHE_HTTP_CONNECTOR_VERSION=1.0.0-2.2
 ARG GETINDATA_HTTP_CONNECTOR_VERSION=0.12.0
-
-# REQUIRED: Customer must provide path to their flow.sql file
-ARG FLOW_SQL_PATH
 
 # =============================================================================
 # Stage 1: Build SQL Runner with Confluent Maven coordinates
@@ -150,38 +149,21 @@ COPY --from=dependency-fetcher /connectors/lib/*.jar /opt/flink/lib/
 COPY --from=dependency-fetcher /dependencies/lib/*.jar /opt/flink/lib/
 
 # =============================================================================
-# Customer-specific additions required below this line
-# =============================================================================
-
-# REQUIRED: Copy customer's flow.sql file
-# This is the SQL file exported from IBM Event Processing
-ARG FLOW_SQL_PATH
-RUN mkdir -p /opt/flink/usrlib/sql-scripts
-COPY ${FLOW_SQL_PATH} /opt/flink/usrlib/sql-scripts/flow.sql
-
-# =============================================================================
 # Build instructions
 # =============================================================================
-# REQUIRED: FLOW_SQL_PATH must be the path to a single .sql file, relative to
-# the Docker build context directory. It must NOT be a directory.
+# The flow SQL is supplied at deploy time, not at build time.
+# Build this image once and reuse it across all flows.
 #
-# Run docker build from the directory containing this Dockerfile, with the
-# .sql file also inside that directory (or a subdirectory of it):
-#
-#   cp /path/to/your/exported/flow.sql .
-#   docker build \
-#     --build-arg FLOW_SQL_PATH=flow.sql \
-#     -t your-registry/flink-migrated-app:latest .
+#   docker build -t your-registry/flink-runner:latest .
 #
 # To build with custom versions:
 #   docker build \
-#     --build-arg FLOW_SQL_PATH=flow.sql \
 #     --build-arg CONFLUENT_FLINK_VERSION=2.1.2-cp1-java11-amd64 \
 #     --build-arg CONFLUENT_FLINK_MAVEN_VERSION=2.1.2-cp1 \
 #     --build-arg KAFKA_CONNECTOR_VERSION=4.0.1-2.0-cp2 \
 #     --build-arg JDBC_DRIVER_VERSION=2.1.2-cp1 \
 #     --build-arg FILE_SINK_VERSION=2.1.2-cp1 \
-#     -t your-registry/flink-migrated-app:latest .
+#     -t your-registry/flink-runner:latest .
 #
 # After building, push to your registry:
-#   docker push your-registry/flink-migrated-app:latest
+#   docker push your-registry/flink-runner:latest
