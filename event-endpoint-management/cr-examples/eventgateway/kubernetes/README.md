@@ -14,13 +14,8 @@ To find out more about the samples see [the documentation](https://ibm.github.io
 
 ### Sample Overview
 - [production.yaml](production.yaml) : A sample yaml file for production environments.
-    - features:
-        - Manager endpoint and API key configuration
-        - Listener with TLS and explicit gateway group
-        - Custom max Kafka broker limit
 
 
 - [quick-start.yaml](quick-start.yaml) : A sample yaml file for development environments.
     - features:
-        - Listener with explicit gateway group
         - Custom CPU and Memory resource settings
