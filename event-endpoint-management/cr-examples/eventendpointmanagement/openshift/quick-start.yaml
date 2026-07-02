@@ -14,7 +14,8 @@ spec:
     authConfig:
       authType: LOCAL
     storage:
-      type: ephemeral
+      storageClassName: <storage-class>
+      type: persistent-claim
     template:
       pod:
         spec:

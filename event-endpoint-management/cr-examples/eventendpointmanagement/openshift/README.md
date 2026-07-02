@@ -22,6 +22,13 @@ To find out more about the samples see [the documentation](https://ibm.github.io
 - [quick-start.yaml](quick-start.yaml) : A sample yaml file for development environments.
     - features:
         - Local secret based auth configuration
+        - Persistent storage
+        - Custom CPU and Memory resource settings
+
+
+- [quick-start-with-ephemeral.yaml](quick-start-with-ephemeral.yaml) : A sample yaml file for development environments using ephemeral storage.
+    - features:
+        - Local secret based auth configuration
         - Ephemeral storage
         - Custom CPU and Memory resource settings
 
@@ -31,6 +38,14 @@ To find out more about the samples see [the documentation](https://ibm.github.io
         - Local secret based auth configuration
         - Ephemeral storage
         - APIC configuration options (mutual TLS disabled)
+
+
+- [production-with-APIC-Dev-Portal-integration.yaml](production-with-APIC-Dev-Portal-integration.yaml) : A sample yaml file for production environments with IBM API Connect Developer Portal integration.
+    - features:
+        - OIDC auth configuration template
+        - Customized TLS configuration including, root CA and UI certificate
+        - APIC Developer Portal integration
+        - Persistent storage
 
 
 - [usage-based-pricing.yaml](usage-based-pricing.yaml) : A sample yaml file highlighting configuration for usage based pricing license metrics.

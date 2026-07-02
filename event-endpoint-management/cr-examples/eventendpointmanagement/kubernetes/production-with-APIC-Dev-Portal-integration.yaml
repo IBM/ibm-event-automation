@@ -1,0 +1,49 @@
+apiVersion: events.ibm.com/v1beta1
+kind: EventEndpointManagement
+metadata:
+  name: apic-dev-portal-integration
+  labels:
+    backup.events.ibm.com/component: eventendpointmanagement
+spec:
+  license:
+    accept: false
+    license: 'L-CYBH-K48BZQ'
+    metric: VIRTUAL_PROCESSOR_CORE
+    use: EventAutomationProduction
+  manager:
+    apic:
+      developerPortal:
+        - organization: eem
+          endpoint: <APIC Developer Portal URL>
+          authentication:
+            key: <name of the key holding username:password>
+            secretName: <secret-name>
+    endpoints:
+      - name: ui
+        host: prod-eem-ui.<CLUSTER_HOST>
+      - name: gateway
+        host: prod-eem-gateway.<CLUSTER_HOST>
+      - name: admin
+        host: prod-eem-admin.<CLUSTER_HOST>
+      - name: server
+        host: eem.prod-eem-server.<CLUSTER_HOST>
+    authConfig:
+      authType: OIDC
+      oidcConfig:
+        clientIDKey: <client-id>
+        clientSecretKey: <client-secret>
+        discovery: true
+        secretName: <keycloak-oidc-secret>
+        site: 'https://<keycloak-route>/realms/<keycloak-realm>'
+    tls:
+      caSecretName: <custom-root-ca>
+      ui:
+        secretName: <custom-ui-cert>
+      trustedCertificates:
+        - certificate: <ca-key>
+          secretName: <keycloak-ca>
+        - certificate: ca.crt
+          secretName: <name of secret containing the ca.crt of your APIC Developer Portal instance>
+    storage:
+      storageClassName: <storage-class>
+      type: persistent-claim
