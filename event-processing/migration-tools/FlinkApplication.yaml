@@ -66,4 +66,4 @@ spec:
     initialSavepointPath: ${SAVEPOINT_PATH}
   cmfRestClassRef:
     name: ${CMF_REST_CLASS}
-    namespace: ${CMF_REST_CLASS_NS}
+    namespace: ${CMF_REST_CLASS_NS:-__OMIT__}

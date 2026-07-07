@@ -241,9 +241,9 @@ if [[ -z "$SAVEPOINT_PATH" ]]; then
   rendered=$(echo "$rendered" | grep -v '^\s*initialSavepointPath:')
 fi
 
-# Strip the cmfRestClassRef namespace line when using the default (same namespace)
+# Strip the cmfRestClassRef namespace line when not set (sentinel replaced by envsubst)
 if [[ -z "$CMF_REST_CLASS_NS" ]]; then
-  rendered=$(echo "$rendered" | grep -v '^\s*namespace:\s*$')
+  rendered=$(echo "$rendered" | grep -v '__OMIT__')
 fi
 
 # =============================================================================
@@ -259,7 +259,11 @@ if $interactive || $DRY_RUN; then
   echo "  Image            : ${bold}$APP_IMAGE${reset}"
   echo "  SQL file         : ${bold}$SQL_FILE${reset}"
   echo "  PVC              : ${bold}$PVC_NAME${reset}"
-  echo "  CMFRestClass     : ${bold}${CMF_REST_CLASS:-default} (ns: ${CMF_REST_CLASS_NS:-$NAMESPACE})${reset}"
+  if [[ -n "$CMF_REST_CLASS_NS" ]]; then
+    echo "  CMFRestClass     : ${bold}${CMF_REST_CLASS} (ns: ${CMF_REST_CLASS_NS})${reset}"
+  else
+    echo "  CMFRestClass     : ${bold}${CMF_REST_CLASS} (ns: same as deployment namespace)${reset}"
+  fi
   if [[ -n "$SAVEPOINT_PATH" ]]; then
     echo "  Savepoint        : ${bold}$SAVEPOINT_PATH${reset}"
   else
@@ -286,6 +290,7 @@ fi
 # =============================================================================
 # Submit
 # =============================================================================
+if ! $DRY_RUN; then
 br
 echo "Creating flow SQL secret..."
 kc create secret generic "$APP_NAME" \
@@ -304,7 +309,17 @@ kc apply -f "$tmpfile"
 
 br
 echo "Setting ownerReference on secret (so it is deleted with the FlinkApplication)..."
-app_uid=$($KC get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}')
+app_uid=""
+for i in 1 2 3 4 5; do
+  app_uid=$(kc get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>/dev/null || true)
+  [[ -n "$app_uid" ]] && break
+  echo "  Waiting for FlinkApplication to be admitted (attempt $i/5)..."
+  sleep 2
+done
+if [[ -z "$app_uid" ]]; then
+  echo "Error: could not retrieve UID for FlinkApplication '$APP_NAME' after 5 attempts." >&2
+  exit 1
+fi
 kc patch secret "$APP_NAME" -n "$NAMESPACE" \
   --type=json \
   -p "[{\"op\":\"replace\",\"path\":\"/metadata/ownerReferences\",\"value\":[{\"apiVersion\":\"platform.confluent.io/v1beta1\",\"kind\":\"FlinkApplication\",\"name\":\"$APP_NAME\",\"uid\":\"$app_uid\",\"blockOwnerDeletion\":true,\"controller\":false}]}]"
@@ -313,3 +328,4 @@ br
 success "Done."
 echo "Monitor your application with:"
 echo "  $KC get flinkApplication $APP_NAME -n $NAMESPACE -o yaml"
+fi

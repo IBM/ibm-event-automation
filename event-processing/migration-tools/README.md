@@ -18,7 +18,6 @@ These tools will be supported by further documentation on the Event Automation [
 
 To use these scripts you will need a MacOS or Linux-based machine to run the scripts on, plus
 - `docker` (Docker Desktop, Rancher, podman or equivalent)
-- The `confluent` CLI
 - `kubectl` or `oc`
 - Access to the Kubernetes cluster or clusters hosting your Event Processing and Confluent Platform Flink for Apache Flink installations
 - Confluent Manager for Apache Flink (CMF) installed on the target cluster
