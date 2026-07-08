@@ -235,6 +235,10 @@ CMF_REST_CLASS_NS="${CMF_REST_CLASS_NS:-}"
 
 export APP_NAME APP_IMAGE NAMESPACE FLINK_ENV PVC_NAME UPGRADE_MODE SAVEPOINT_PATH CMF_REST_CLASS CMF_REST_CLASS_NS
 
+if [[ ! -f "$TEMPLATE" ]]; then
+  echo "Error: template not found: $TEMPLATE" >&2
+  exit 1
+fi
 rendered=$(envsubst < "$TEMPLATE")
 
 if [[ -z "$SAVEPOINT_PATH" ]]; then
@@ -291,41 +295,52 @@ fi
 # Submit
 # =============================================================================
 if ! $DRY_RUN; then
-br
-echo "Creating flow SQL secret..."
-kc create secret generic "$APP_NAME" \
-  --from-file=flow.sql="$SQL_FILE" \
-  --namespace="$NAMESPACE" \
-  --dry-run=client -o yaml | kc apply -f -
+  br
+  echo "Creating flow SQL secret..."
+  secret_yaml=$(kc create secret generic "$APP_NAME" \
+    --from-file=flow.sql="$SQL_FILE" \
+    --namespace="$NAMESPACE" \
+    --dry-run=client -o yaml)
+  echo "$secret_yaml" | kc apply -f -
 
-br
-echo "Submitting FlinkApplication..."
+  br
+  echo "Submitting FlinkApplication..."
 
-tmpfile=$(mktemp /tmp/flink-application-XXXXXX.yaml)
-trap 'rm -f "$tmpfile"' EXIT
-echo "$rendered" > "$tmpfile"
+  tmpfile=$(mktemp /tmp/flink-application-XXXXXX.yaml)
+  trap 'rm -f "$tmpfile"' EXIT
+  echo "$rendered" > "$tmpfile"
 
-kc apply -f "$tmpfile"
+  kc apply -f "$tmpfile"
 
-br
-echo "Setting ownerReference on secret (so it is deleted with the FlinkApplication)..."
-app_uid=""
-for i in 1 2 3 4 5; do
-  app_uid=$(kc get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>/dev/null || true)
-  [[ -n "$app_uid" ]] && break
-  echo "  Waiting for FlinkApplication to be admitted (attempt $i/5)..."
-  sleep 2
-done
-if [[ -z "$app_uid" ]]; then
-  echo "Error: could not retrieve UID for FlinkApplication '$APP_NAME' after 5 attempts." >&2
-  exit 1
-fi
-kc patch secret "$APP_NAME" -n "$NAMESPACE" \
-  --type=json \
-  -p "[{\"op\":\"replace\",\"path\":\"/metadata/ownerReferences\",\"value\":[{\"apiVersion\":\"platform.confluent.io/v1beta1\",\"kind\":\"FlinkApplication\",\"name\":\"$APP_NAME\",\"uid\":\"$app_uid\",\"blockOwnerDeletion\":true,\"controller\":false}]}]"
+  br
+  echo "Setting ownerReference on secret (so it is deleted with the FlinkApplication)..."
+  app_uid=""
+  for i in 1 2 3 4 5; do
+    kc_err=$(kc get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>&1 1>/dev/null || true)
+    if [[ -n "$kc_err" ]]; then
+      if echo "$kc_err" | grep -qi "not found"; then
+        echo "  Waiting for FlinkApplication to be admitted (attempt $i/5)..."
+        sleep 2
+        continue
+      else
+        echo "Error: unexpected error retrieving FlinkApplication '$APP_NAME': $kc_err" >&2
+        exit 1
+      fi
+    fi
+    app_uid=$(kc get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}')
+    [[ -n "$app_uid" ]] && break
+    sleep 2
+  done
+  if [[ -z "$app_uid" ]]; then
+    echo "Error: could not retrieve UID for FlinkApplication '$APP_NAME' after 5 attempts." >&2
+    exit 1
+  fi
+  kc patch secret "$APP_NAME" -n "$NAMESPACE" \
+    --type=json \
+    -p "[{\"op\":\"replace\",\"path\":\"/metadata/ownerReferences\",\"value\":[{\"apiVersion\":\"platform.confluent.io/v1beta1\",\"kind\":\"FlinkApplication\",\"name\":\"$APP_NAME\",\"uid\":\"$app_uid\",\"blockOwnerDeletion\":true,\"controller\":false}]}]"
 
-br
-success "Done."
-echo "Monitor your application with:"
-echo "  $KC get flinkApplication $APP_NAME -n $NAMESPACE -o yaml"
+  br
+  success "Done."
+  echo "Monitor your application with:"
+  echo "  $KC get flinkApplication $APP_NAME -n $NAMESPACE -o yaml"
 fi
