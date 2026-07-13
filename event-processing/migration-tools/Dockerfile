@@ -129,7 +129,7 @@ RUN mkdir -p /dependencies/lib && \
     cp ~/.m2/repository/org/apache/kafka/kafka-clients/${KAFKA_CLIENTS_VERSION}/kafka-clients-${KAFKA_CLIENTS_VERSION}.jar /dependencies/lib/
 
 # Download IBM Event Processing UDF jar (contains TO_TIMESTAMP_LTZ and Deduplication PTF)
-RUN curl -L -o /dependencies/lib/ibm-ep-udf.jar \
+RUN curl --fail -L -o /dependencies/lib/ibm-ep-udf.jar \
     https://github.com/IBM/ibm-event-automation/releases/download/timestamp-udf-v1.0.0/ibm-ep-udf.jar
 
 # =============================================================================

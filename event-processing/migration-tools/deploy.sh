@@ -316,7 +316,9 @@ if ! $DRY_RUN; then
   echo "Setting ownerReference on secret (so it is deleted with the FlinkApplication)..."
   app_uid=""
   for i in 1 2 3 4 5; do
-    kc_err=$(kc get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>&1 1>/dev/null || true)
+    echo "  ${bold}+ $KC get flinkApplication $APP_NAME -n $NAMESPACE -o jsonpath='{.metadata.uid}'${reset}" >&2
+    app_uid=$($KC get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>/tmp/kc_err_$$ || true)
+    kc_err=$(cat /tmp/kc_err_$$ 2>/dev/null || true); rm -f /tmp/kc_err_$$
     if [[ -n "$kc_err" ]]; then
       if echo "$kc_err" | grep -qi "not found"; then
         echo "  Waiting for FlinkApplication to be admitted (attempt $i/5)..."
@@ -327,7 +329,6 @@ if ! $DRY_RUN; then
         exit 1
       fi
     fi
-    app_uid=$(kc get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}')
     [[ -n "$app_uid" ]] && break
     sleep 2
   done
@@ -336,8 +337,8 @@ if ! $DRY_RUN; then
     exit 1
   fi
   kc patch secret "$APP_NAME" -n "$NAMESPACE" \
-    --type=json \
-    -p "[{\"op\":\"replace\",\"path\":\"/metadata/ownerReferences\",\"value\":[{\"apiVersion\":\"platform.confluent.io/v1beta1\",\"kind\":\"FlinkApplication\",\"name\":\"$APP_NAME\",\"uid\":\"$app_uid\",\"blockOwnerDeletion\":true,\"controller\":false}]}]"
+    --type=merge \
+    -p "{\"metadata\":{\"ownerReferences\":[{\"apiVersion\":\"platform.confluent.io/v1beta1\",\"kind\":\"FlinkApplication\",\"name\":\"$APP_NAME\",\"uid\":\"$app_uid\",\"blockOwnerDeletion\":true,\"controller\":false}]}}"
 
   br
   success "Done."
