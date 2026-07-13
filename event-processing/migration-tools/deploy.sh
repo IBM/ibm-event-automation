@@ -335,15 +335,21 @@ br
 echo "Setting ownerReference on secret..."
 app_uid=""
 for i in 1 2 3 4 5; do
-  app_uid=$(kc get flinkapplication.platform.confluent.io "$APP_NAME" \
-    -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>&1) || app_uid=""
-  if echo "$app_uid" | grep -qi -e "not found" -e "no resources found"; then
+  # Use $KC directly (not via kc()) so that only stdout is captured into app_uid.
+  # kc() echoes its own log line to stderr; with 2>&1 that line would corrupt the UID.
+  # Redirect stderr to a temp file so we can inspect it separately.
+  echo "  ${bold}+ $KC get flinkapplication.platform.confluent.io/$APP_NAME -n $NAMESPACE -o jsonpath='{.metadata.uid}'${reset}" >&2
+  _kc_err_file=$(mktemp)
+  app_uid=$($KC get flinkapplication.platform.confluent.io/"$APP_NAME" \
+    -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>"$_kc_err_file") || true
+  _kc_err=$(cat "$_kc_err_file"); rm -f "$_kc_err_file"
+  if echo "$_kc_err" | grep -qi -e "not found" -e "no resources found"; then
     echo "  Waiting for FlinkApplication to be admitted (attempt $i/5)..."
     app_uid=""
     sleep 2
     continue
-  elif echo "$app_uid" | grep -qi -e "error" -e "unable" -e "couldn't" -e "failed"; then
-    echo "Error: unexpected error retrieving FlinkApplication '$APP_NAME': $app_uid" >&2
+  elif [[ -n "$_kc_err" ]]; then
+    echo "Error: unexpected error retrieving FlinkApplication '$APP_NAME': $_kc_err" >&2
     exit 1
   fi
   [[ -n "$app_uid" ]] && break

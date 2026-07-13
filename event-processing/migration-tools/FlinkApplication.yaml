@@ -20,6 +20,8 @@ spec:
     execution.checkpointing.dir: 'file:///opt/flink/volume/flink-cp'
     execution.checkpointing.num-retained: '3'
     execution.checkpointing.savepoint-dir: 'file:///opt/flink/volume/flink-sp'
+  # The 'flink' service account is created by the CFK operator by default.
+  # Change this if your cluster uses a different name.
   serviceAccount: flink
   podTemplate:
     spec:

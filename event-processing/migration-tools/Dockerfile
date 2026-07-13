@@ -13,6 +13,8 @@
 #                                 (no platform suffix; must match the image's Flink release)
 ARG CONFLUENT_FLINK_VERSION=2.1.2-cp1-java11-amd64
 ARG CONFLUENT_FLINK_MAVEN_VERSION=2.1.2-cp1
+# FLINK_OPERATOR_VERSION pins the git branch/tag of apache/flink-kubernetes-operator used to
+# build the SQL runner. "main" is a mutable ref; pin to a specific tag for reproducible builds.
 ARG FLINK_OPERATOR_VERSION=main
 ARG KAFKA_CONNECTOR_VERSION=4.0.1-2.0-cp2
 ARG KAFKA_CLIENTS_VERSION=3.9.1
@@ -124,9 +126,9 @@ RUN mkdir -p /connectors/lib \
  && cp ~/.m2/repository/org/apache/flink/flink-sql-connector-http/${APACHE_HTTP_CONNECTOR_VERSION}/flink-sql-connector-http-${APACHE_HTTP_CONNECTOR_VERSION}.jar   /connectors/lib/ \
  && cp ~/.m2/repository/com/getindata/flink-http-connector/${GETINDATA_HTTP_CONNECTOR_VERSION}/flink-http-connector-${GETINDATA_HTTP_CONNECTOR_VERSION}.jar        /connectors/lib/
 
-# Copy other dependencies (non-connector libraries) to /dependencies/lib
-RUN mkdir -p /dependencies/lib && \
-    cp ~/.m2/repository/org/apache/kafka/kafka-clients/${KAFKA_CLIENTS_VERSION}/kafka-clients-${KAFKA_CLIENTS_VERSION}.jar /dependencies/lib/
+# Collect remaining dependencies (non-connector libraries) into /dependencies/lib
+RUN mkdir -p /dependencies/lib \
+ && cp ~/.m2/repository/org/apache/kafka/kafka-clients/${KAFKA_CLIENTS_VERSION}/kafka-clients-${KAFKA_CLIENTS_VERSION}.jar /dependencies/lib/
 
 # Download IBM Event Processing UDF jar (contains TO_TIMESTAMP_LTZ and Deduplication PTF)
 RUN curl --fail -L -o /dependencies/lib/ibm-ep-udf.jar \

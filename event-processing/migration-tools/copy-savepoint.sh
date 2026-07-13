@@ -21,7 +21,7 @@
 #     --src-namespace event-automation --src-pvc basic-datagen --src-path /flink-sp \
 #     --dst-namespace confluent        --dst-pvc flink-state
 #
-# Requires: kubectl (or oc), and sufficient local disk for a temporary copy of the data. 
+# Requires: kubectl (or oc), and sufficient local disk for a temporary copy of the data.
 
 set -euo pipefail
 
