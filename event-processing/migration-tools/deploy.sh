@@ -243,7 +243,7 @@ fi
 # Strip the namespace line from the template before substitution when not set,
 # so the cmfRestClassRef block is emitted without a namespace field.
 if [[ -z "$CMF_REST_CLASS_NS" ]]; then
-  rendered=$(grep -v '^\s*namespace: \${CMF_REST_CLASS_NS}' "$TEMPLATE" | envsubst)
+  rendered=$(grep -v '^[[:space:]]*namespace: \${CMF_REST_CLASS_NS}' "$TEMPLATE" | envsubst)
 else
   rendered=$(envsubst < "$TEMPLATE")
 fi

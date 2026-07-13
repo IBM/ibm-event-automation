@@ -17,9 +17,11 @@ These tools will be supported by further documentation on the Event Automation [
 ## Prerequisites
 
 To use these scripts you will need a macOS or Linux machine, plus
-- `docker` (Docker Desktop, Rancher, podman or equivalent)
+
+- `docker` (Docker Desktop, Rancher, podman or equivalent) — needed for step 1 only
 - `kubectl` or `oc`
-- Access to the Kubernetes cluster or clusters hosting your Event Processing and Confluent Platform Flink for Apache Flink installations
+- `envsubst` (part of `gettext`, pre-installed on macOS and most Linux distributions)
+- Access to the Kubernetes cluster or clusters hosting your Event Processing and Confluent Platform Flink installations
 - Confluent Manager for Apache Flink (CMF) installed on the target cluster
 
 ## Purpose and process

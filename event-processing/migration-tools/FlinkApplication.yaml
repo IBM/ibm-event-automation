@@ -11,7 +11,7 @@ spec:
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: '2'
     table.exec.source.idle-timeout: '30 s'
-    execution.checkpointing.interval: '5000'
+    execution.checkpointing.interval: '5000'     # milliseconds
     execution.checkpointing.unaligned.enabled: 'false'
     state.backend.type: rocksdb
     state.backend.rocksdb.thread.num: '10'
