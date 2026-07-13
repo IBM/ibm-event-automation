@@ -2,7 +2,7 @@
 
 ## Introduction
 
-IBM [announced](https://www.ibm.com/docs/en/announcements/withdrawl-event-automation) the Support lifecycle transition and software ordering completion for IBM Event Automation on June 9th 2026  stating that
+IBM [announced](https://www.ibm.com/docs/en/announcements/withdrawl-event-automation) the Support lifecycle transition and software ordering completion for IBM Event Automation on June 9th 2026, stating that
 
 > IBM intends to provide migration tools, services and entitlement flexibility to assist with migrating Event Streams and Event Processing deployments to IBM Confluent Platform.
 
@@ -10,13 +10,13 @@ This directory contains the migration tools mentioned above. Event Processing (E
 - by creating flows in the EP low-code visual editor
 - by creating new Java applications written directly to Flink’s Datastream and Table APIs
 
-These tools exist to support migration of the first type of application - EP flows. The second type, custom Java applications, are straightforward to migrate: please refer directly to the Confluent Platform for Apache Flink [documentation](https://docs.confluent.io/cp-flink/current/overview.html)  for more information. 
+These tools exist to support migration of the first type of application — EP flows. The second type, custom Java applications, are straightforward to migrate: please refer directly to the Confluent Platform for Apache Flink [documentation](https://docs.confluent.io/cp-flink/current/overview.html) for more information.
 
-These tools will be supported by further documentation on the Event Automation [site](https://ibm.github.io/event-automation/) in due course. 
+These tools will be supported by further documentation on the Event Automation [site](https://ibm.github.io/event-automation/) in due course.
 
 ## Prerequisites
 
-To use these scripts you will need a MacOS or Linux-based machine to run the scripts on, plus
+To use these scripts you will need a macOS or Linux machine, plus
 - `docker` (Docker Desktop, Rancher, podman or equivalent)
 - `kubectl` or `oc`
 - Access to the Kubernetes cluster or clusters hosting your Event Processing and Confluent Platform Flink for Apache Flink installations

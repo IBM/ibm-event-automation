@@ -80,8 +80,8 @@ ARG GETINDATA_HTTP_CONNECTOR_VERSION
 
 WORKDIR /connectors
 
-# Here we download all the connectors typically used by Event Processing flows. Your particular flow may require only a subset of these:
-# you should feel free to remove any dependencies that you do not need.
+# The connectors below cover all types of source and sink used by Event Processing flows.
+# Your particular flow may only need a subset — feel free to remove what you do not use.
 
 # Fetch Confluent Kafka connector
 RUN mvn dependency:get \
@@ -116,13 +116,13 @@ RUN mvn dependency:get \
     -Dartifact=com.getindata:flink-http-connector:${GETINDATA_HTTP_CONNECTOR_VERSION} \
     -Dtransitive=false
 
-# Copy connector jars to /connectors/lib
-RUN mkdir -p /connectors/lib && \
-    cp ~/.m2/repository/io/confluent/flink/flink-connector-kafka/${KAFKA_CONNECTOR_VERSION}/flink-connector-kafka-${KAFKA_CONNECTOR_VERSION}.jar /connectors/lib/ && \
-    cp ~/.m2/repository/io/confluent/flink/flink-sql-jdbc-driver-bundle/${JDBC_DRIVER_VERSION}/flink-sql-jdbc-driver-bundle-${JDBC_DRIVER_VERSION}.jar /connectors/lib/ && \
-    cp ~/.m2/repository/io/confluent/flink/flink-file-sink-common/${FILE_SINK_VERSION}/flink-file-sink-common-${FILE_SINK_VERSION}.jar /connectors/lib/ && \
-    cp ~/.m2/repository/org/apache/flink/flink-sql-connector-http/${APACHE_HTTP_CONNECTOR_VERSION}/flink-sql-connector-http-${APACHE_HTTP_CONNECTOR_VERSION}.jar /connectors/lib/ && \
-    cp ~/.m2/repository/com/getindata/flink-http-connector/${GETINDATA_HTTP_CONNECTOR_VERSION}/flink-http-connector-${GETINDATA_HTTP_CONNECTOR_VERSION}.jar /connectors/lib/
+# Collect connector jars into /connectors/lib
+RUN mkdir -p /connectors/lib \
+ && cp ~/.m2/repository/io/confluent/flink/flink-connector-kafka/${KAFKA_CONNECTOR_VERSION}/flink-connector-kafka-${KAFKA_CONNECTOR_VERSION}.jar                   /connectors/lib/ \
+ && cp ~/.m2/repository/io/confluent/flink/flink-sql-jdbc-driver-bundle/${JDBC_DRIVER_VERSION}/flink-sql-jdbc-driver-bundle-${JDBC_DRIVER_VERSION}.jar             /connectors/lib/ \
+ && cp ~/.m2/repository/io/confluent/flink/flink-file-sink-common/${FILE_SINK_VERSION}/flink-file-sink-common-${FILE_SINK_VERSION}.jar                             /connectors/lib/ \
+ && cp ~/.m2/repository/org/apache/flink/flink-sql-connector-http/${APACHE_HTTP_CONNECTOR_VERSION}/flink-sql-connector-http-${APACHE_HTTP_CONNECTOR_VERSION}.jar   /connectors/lib/ \
+ && cp ~/.m2/repository/com/getindata/flink-http-connector/${GETINDATA_HTTP_CONNECTOR_VERSION}/flink-http-connector-${GETINDATA_HTTP_CONNECTOR_VERSION}.jar        /connectors/lib/
 
 # Copy other dependencies (non-connector libraries) to /dependencies/lib
 RUN mkdir -p /dependencies/lib && \

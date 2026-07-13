@@ -41,7 +41,7 @@ hint()    { echo "  ${yellow}$*${reset}"; }
 success() { echo "${green}$*${reset}"; }
 err()     { echo "${red}Error: $*${reset}" >&2; }
 br()      { echo ""; }
-kc()      { echo "  ${bold}+ $KC $*${reset}" >&2; $KC "$@"; }
+kc()      { echo "  ${bold}+ $KC $(printf '%q ' "$@" | sed 's/ $//')${reset}" >&2; $KC "$@"; }
 
 # =============================================================================
 # Detect kubectl vs oc
@@ -220,8 +220,8 @@ POD_SPEC_TEMPLATE='{
 cleanup() {
   br
   echo "Cleaning up temporary pods..."
-  kc delete pod "$READER_POD" -n "$SRC_NAMESPACE" --ignore-not-found --wait=false 2>/dev/null || true
-  kc delete pod "$WRITER_POD" -n "$DST_NAMESPACE" --ignore-not-found --wait=false 2>/dev/null || true
+  kc delete pod "$READER_POD" -n "$SRC_NAMESPACE" --ignore-not-found --wait=false || true
+  kc delete pod "$WRITER_POD" -n "$DST_NAMESPACE" --ignore-not-found --wait=false || true
   [[ -n "${LOCAL_TMPDIR:-}" && -d "$LOCAL_TMPDIR" ]] && rm -rf "$LOCAL_TMPDIR"
 }
 trap cleanup EXIT
@@ -256,7 +256,8 @@ LOCAL_TMPDIR=$(mktemp -d)
 
 echo "  $SRC_NAMESPACE/$SRC_PVC:/data$SRC_PATH  →  $LOCAL_TMPDIR"
 
-# Use tar inside the pod — handles all paths including / cleanly
+# Stream a tar archive out of the pod and extract it locally.
+# kc() writes its log line to stderr, so the stdout pipe carries only tar data.
 kc exec "$READER_POD" -n "$SRC_NAMESPACE" -- \
   tar cf - -C "/data$SRC_PATH" . \
   | tar xf - -C "$LOCAL_TMPDIR" --no-same-owner
