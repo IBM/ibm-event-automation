@@ -68,7 +68,7 @@ label()   { echo "${bold}$*${reset}"; }
 hint()    { echo "  ${yellow}$*${reset}"; }
 success() { echo "${green}$*${reset}"; }
 br()      { echo ""; }
-kc()      { echo "  ${bold}+ $KC $*${reset}" >&2; $KC "$@"; }
+kc()      { echo "  ${bold}+ $KC $(printf '%q ' "$@")${reset}" >&2; $KC "$@"; }
 
 # =============================================================================
 # Parse CLI flags
@@ -239,15 +239,18 @@ if [[ ! -f "$TEMPLATE" ]]; then
   echo "Error: template not found: $TEMPLATE" >&2
   exit 1
 fi
-rendered=$(envsubst < "$TEMPLATE")
+
+# envsubst does not understand bash default-value syntax (${VAR:-default}).
+# Strip the namespace line from the template before substitution when not set,
+# so the cmfRestClassRef block is emitted without a namespace field.
+if [[ -z "$CMF_REST_CLASS_NS" ]]; then
+  rendered=$(grep -v '^\s*namespace: \${CMF_REST_CLASS_NS}' "$TEMPLATE" | envsubst)
+else
+  rendered=$(envsubst < "$TEMPLATE")
+fi
 
 if [[ -z "$SAVEPOINT_PATH" ]]; then
   rendered=$(echo "$rendered" | grep -v '^\s*initialSavepointPath:')
-fi
-
-# Strip the cmfRestClassRef namespace line when not set (sentinel replaced by envsubst)
-if [[ -z "$CMF_REST_CLASS_NS" ]]; then
-  rendered=$(echo "$rendered" | grep -v '__OMIT__')
 fi
 
 # =============================================================================
@@ -295,6 +298,21 @@ fi
 # Submit
 # =============================================================================
 if ! $DRY_RUN; then
+  tmpfile=$(mktemp /tmp/flink-application-XXXXXX.yaml)
+  secret_created=false
+  cleanup() {
+    rm -f "$tmpfile"
+    if ! $secret_created; then
+      $KC delete secret "$APP_NAME" -n "$NAMESPACE" --ignore-not-found 2>/dev/null || true
+    fi
+  }
+  trap cleanup EXIT
+
+  br
+  echo "Submitting FlinkApplication..."
+  echo "$rendered" > "$tmpfile"
+  kc apply -f "$tmpfile"
+
   br
   echo "Creating flow SQL secret..."
   secret_yaml=$(kc create secret generic "$APP_NAME" \
@@ -302,32 +320,23 @@ if ! $DRY_RUN; then
     --namespace="$NAMESPACE" \
     --dry-run=client -o yaml)
   echo "$secret_yaml" | kc apply -f -
-
-  br
-  echo "Submitting FlinkApplication..."
-
-  tmpfile=$(mktemp /tmp/flink-application-XXXXXX.yaml)
-  trap 'rm -f "$tmpfile"' EXIT
-  echo "$rendered" > "$tmpfile"
-
-  kc apply -f "$tmpfile"
+  secret_created=true
 
   br
   echo "Setting ownerReference on secret (so it is deleted with the FlinkApplication)..."
   app_uid=""
   for i in 1 2 3 4 5; do
-    echo "  ${bold}+ $KC get flinkApplication $APP_NAME -n $NAMESPACE -o jsonpath='{.metadata.uid}'${reset}" >&2
-    app_uid=$($KC get flinkApplication "$APP_NAME" -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>/tmp/kc_err_$$ || true)
-    kc_err=$(cat /tmp/kc_err_$$ 2>/dev/null || true); rm -f /tmp/kc_err_$$
-    if [[ -n "$kc_err" ]]; then
-      if echo "$kc_err" | grep -qi "not found"; then
-        echo "  Waiting for FlinkApplication to be admitted (attempt $i/5)..."
-        sleep 2
-        continue
-      else
-        echo "Error: unexpected error retrieving FlinkApplication '$APP_NAME': $kc_err" >&2
-        exit 1
-      fi
+    echo "  ${bold}+ $KC get flinkapplication.platform.confluent.io/$APP_NAME -n $NAMESPACE -o jsonpath='{.metadata.uid}'${reset}" >&2
+    app_uid=$($KC get flinkapplication.platform.confluent.io/"$APP_NAME" \
+      -n "$NAMESPACE" -o jsonpath='{.metadata.uid}' 2>&1) || app_uid=""
+    if echo "$app_uid" | grep -qi "not found\|no resources found"; then
+      echo "  Waiting for FlinkApplication to be admitted (attempt $i/5)..."
+      app_uid=""
+      sleep 2
+      continue
+    elif echo "$app_uid" | grep -qi "error\|unable\|couldn't\|failed"; then
+      echo "Error: unexpected error retrieving FlinkApplication '$APP_NAME': $app_uid" >&2
+      exit 1
     fi
     [[ -n "$app_uid" ]] && break
     sleep 2
@@ -343,5 +352,5 @@ if ! $DRY_RUN; then
   br
   success "Done."
   echo "Monitor your application with:"
-  echo "  $KC get flinkApplication $APP_NAME -n $NAMESPACE -o yaml"
+  echo "  $KC get flinkapplication.platform.confluent.io/$APP_NAME -n $NAMESPACE -o yaml"
 fi
