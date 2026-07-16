@@ -4,7 +4,7 @@ IBM [announced](https://www.ibm.com/docs/en/announcements/withdrawl-event-automa
 
 > IBM intends to provide migration tools, services and entitlement flexibility to assist with migrating Event Streams and Event Processing deployments to IBM Confluent.
 
-This directory contains the tools that can help you migrate flows created in the Event Processing to Confluent Platform for Apache Flink.
+This directory contains the tools that can help you migrate flows created in Event Processing to Confluent Platform for Apache Flink.
 
 ## Prerequisites
 
