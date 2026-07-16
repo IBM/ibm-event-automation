@@ -28,4 +28,4 @@ The high-level steps to migrate flows are as follows:
 2. Copy the state of your Flink job to the target namespace by using the [`copy-savepoint.sh`](./copy-savepoint.sh) script.
 3. Deploy the migrated application by using the [`deploy.sh`](./deploy.sh) script, which creates a `FlinkApplication` custom resource in the target Confluent Manager for Apache Flink environment.
 
-For complete migration procedure, see the [Event Processing documentation](https://ibm.github.io/event-automation/ep/reference/migrate-to-confluent/).
+For the complete migration procedure, see the [Event Processing documentation](https://ibm.github.io/event-automation/ep/reference/migrate-to-confluent/).
