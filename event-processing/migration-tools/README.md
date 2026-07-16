@@ -1,44 +1,45 @@
 # migration-tools
 
-## Introduction
+This directory contains the tools required to migrate flows created in the IBM Event Processing low-code canvas to Confluent Platform for Apache Flink.
 
-IBM [announced](https://www.ibm.com/docs/en/announcements/withdrawal-event-automation) the Support lifecycle transition and software ordering completion for IBM Event Automation on June 9, 2026, stating that
+For complete migration steps, see the [Event Processing documentation](https://ibm.github.io/event-automation/ep/reference/migrate-to-confluent/).
+
+## Overview
+
+IBM [announced](https://www.ibm.com/docs/en/announcements/withdrawal-event-automation) the Support lifecycle transition and software ordering completion for IBM Event Automation on June 9, 2026, stating that:
 
 > IBM intends to provide migration tools, services and entitlement flexibility to assist with migrating Event Streams and Event Processing deployments to IBM Confluent Platform.
 
-The following table describes the methods available in {{site.data.reuse.ep_name}} for creating Flink workloads and their migration process:
+The following table describes the methods available in IBM Event Processing for creating Flink workloads and their migration process:
 
 | Workload type | Migration process |
 |---|---|
-| Flows created in the {{site.data.reuse.ep_name}} low-code visual editor | Flows are exported as SQL files, migrated, and executed on {{site.data.reuse.cpf_long}} as an application, ensuring native {{site.data.reuse.cpf_long}} support. This directory contains the migration tools that are required to migrate your Event Processing flows. |
-| Java applications written directly to Flink's Datastream and Table APIs | Outside the scope of this document. The following are the high level steps to migrate a Java application: <br><br>1. Understand how your Flink application is deployed and what state it holds. <br><br>2. Read the [{{site.data.reuse.cpf_long}} documentation](https://docs.confluent.io/cp-flink/current/overview.html){:target="_blank"}. <br><br>3. [Repackage your application](https://docs.confluent.io/cp-flink/current/jobs/applications/packaging.html){:target="_blank"} for {{site.data.reuse.cpf_long}}. <br><br>4. Migrate your state. The [copy-savepoint.sh](https://github.com/IBM/ibm-event-automation/blob/main/event-processing/migration-tools/copy-savepoint.sh){:target="_blank"} script might be useful. <br><br>5. Deploy your application. The [deploy.sh](https://github.com/IBM/ibm-event-automation/blob/main/event-processing/migration-tools/deploy.sh){:target="_blank"} script might also help. |
+| Flows created in the IBM Event Processing low-code visual editor | Flows are exported as SQL files, migrated, and executed on Confluent Platform for Apache Flink as an application. This directory contains the migration tools required. |
+| Java applications written directly to Flink's Datastream and Table APIs | Outside the scope of this document. The following are the high level steps to migrate a Java application: <br><br>1. Understand how your Flink application is deployed and what state it holds. <br><br>2. Read the [Confluent Platform for Apache Flink documentation](https://docs.confluent.io/cp-flink/current/overview.html). <br><br>3. [Repackage your application](https://docs.confluent.io/cp-flink/current/jobs/applications/packaging.html) for Confluent Platform for Apache Flink. <br><br>4. Migrate your state. The [copy-savepoint.sh](https://github.com/IBM/ibm-event-automation/blob/main/event-processing/migration-tools/copy-savepoint.sh) script might be useful. <br><br>5. Deploy your application. The [deploy.sh](https://github.com/IBM/ibm-event-automation/blob/main/event-processing/migration-tools/deploy.sh) script might also help. |
 
+## Limitations
 
-Further information is available on the Event Automation [documentation](https://ibm.github.io/event-automation/).
+- Flows that use the detect patterns node or the deduplicate node cannot be migrated directly to Confluent Platform for Apache Flink.
 
 ## Prerequisites
 
-To use these scripts, you need a macOS or Linux-based machine to run the scripts on:
+Before you begin:
 
-- [Docker](https://docs.docker.com/engine/install/){:target="_blank"} or [Podman CLI](https://podman.io/getting-started/installation.html){:target="_blank"} installed.
-(Docker Desktop, Rancher, podman or equivalent)
-- The `confluent` CLI installed.
-- If you are using {{site.data.reuse.openshift}}, ensure you have the following set up for your environment:
+1. Export each of your flows from IBM Event Processing as an SQL file.
+2. Restore redacted credentials and amend the SQL for the target environment.
+3. Install [Confluent Manager for Apache Flink (CMF)](https://docs.confluent.io/cp-flink/current/get-started/get-started-application.html) and [Confluent for Kubernetes](https://docs.confluent.io/operator/current/co-deploy-cfk.html) in your target environment.
 
-  - A supported version of the {{site.data.reuse.openshift_short}} [installed](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/){:target="_blank"}.  For supported versions, see the [support matrix]({{ 'support/matrix/#event-processing' | relative_url }}).
-  - The {{site.data.reuse.openshift_short}} CLI (`oc`) [installed](https://docs.redhat.com/en/documentation/openshift_container_platform/4.21/html/cli_tools/openshift-cli-oc#cli-getting-started){:target="_blank"}.
+To run the scripts, you also need a macOS or Linux-based machine with:
 
-- If you are using other Kubernetes platforms, ensure you have the following set up for your environment:
-
-  - A supported version of a Kubernetes platform installed. For supported versions, see the [support matrix]({{ 'support/matrix/#event-processing' | relative_url }}).
-  - The Kubernetes command-line tool (`kubectl`) [installed](https://v1-35.docs.kubernetes.io/docs/tasks/tools/){:target="_blank"}.
-- Access to the Kubernetes cluster or clusters hosting your Event Processing and Confluent Platform Flink for Apache Flink installations.
-- Confluent Manager for Apache Flink (CMF) installed on the target cluster.
+- [Docker](https://docs.docker.com/engine/install/) or [Podman](https://podman.io/getting-started/installation.html) installed, to build the application image (Step 1).
+- `kubectl` or `oc` installed, to copy savepoint state (Step 2).
+- The [`confluent` CLI](https://docs.confluent.io/confluent-cli/current/install.html) installed, to deploy the application (Step 3).
+- Sufficient local disk space to stage a temporary copy of the savepoint data.
 
 ## Procedure
 
-Follow the steps in the [Event Processing documentation](https://ibm.github.io/event-automation/ep/reference/migrate-to-confluent/) to migrate. The overview of the steps are as follows:
+Follow the steps in the [Event Processing documentation](https://ibm.github.io/event-automation/ep/reference/migrate-to-confluent/) to migrate. The high-level steps are:
 
-1. Build the application docker image (A sample `Dockerfile` is available).
-2. Migrate your application state (by using the `copy-savepoint.sh` script).
-3. Deploy the migrated application (by using the`deploy.sh` script).
+1. Build the application Docker image by using the [`Dockerfile`](./Dockerfile).
+2. Copy the state of your Flink job to the target namespace by using the [`copy-savepoint.sh`](./copy-savepoint.sh) script.
+3. Deploy the migrated application by using the [`deploy.sh`](./deploy.sh) script, which creates a `FlinkApplication` custom resource in the target Confluent Manager for Apache Flink environment.
