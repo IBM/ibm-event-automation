@@ -7,7 +7,7 @@ To utilise the samples, you will need to:
 
 - Specify the license, license metric and license use
 - Accept the terms of the license
-- Replace all placeholder values indicated by angled brackets, for example: `<eem-manager-gateway-route>`
+- Replace all placeholder values indicated by angled brackets, for example: `<eem-manager-server-endpoint>`
 
 To find out more about the samples see [the documentation](https://ibm.github.io/event-automation/eem/installing/planning/).
 

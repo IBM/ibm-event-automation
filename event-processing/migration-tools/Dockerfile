@@ -1,9 +1,11 @@
 # Multi-stage Dockerfile for migrating IBM Event Automation flows to Confluent Platform Flink
-# This Dockerfile builds a custom image containing:
+# This Dockerfile builds a common runner image containing:
 # - Apache Flink SQL Runner (modified for Confluent dependencies)
 # - Confluent-supported connectors (Kafka, JDBC, File)
 # - Required dependencies (kafka-clients)
-# - Customer's flow.sql file
+#
+# The flow SQL is NOT baked into this image. Instead, supply it at deploy time
+# via deploy.sh --sql, which mounts it as a Kubernetes secret.
 
 # Build arguments for version control
 # CONFLUENT_FLINK_VERSION      — cp-flink Docker image tag (includes platform suffix)
@@ -11,6 +13,8 @@
 #                                 (no platform suffix; must match the image's Flink release)
 ARG CONFLUENT_FLINK_VERSION=2.1.2-cp1-java11-amd64
 ARG CONFLUENT_FLINK_MAVEN_VERSION=2.1.2-cp1
+# FLINK_OPERATOR_VERSION pins the git branch/tag of apache/flink-kubernetes-operator used to
+# build the SQL runner. "main" is a mutable ref; pin to a specific tag for reproducible builds.
 ARG FLINK_OPERATOR_VERSION=main
 ARG KAFKA_CONNECTOR_VERSION=4.0.1-2.0-cp2
 ARG KAFKA_CLIENTS_VERSION=3.9.1
@@ -18,9 +22,6 @@ ARG JDBC_DRIVER_VERSION=2.1.2-cp1
 ARG FILE_SINK_VERSION=2.1.2-cp1
 ARG APACHE_HTTP_CONNECTOR_VERSION=1.0.0-2.2
 ARG GETINDATA_HTTP_CONNECTOR_VERSION=0.12.0
-
-# REQUIRED: Customer must provide path to their flow.sql file
-ARG FLOW_SQL_PATH
 
 # =============================================================================
 # Stage 1: Build SQL Runner with Confluent Maven coordinates
@@ -81,8 +82,8 @@ ARG GETINDATA_HTTP_CONNECTOR_VERSION
 
 WORKDIR /connectors
 
-# Here we download all the connectors typically used by Event Processing flows. Your particular flow may require only a subset of these:
-# you should feel free to remove any dependencies that you do not need.
+# The connectors below cover all types of source and sink used by Event Processing flows.
+# Your particular flow may only need a subset — feel free to remove what you do not use.
 
 # Fetch Confluent Kafka connector
 RUN mvn dependency:get \
@@ -117,20 +118,20 @@ RUN mvn dependency:get \
     -Dartifact=com.getindata:flink-http-connector:${GETINDATA_HTTP_CONNECTOR_VERSION} \
     -Dtransitive=false
 
-# Copy connector jars to /connectors/lib
-RUN mkdir -p /connectors/lib && \
-    cp ~/.m2/repository/io/confluent/flink/flink-connector-kafka/${KAFKA_CONNECTOR_VERSION}/flink-connector-kafka-${KAFKA_CONNECTOR_VERSION}.jar /connectors/lib/ && \
-    cp ~/.m2/repository/io/confluent/flink/flink-sql-jdbc-driver-bundle/${JDBC_DRIVER_VERSION}/flink-sql-jdbc-driver-bundle-${JDBC_DRIVER_VERSION}.jar /connectors/lib/ && \
-    cp ~/.m2/repository/io/confluent/flink/flink-file-sink-common/${FILE_SINK_VERSION}/flink-file-sink-common-${FILE_SINK_VERSION}.jar /connectors/lib/ && \
-    cp ~/.m2/repository/org/apache/flink/flink-sql-connector-http/${APACHE_HTTP_CONNECTOR_VERSION}/flink-sql-connector-http-${APACHE_HTTP_CONNECTOR_VERSION}.jar /connectors/lib/ && \
-    cp ~/.m2/repository/com/getindata/flink-http-connector/${GETINDATA_HTTP_CONNECTOR_VERSION}/flink-http-connector-${GETINDATA_HTTP_CONNECTOR_VERSION}.jar /connectors/lib/
+# Collect connector jars into /connectors/lib
+RUN mkdir -p /connectors/lib \
+ && cp ~/.m2/repository/io/confluent/flink/flink-connector-kafka/${KAFKA_CONNECTOR_VERSION}/flink-connector-kafka-${KAFKA_CONNECTOR_VERSION}.jar                   /connectors/lib/ \
+ && cp ~/.m2/repository/io/confluent/flink/flink-sql-jdbc-driver-bundle/${JDBC_DRIVER_VERSION}/flink-sql-jdbc-driver-bundle-${JDBC_DRIVER_VERSION}.jar             /connectors/lib/ \
+ && cp ~/.m2/repository/io/confluent/flink/flink-file-sink-common/${FILE_SINK_VERSION}/flink-file-sink-common-${FILE_SINK_VERSION}.jar                             /connectors/lib/ \
+ && cp ~/.m2/repository/org/apache/flink/flink-sql-connector-http/${APACHE_HTTP_CONNECTOR_VERSION}/flink-sql-connector-http-${APACHE_HTTP_CONNECTOR_VERSION}.jar   /connectors/lib/ \
+ && cp ~/.m2/repository/com/getindata/flink-http-connector/${GETINDATA_HTTP_CONNECTOR_VERSION}/flink-http-connector-${GETINDATA_HTTP_CONNECTOR_VERSION}.jar        /connectors/lib/
 
-# Copy other dependencies (non-connector libraries) to /dependencies/lib
-RUN mkdir -p /dependencies/lib && \
-    cp ~/.m2/repository/org/apache/kafka/kafka-clients/${KAFKA_CLIENTS_VERSION}/kafka-clients-${KAFKA_CLIENTS_VERSION}.jar /dependencies/lib/
+# Collect remaining dependencies (non-connector libraries) into /dependencies/lib
+RUN mkdir -p /dependencies/lib \
+ && cp ~/.m2/repository/org/apache/kafka/kafka-clients/${KAFKA_CLIENTS_VERSION}/kafka-clients-${KAFKA_CLIENTS_VERSION}.jar /dependencies/lib/
 
 # Download IBM Event Processing UDF jar (contains TO_TIMESTAMP_LTZ and Deduplication PTF)
-RUN curl -L -o /dependencies/lib/ibm-ep-udf.jar \
+RUN curl --fail -L -o /dependencies/lib/ibm-ep-udf.jar \
     https://github.com/IBM/ibm-event-automation/releases/download/timestamp-udf-v1.0.0/ibm-ep-udf.jar
 
 # =============================================================================
@@ -150,38 +151,21 @@ COPY --from=dependency-fetcher /connectors/lib/*.jar /opt/flink/lib/
 COPY --from=dependency-fetcher /dependencies/lib/*.jar /opt/flink/lib/
 
 # =============================================================================
-# Customer-specific additions required below this line
-# =============================================================================
-
-# REQUIRED: Copy customer's flow.sql file
-# This is the SQL file exported from IBM Event Processing
-ARG FLOW_SQL_PATH
-RUN mkdir -p /opt/flink/usrlib/sql-scripts
-COPY ${FLOW_SQL_PATH} /opt/flink/usrlib/sql-scripts/flow.sql
-
-# =============================================================================
 # Build instructions
 # =============================================================================
-# REQUIRED: FLOW_SQL_PATH must be the path to a single .sql file, relative to
-# the Docker build context directory. It must NOT be a directory.
+# The flow SQL is supplied at deploy time, not at build time.
+# Build this image once and reuse it across all flows.
 #
-# Run docker build from the directory containing this Dockerfile, with the
-# .sql file also inside that directory (or a subdirectory of it):
-#
-#   cp /path/to/your/exported/flow.sql .
-#   docker build \
-#     --build-arg FLOW_SQL_PATH=flow.sql \
-#     -t your-registry/flink-migrated-app:latest .
+#   docker build -t your-registry/flink-runner:latest .
 #
 # To build with custom versions:
 #   docker build \
-#     --build-arg FLOW_SQL_PATH=flow.sql \
 #     --build-arg CONFLUENT_FLINK_VERSION=2.1.2-cp1-java11-amd64 \
 #     --build-arg CONFLUENT_FLINK_MAVEN_VERSION=2.1.2-cp1 \
 #     --build-arg KAFKA_CONNECTOR_VERSION=4.0.1-2.0-cp2 \
 #     --build-arg JDBC_DRIVER_VERSION=2.1.2-cp1 \
 #     --build-arg FILE_SINK_VERSION=2.1.2-cp1 \
-#     -t your-registry/flink-migrated-app:latest .
+#     -t your-registry/flink-runner:latest .
 #
 # After building, push to your registry:
-#   docker push your-registry/flink-migrated-app:latest
+#   docker push your-registry/flink-runner:latest

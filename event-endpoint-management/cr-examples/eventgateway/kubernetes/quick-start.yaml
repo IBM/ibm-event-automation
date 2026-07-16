@@ -4,21 +4,24 @@ metadata:
   name: quick-start-gw
   labels:
     backup.events.ibm.com/component: eventgateway
+    events.ibm.com/manager: <manager-instance-name>
 spec:
   license:
     accept: false
     license: 'L-CYBH-K48BZQ'
     metric: VIRTUAL_PROCESSOR_CORE
     use: EventAutomationNonProduction
-  endpoints:
-    - name: gateway
-      host: qs-gateway.<CLUSTER_HOST>
-  managerEndpoint: https://<eem-manager-gateway-route>
-  maxNumKafkaBrokers: 3
+  listeners:
+    - name: listener
+      port: 8092
+      groups:
+        - name: group
+          type: EXPLICIT
+          maxNumKafkaBrokers: 3
+          endpoint:
+            host: qs-gateway.<CLUSTER_HOST>
   gatewayGroupName: <gateway-group>
   gatewayID: <gateway-id>
-  tls:
-    caSecretName: <root-ca-secret-name>
   template:
     pod:
       spec:

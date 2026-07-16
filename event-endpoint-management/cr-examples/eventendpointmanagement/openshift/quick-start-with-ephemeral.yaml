@@ -1,7 +1,7 @@
 apiVersion: events.ibm.com/v1beta1
 kind: EventEndpointManagement
 metadata:
-  name: quick-start-manager
+  name: quick-start-manager-ephemeral
   labels:
     backup.events.ibm.com/component: eventendpointmanagement
 spec:
@@ -11,20 +11,10 @@ spec:
     metric: VIRTUAL_PROCESSOR_CORE
     use: EventAutomationNonProduction
   manager:
-    endpoints:
-      - name: ui
-        host: qs-eem-ui.<CLUSTER_HOST>
-      - name: gateway
-        host: qs-eem-gateway.<CLUSTER_HOST>
-      - name: admin
-        host: qs-eem-admin.<CLUSTER_HOST>
-      - name: server
-        host: eem.qs-eem-server.<CLUSTER_HOST>
     authConfig:
       authType: LOCAL
     storage:
-      storageClassName: <storage-class>
-      type: persistent-claim
+      type: ephemeral
     template:
       pod:
         spec:
