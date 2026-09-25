@@ -1,0 +1,41 @@
+name: Deduplication PTF PR validation
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test-deduplication-ptf:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for deduplication-ptf changes
+        id: changes
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q '^event-processing/deduplication-ptf/' \
+            && echo "relevant=true" >> "${GITHUB_OUTPUT}" \
+            || echo "relevant=false" >> "${GITHUB_OUTPUT}"
+
+      - name: Set up Java
+        if: steps.changes.outputs.relevant == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+
+      - name: Build and test deduplication PTF module
+        if: steps.changes.outputs.relevant == 'true'
+        working-directory: event-processing/deduplication-ptf
+        run: mvn --batch-mode clean verify
