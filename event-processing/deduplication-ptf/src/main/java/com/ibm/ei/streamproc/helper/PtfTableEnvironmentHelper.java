@@ -76,7 +76,7 @@ public class PtfTableEnvironmentHelper {
      * <p><b>Deduplication Modes:</b>
      * <ul>
      *   <li><b>FIXED_INTERVAL:</b> Filters duplicates within fixed time windows</li>
-     *   <li><b>SESSION:</b> Filters duplicates based on session timeout (inactivity)</li>
+     *   <li><b>INACTIVITY:</b> Filters duplicates based on inactivity timeout</li>
      * </ul>
      *
      * @param tableEnv the Flink {@link TableEnvironment} in which to register the PTF. Must not be {@code null}.
