@@ -1,4 +1,4 @@
-name: Timestamp UDF release
+name: IBM EP Functions release
 
 on:
   release:
