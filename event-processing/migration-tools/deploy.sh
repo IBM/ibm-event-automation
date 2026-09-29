@@ -137,7 +137,7 @@ interactive=false
 
 if $interactive; then
   echo ""
-  echo "${bold}Deploy migrated IBM EP flow to Confluent Platform Flink${reset}"
+  echo "${bold}Deploy migrated IBM EP flow to Confluent Platform for Flink${reset}"
   echo "────────────────────────────────────────────────────────"
 fi
 

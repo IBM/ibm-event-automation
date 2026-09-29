@@ -10,7 +10,7 @@ This directory contains the tools that can help you migrate flows created in Eve
 
 To run the scripts, ensure that you have a macOS or Linux-based machine with:
 
-- Access to the Kubernetes cluster or clusters hosting your Event Processing and Confluent Platform Flink installations.
+- Access to the Kubernetes cluster or clusters hosting your Event Processing and Confluent Platform for Flink installations.
 - `envsubst` (part of `gettext`, pre-installed on macOS and most Linux distributions).
 - Confluent Manager for Apache Flink (CMF) installed on the target cluster.
 - [Docker](https://docs.docker.com/engine/install/) or [Podman](https://podman.io/getting-started/installation.html) installed, to build the application image (Step 1).
