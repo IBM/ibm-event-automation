@@ -2,8 +2,12 @@
 
 [![EP Dedup PTF and Timestamp UDFs Build](https://github.com/IBM/ibm-event-automation/actions/workflows/ep-dedup-ptf-and-timestamp-udfs-release.yml/badge.svg)](https://github.com/IBM/ibm-event-automation/actions/workflows/ep-dedup-ptf-and-timestamp-udfs-release.yml) [![Releases](https://img.shields.io/badge/releases-view-blue)](https://github.com/IBM/ibm-event-automation/releases)
 
-A combined JAR containing the Timestamp UDFs and Deduplication PTF for Apache Flink SQL.
-Originally developed for IBM Event Processing.
+A combined JAR containing the Timestamp UDFs and Deduplication PTF for Apache Flink SQL,
+for use when migrating IBM Event Processing flows to Confluent Platform for Flink.
+
+> **Note:** IBM Event Processing bundles these functions internally. This JAR is only required
+> when running migrated flows outside of IBM Event Processing — specifically on
+> Confluent Platform for Flink using the [migration tools](../migration-tools/README.md).
 
 | Module | Description | Reference |
 |---|---|---|
@@ -29,14 +33,17 @@ Only if you want to build from sources:
 
 Download `ep-dedup-ptf-and-timestamp-udfs.jar` from [GitHub Releases](https://github.com/IBM/ibm-event-automation/releases).
 
-Add the JAR to your Flink application image by copying it into the Flink `lib/` directory. For example, in a Dockerfile:
+The [migration tools](../migration-tools/README.md) Dockerfile downloads the JAR into the Flink
+`lib/` directory of the application image at build time:
 
 ```dockerfile
 RUN curl --fail -L -o /opt/flink/lib/ep-dedup-ptf-and-timestamp-udfs.jar \
     https://github.com/IBM/ibm-event-automation/releases/download/ep-dedup-ptf-and-timestamp-udfs-vX.Y.Z/ep-dedup-ptf-and-timestamp-udfs.jar
 ```
 
-This is the pattern used by the [migration tools](../migration-tools/README.md) to make the UDFs and PTF available to Flink SQL jobs running on Confluent Platform for Flink.
+Placing the JAR in `lib/` makes it available on the classpath of both the JobManager and
+TaskManager processes, which is required for Flink to resolve and execute the registered
+UDFs and PTF at runtime. The migration tools Dockerfile handles this automatically.
 
 ## Build from source
 
