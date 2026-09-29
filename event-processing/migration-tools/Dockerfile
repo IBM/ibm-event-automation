@@ -1,4 +1,4 @@
-# Multi-stage Dockerfile for migrating IBM Event Automation flows to Confluent Platform Flink
+# Multi-stage Dockerfile for migrating IBM Event Automation flows to Confluent Platform for Flink
 # This Dockerfile builds a common runner image containing:
 # - Apache Flink SQL Runner (modified for Confluent dependencies)
 # - Confluent-supported connectors (Kafka, JDBC, File)
@@ -130,9 +130,9 @@ RUN mkdir -p /connectors/lib \
 RUN mkdir -p /dependencies/lib \
  && cp ~/.m2/repository/org/apache/kafka/kafka-clients/${KAFKA_CLIENTS_VERSION}/kafka-clients-${KAFKA_CLIENTS_VERSION}.jar /dependencies/lib/
 
-# Download IBM Event Processing UDF jar (contains TO_TIMESTAMP_LTZ and Deduplication PTF)
-RUN curl --fail -L -o /dependencies/lib/ibm-ep-udf.jar \
-    https://github.com/IBM/ibm-event-automation/releases/download/timestamp-udf-v1.0.0/ibm-ep-udf.jar
+# Download EP Dedup PTF and Timestamp UDFs jar (contains TO_TIMESTAMP_UDF, TO_TIMESTAMP_LTZ_UDF and DEDUPLICATE_PTF)
+RUN curl --fail -L -o /opt/flink/lib/ep-dedup-ptf-and-timestamp-udfs.jar \
+    https://github.com/IBM/ibm-event-automation/releases/download/ep-dedup-ptf-and-timestamp-udfs-v1.0.0/ep-dedup-ptf-and-timestamp-udfs.jar
 
 # =============================================================================
 # Stage 3: Build final image with Confluent Flink runtime

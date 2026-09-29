@@ -1,0 +1,4 @@
+{"customer_id":"C1","event_time":"2025-01-01T10:00:00Z","order_id":"O1","amount":100.0}
+{"customer_id":"C1","event_time":"2025-01-01T10:00:01Z","order_id":"O1","amount":100.0}
+{"customer_id":"C2","event_time":"2025-01-01T10:00:02Z","order_id":"O2","amount":200.0}
+{"customer_id":"C2","event_time":"2025-01-01T10:00:03Z","order_id":"O2","amount":200.0}

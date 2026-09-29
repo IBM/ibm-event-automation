@@ -1,0 +1,3 @@
+{"order_id":"O1","item":{"name":"widget","price":10.0},"event_time":"2025-01-01T10:00:00Z"}
+{"order_id":"O1","item":{"name":"gadget","price":20.0},"event_time":"2025-01-01T10:00:01Z"}
+{"order_id":"O1","item":{"name":"widget","price":10.0},"event_time":"2025-01-01T10:00:02Z"}

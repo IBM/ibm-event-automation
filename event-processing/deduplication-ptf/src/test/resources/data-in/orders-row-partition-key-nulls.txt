@@ -1,0 +1,5 @@
+{"order_id":"O1","item":{"name":"widget"},"supplier":{"id":"S1"},"event_time":"2025-01-01T10:00:00Z"}
+{"order_id":"O1","item":null,"supplier":{"id":"S1"},"event_time":"2025-01-01T10:00:01Z"}
+{"order_id":"O1","item":{"name":"widget"},"supplier":{"id":"S1"},"event_time":"2025-01-01T10:00:02Z"}
+{"order_id":"O2","item":{"name":"widget"},"supplier":null,"event_time":"2025-01-01T10:00:03Z"}
+{"order_id":"O2","item":{"name":"widget"},"supplier":null,"event_time":"2025-01-01T10:00:04Z"}

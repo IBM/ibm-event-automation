@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Assembly module that merges the Timestamp UDF and Deduplication PTF modules
+  into a single ep-dedup-ptf-and-timestamp-udfs.jar for customer distribution via GitHub Releases.
+
+  This module contains no source code. It depends on ibm-ep-user-defined-functions
+  and ibm-ep-process-table-functions, and uses the maven-shade-plugin to combine
+  both into a single jar.
+
+  The version here is a placeholder — it is overridden at release time by the
+  ep-dedup-ptf-and-timestamp-udfs-release.yml workflow using the GitHub Release tag
+  (e.g. ep-dedup-ptf-and-timestamp-udfs-v1.0.0).
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ibm.ei</groupId>
+    <artifactId>ep-dedup-ptf-and-timestamp-udfs</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>EP Dedup PTF and Timestamp UDFs</name>
+    <description>Combined JAR containing the Timestamp UDFs and Deduplication PTF for Apache Flink</description>
+    <url>https://github.com/IBM/ibm-event-automation/tree/main/event-processing/ep-dedup-ptf-and-timestamp-udfs</url>
+
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <ibm-ep-udf.version>1.0.0</ibm-ep-udf.version>
+        <ibm-ep-ptf.version>1.0.0</ibm-ep-ptf.version>
+        <maven-shade-plugin.version>3.5.1</maven-shade-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.ibm.ei</groupId>
+            <artifactId>ibm-ep-user-defined-functions</artifactId>
+            <version>${ibm-ep-udf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.ei</groupId>
+            <artifactId>ibm-ep-process-table-functions</artifactId>
+            <version>${ibm-ep-ptf.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>ep-dedup-ptf-and-timestamp-udfs</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,4 +1,4 @@
-name: Timestamp UDF release
+name: EP Deduplication PTF and Timestamp UDFs release
 
 on:
   release:
@@ -9,9 +9,10 @@ permissions:
   contents: write
 
 jobs:
-  publish-timestamp-udf-jar:
-    if: startsWith(github.event.release.tag_name, 'timestamp-udf-v')
+  publish-ep-dedup-ptf-and-timestamp-udfs-jar:
+    if: startsWith(github.event.release.tag_name, 'ep-dedup-ptf-and-timestamp-udfs-v')
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Check out repository
@@ -28,25 +29,33 @@ jobs:
         id: version
         run: |
           TAG_NAME="${{ github.event.release.tag_name }}"
-          VERSION="${TAG_NAME#timestamp-udf-v}"
+          VERSION="${TAG_NAME#ep-dedup-ptf-and-timestamp-udfs-v}"
           if [ -z "${VERSION}" ] || [ "${VERSION}" = "${TAG_NAME}" ]; then
             echo "Unsupported tag format: ${TAG_NAME}" >&2
             exit 1
           fi
           echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
 
-      - name: Set Maven project version
+      - name: Build and install timestamp UDF module
         working-directory: event-processing/timestamp-udf
+        run: mvn --batch-mode clean install
+
+      - name: Build and install deduplication PTF module
+        working-directory: event-processing/deduplication-ptf
+        run: mvn --batch-mode clean install
+
+      - name: Set combined module version
+        working-directory: event-processing/ep-dedup-ptf-and-timestamp-udfs
         run: mvn --batch-mode versions:set -DnewVersion=${{ steps.version.outputs.version }} -DgenerateBackupPoms=false
 
-      - name: Build jar
-        working-directory: event-processing/timestamp-udf
-        run: mvn --batch-mode clean package
+      - name: Build combined jar
+        working-directory: event-processing/ep-dedup-ptf-and-timestamp-udfs
+        run: mvn --batch-mode clean verify
 
       - name: Upload jar asset to release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload "${{ github.event.release.tag_name }}" \
-            event-processing/timestamp-udf/target/ibm-ep-udf.jar \
+            event-processing/ep-dedup-ptf-and-timestamp-udfs/target/ep-dedup-ptf-and-timestamp-udfs.jar \
             --clobber

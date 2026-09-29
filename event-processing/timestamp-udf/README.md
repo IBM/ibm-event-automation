@@ -1,8 +1,6 @@
 # IBM Event Processing Timestamp UDFs
 
-[![Timestamp UDF Build](https://github.com/IBM/ibm-event-automation/actions/workflows/timestamp-udf-release.yml/badge.svg)](https://github.com/IBM/ibm-event-automation/actions/workflows/timestamp-udf-release.yml) [![Timestamp UDF Releases](https://img.shields.io/badge/releases-view-blue)](https://github.com/IBM/ibm-event-automation/releases)
-
-User-defined functions (UDFs) for Apache Flink SQL that parse ISO 8601 and SQL-formatted timestamp strings.
+Flink User-Defined Functions (UDFs) for parsing ISO 8601 timestamp strings with and without timezone information into Flink's TIMESTAMP type.
 Originally developed for IBM Event Processing.
 
 These UDFs are useful when events contain multiple timestamp properties in different formats,
@@ -18,40 +16,34 @@ They provide the following capabilities:
 - Connector-independent (works with JSON, Avro, etc. by parsing `STRING` columns)
 - Graceful error handling (returns `null` instead of throwing exceptions)
 
+> These UDFs are distributed as part of the combined `ep-dedup-ptf-and-timestamp-udfs.jar`. See [ep-dedup-ptf-and-timestamp-udfs](../ep-dedup-ptf-and-timestamp-udfs/README.md) for installation and release instructions.
+
 ---
 
 * [Prerequisites](#prerequisites)
-* [Installation](#installation)
+* [Build from source](#build-from-source)
 * [Function TO_TIMESTAMP_UDF](#function-to_timestamp_udf)
 * [Function TO_TIMESTAMP_LTZ_UDF](#function-to_timestamp_ltz_udf)
 * [SQL Usage Examples](#sql-usage-examples)
   * [Computed Column for Event Time & Watermarks](#computed-column-for-event-time--watermarks)
   * [Direct Transformation in Queries](#direct-transformation-in-queries)
-* [Release procedure](#release-procedure)
 
 ---
 
 ## Prerequisites
 
-Only if you want to build from sources:
 - Java 11+
 - Flink 2.2.1+
 - Maven 3
 
-## Installation
+## Build from source
 
-Download the JAR `ibm-ep-udf.jar` from [GitHub Releases](https://github.com/IBM/ibm-event-automation/releases) or build from source:
+Build this module independently:
 
 ```bash
 git clone https://github.com/IBM/ibm-event-automation.git
 cd ibm-event-automation/event-processing/timestamp-udf
 mvn clean package
-```
-
-Add the JAR to your Flink job's runtime classpath. For example, with Flink SQL Client:
-
-```bash
-./bin/sql-client.sh --jar /path/to/ibm-ep-udf.jar
 ```
 
 ## Function TO_TIMESTAMP_UDF
@@ -109,26 +101,3 @@ SELECT
     TO_TIMESTAMP_LTZ_UDF(`tsWithZone`) AS `tsWithZone`
 FROM `table`;
 ```
-
-## Release procedure
-
-This module is distributed as a GitHub Release asset.
-
-To publish a new module release, in GitHub:
-1. Select [Create a new Release](https://github.com/IBM/ibm-event-automation/releases/new)
-2. Create or select the tag using the format `timestamp-udf-vX.Y.Z`
-3. Set the release title to the tag value
-4. Select `Generate release notes`
-5. Select `Publish Release`
-
-Publishing the Release triggers `.github/workflows/timestamp-udf-release.yml` and the workflow builds the jar from `event-processing/timestamp-udf`.
-
-Release assets:
-- The workflow uploads the module jar `ibm-ep-udf.jar` as a release asset.
-- GitHub also automatically provides source code archives (`zip` and `tar.gz`) for the full repository at that tag.
-- Those source archives are repository-wide snapshots and are not limited to `event-processing/timestamp-udf`.
-
-Notes:
-- Pushing the tag alone does not publish the jar.
-- The release workflow only runs for tags starting with `timestamp-udf-v`.
-- The jar is published as a GitHub Release asset, not to a Maven repository.
