@@ -64,8 +64,9 @@ CREATE FUNCTION DEDUPLICATE_PTF AS 'com.ibm.ei.streamproc.ptf.DeduplicationPTF';
 | `input` | TABLE (set-semantic) | no | Input view; must carry a `PARTITION BY` clause |
 | `mode` | STRING | no | `'FIXED_INTERVAL'` or `'INACTIVITY'` |
 | `timeoutMillis` | BIGINT | no | Timeout in milliseconds (> 0): fixed window length for `FIXED_INTERVAL`, inactivity gap for `INACTIVITY` |
-| `on_time` | DESCRIPTOR | yes | Specifies the event-time column. When omitted, the framework resolves the time column automatically from the watermark declared on the input table. |
-| `uid` | STRING | yes | Stable operator identifier used by Flink for state migration and savepoint compatibility. When omitted, Flink uses the function name as the default identifier — which can cause collisions when multiple `DEDUPLICATE_PTF` calls appear in the same job. |
+| `DESCRIPTOR(<col>)` | DESCRIPTOR | yes | Specifies the event-time column as the 4th positional argument. When omitted, the framework resolves the time column automatically from the watermark declared on the input table. |
+
+> **Note on `uid`:** Flink assigns each PTF call a stable operator identifier used for state migration and savepoint compatibility. When multiple `DEDUPLICATE_PTF` calls appear in the same job, pass a unique string as the 5th positional argument (e.g. `'deduplicate-orders'`) to avoid identifier collisions. When omitted, Flink uses the function name as the default.
 
 ### Example
 
@@ -73,11 +74,10 @@ CREATE FUNCTION DEDUPLICATE_PTF AS 'com.ibm.ei.streamproc.ptf.DeduplicationPTF';
 SELECT *
 FROM TABLE(
   DEDUPLICATE_PTF(
-    input         => TABLE source_view PARTITION BY order_id,
-    mode          => 'FIXED_INTERVAL',
-    timeoutMillis => CAST(5000 AS BIGINT),
-    on_time       => DESCRIPTOR(event_time),
-    uid           => 'deduplicate-orders'
+    TABLE source_view PARTITION BY order_id,
+    'FIXED_INTERVAL',
+    CAST(5000 AS BIGINT),
+    DESCRIPTOR(event_time)
   )
 );
 ```
