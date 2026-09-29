@@ -15,7 +15,6 @@ Originally developed for IBM Event Processing.
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
 * [Build from source](#build-from-source)
-* [Release procedure](#release-procedure)
 
 ---
 
@@ -50,18 +49,3 @@ mvn -f ibm-ep-functions/pom.xml clean package
 
 The combined JAR is produced at `ibm-ep-functions/target/ibm-ep-functions.jar`.
 
-## Release procedure
-
-To publish a new release, in GitHub:
-1. Select [Create a new Release](https://github.com/IBM/ibm-event-automation/releases/new)
-2. Create or select the tag using the format `ep-functions-vX.Y.Z`
-3. Set the release title to the tag value
-4. Select `Generate release notes`
-5. Select `Publish Release`
-
-Publishing the Release triggers `.github/workflows/ibm-ep-functions-release.yml` which builds the combined JAR and uploads `ibm-ep-functions.jar` as a release asset.
-
-Notes:
-- Pushing the tag alone does not publish the jar.
-- The release workflow only runs for tags starting with `ep-functions-v`.
-- The jar is published as a GitHub Release asset, not to a Maven repository.
