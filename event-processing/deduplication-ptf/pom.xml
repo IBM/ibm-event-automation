@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>IBM Event Processing Deduplication PTF</name>
-    <description>Deduplication Process Transform Function (PTF) for Apache Flink</description>
+    <description>Deduplication Process Table Function (PTF) for Apache Flink</description>
     <url>https://github.com/IBM/ibm-event-automation/tree/main/event-processing/deduplication-ptf</url>
 
     <licenses>
