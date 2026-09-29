@@ -1,4 +1,4 @@
-# Multi-stage Dockerfile for migrating IBM Event Automation flows to Confluent Platform Flink
+# Multi-stage Dockerfile for migrating IBM Event Automation flows to Confluent Platform for Flink
 # This Dockerfile builds a common runner image containing:
 # - Apache Flink SQL Runner (modified for Confluent dependencies)
 # - Confluent-supported connectors (Kafka, JDBC, File)
