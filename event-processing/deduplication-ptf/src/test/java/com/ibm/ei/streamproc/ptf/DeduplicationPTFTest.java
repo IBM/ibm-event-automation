@@ -31,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class DeduplicationPTFTest extends AbstractPtfTest {
 
     @Test
-    @DisplayName("Session mode - duplicate events")
-    public void sessionDuplicateEvents() throws Exception {
+    @DisplayName("Inactivity mode - duplicate events")
+    public void inactivityDuplicateEvents() throws Exception {
 
-        List<Row> results = customPtfTest("dedup-session.sql");
+        List<Row> results = customPtfTest("dedup-inactivity.sql");
 
         // One duplicate should be removed
         assertEquals(2, results.size());
@@ -70,12 +70,12 @@ public class DeduplicationPTFTest extends AbstractPtfTest {
     }
 
     @Test
-    @DisplayName("Session mode extends active session")
-    public void sessionModeExtendsSession() throws Exception {
+    @DisplayName("Inactivity mode - duplicate events extend active window")
+    public void inactivityModeExtendsWindow() throws Exception {
 
-        List<Row> results = customPtfTest("dedup-session-extension.sql");
+        List<Row> results = customPtfTest("dedup-inactivity-extension.sql");
 
-        // Duplicate events extend the session, so only the first
+        // Duplicate events extend the inactivity window, so only the first
         // and the event after the inactivity gap should be emitted.
         assertEquals(2, results.size());
 
@@ -419,4 +419,5 @@ public class DeduplicationPTFTest extends AbstractPtfTest {
                     && Double.valueOf(20.0).equals(item.getField(1));
         }));
     }
+
 }
