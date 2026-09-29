@@ -44,10 +44,10 @@ mvn clean install
 ## Deduplication modes
 
 ### FIXED_INTERVAL
-Emits at most one event per fixed time window. The window is anchored to the last emitted event. Duplicate events within the window are suppressed and do not extend the window.
+Emits at most one event per timeout window. Duplicate events do not extend the window.
 
 ### INACTIVITY
-Emits the first event immediately, then suppresses duplicates until a gap of at least `timeoutMillis` milliseconds has elapsed with no events for that partition key. Every event (including duplicates) resets the inactivity timer.
+Duplicate events extend the active session. A new event is emitted only after a period of inactivity longer than the timeout.
 
 ## SQL Usage
 
@@ -64,8 +64,8 @@ CREATE FUNCTION DEDUPLICATE_PTF AS 'com.ibm.ei.streamproc.ptf.DeduplicationPTF';
 | `input` | TABLE (set-semantic) | no | Input view; must carry a `PARTITION BY` clause |
 | `mode` | STRING | no | `'FIXED_INTERVAL'` or `'INACTIVITY'` |
 | `timeoutMillis` | BIGINT | no | Timeout in milliseconds (> 0): fixed window length for `FIXED_INTERVAL`, inactivity gap for `INACTIVITY` |
-| `on_time` | DESCRIPTOR | yes | Event-time column; defaults to the watermark column |
-| `uid` | STRING | yes | Stable Flink operator identifier for savepoint compatibility |
+| `on_time` | DESCRIPTOR | yes | Specifies the event-time column. When omitted, the framework resolves the time column automatically from the watermark declared on the input table. |
+| `uid` | STRING | yes | Stable operator identifier used by Flink for state migration and savepoint compatibility. When omitted, Flink uses the function name as the default identifier — which can cause collisions when multiple `DEDUPLICATE_PTF` calls appear in the same job. |
 
 ### Example
 

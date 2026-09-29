@@ -361,9 +361,16 @@ public class DeduplicationPTF extends ProcessTableFunction<Row> {
 
 
     /**
-     * Resolves and caches whether the descriptor time column is TIMESTAMP_LTZ.
+     * Resolves and caches whether the event-time column is of type {@code TIMESTAMP_LTZ}.
      * This avoids exception-based type probing and repeated schema inspection
      * for every processed event.
+     *
+     * <p>The event-time column is not passed as an explicit {@code eval()} parameter.
+     * Instead, it is resolved implicitly by the Flink PTF framework: the caller specifies
+     * the column via the optional {@code on_time => DESCRIPTOR(<col>)} SQL argument, and
+     * the framework exposes it through {@link TableSemantics#timeColumn()} on the
+     * {@code "input"} table. When {@code on_time} is omitted, the framework falls back
+     * to the watermark column declared on the input table.
      */
     private boolean usesTimestampLtz(Context ctx) {
 
