@@ -8,7 +8,7 @@
   both into a single jar.
 
   The version here is a placeholder — it is overridden at release time by the
-  ibm-ep-functions-release.yml workflow using the GitHub Release tag (e.g. ep-functions-v1.1.0).
+  ibm-ep-functions-release.yml workflow using the GitHub Release tag (e.g. ep-functions-v1.0.0).
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -17,7 +17,7 @@
 
     <groupId>com.ibm.ei</groupId>
     <artifactId>ibm-ep-functions</artifactId>
-    <version>1.1.0</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>IBM Event Processing Functions</name>

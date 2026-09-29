@@ -132,7 +132,7 @@ RUN mkdir -p /dependencies/lib \
 
 # Download IBM Event Processing Functions jar (contains TO_TIMESTAMP_LTZ UDF and Deduplication PTF)
 RUN curl --fail -L -o /opt/flink/lib/ibm-ep-functions.jar \
-    https://github.com/IBM/ibm-event-automation/releases/download/ep-functions-v1.1.0/ibm-ep-functions.jar
+    https://github.com/IBM/ibm-event-automation/releases/download/ep-functions-v1.0.0/ibm-ep-functions.jar
 
 # =============================================================================
 # Stage 3: Build final image with Confluent Flink runtime
