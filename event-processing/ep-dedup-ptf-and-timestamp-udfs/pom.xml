@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Assembly module that merges the Timestamp UDF and Deduplication PTF modules
-  into a single ibm-ep-functions.jar for customer distribution via GitHub Releases.
+  into a single ep-dedup-ptf-and-timestamp-udfs.jar for customer distribution via GitHub Releases.
 
   This module contains no source code. It depends on ibm-ep-user-defined-functions
   and ibm-ep-process-table-functions, and uses the maven-shade-plugin to combine
   both into a single jar.
 
   The version here is a placeholder — it is overridden at release time by the
-  ibm-ep-functions-release.yml workflow using the GitHub Release tag (e.g. ep-functions-v1.0.0).
+  ep-dedup-ptf-and-timestamp-udfs-release.yml workflow using the GitHub Release tag
+  (e.g. ep-dedup-ptf-and-timestamp-udfs-v1.0.0).
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -16,13 +17,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ibm.ei</groupId>
-    <artifactId>ibm-ep-functions</artifactId>
+    <artifactId>ep-dedup-ptf-and-timestamp-udfs</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>IBM Event Processing Functions</name>
+    <name>EP Dedup PTF and Timestamp UDFs</name>
     <description>Combined JAR containing the Timestamp UDFs and Deduplication PTF for Apache Flink</description>
-    <url>https://github.com/IBM/ibm-event-automation/tree/main/event-processing</url>
+    <url>https://github.com/IBM/ibm-event-automation/tree/main/event-processing/ep-dedup-ptf-and-timestamp-udfs</url>
 
     <licenses>
         <license>
@@ -53,7 +54,7 @@
     </dependencies>
 
     <build>
-        <finalName>ibm-ep-functions</finalName>
+        <finalName>ep-dedup-ptf-and-timestamp-udfs</finalName>
 
         <plugins>
             <plugin>

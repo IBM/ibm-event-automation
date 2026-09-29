@@ -16,7 +16,7 @@ They provide the following capabilities:
 - Connector-independent (works with JSON, Avro, etc. by parsing `STRING` columns)
 - Graceful error handling (returns `null` instead of throwing exceptions)
 
-> These UDFs are distributed as part of the combined `ibm-ep-functions.jar`. See [ibm-ep-functions](../ibm-ep-functions/README.md) for installation and release instructions.
+> These UDFs are distributed as part of the combined `ep-dedup-ptf-and-timestamp-udfs.jar`. See [ep-dedup-ptf-and-timestamp-udfs](../ep-dedup-ptf-and-timestamp-udfs/README.md) for installation and release instructions.
 
 ---
 

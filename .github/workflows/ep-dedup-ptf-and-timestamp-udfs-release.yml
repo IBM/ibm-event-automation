@@ -1,4 +1,4 @@
-name: IBM EP Functions release
+name: EP Dedup PTF and Timestamp UDFs release
 
 on:
   release:
@@ -9,8 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  publish-ibm-ep-functions-jar:
-    if: startsWith(github.event.release.tag_name, 'ep-functions-v')
+  publish-ep-dedup-ptf-and-timestamp-udfs-jar:
+    if: startsWith(github.event.release.tag_name, 'ep-dedup-ptf-and-timestamp-udfs-v')
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -29,7 +29,7 @@ jobs:
         id: version
         run: |
           TAG_NAME="${{ github.event.release.tag_name }}"
-          VERSION="${TAG_NAME#ep-functions-v}"
+          VERSION="${TAG_NAME#ep-dedup-ptf-and-timestamp-udfs-v}"
           if [ -z "${VERSION}" ] || [ "${VERSION}" = "${TAG_NAME}" ]; then
             echo "Unsupported tag format: ${TAG_NAME}" >&2
             exit 1
@@ -45,11 +45,11 @@ jobs:
         run: mvn --batch-mode clean install
 
       - name: Set combined module version
-        working-directory: event-processing/ibm-ep-functions
+        working-directory: event-processing/ep-dedup-ptf-and-timestamp-udfs
         run: mvn --batch-mode versions:set -DnewVersion=${{ steps.version.outputs.version }} -DgenerateBackupPoms=false
 
       - name: Build combined jar
-        working-directory: event-processing/ibm-ep-functions
+        working-directory: event-processing/ep-dedup-ptf-and-timestamp-udfs
         run: mvn --batch-mode clean verify
 
       - name: Upload jar asset to release
@@ -57,5 +57,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload "${{ github.event.release.tag_name }}" \
-            event-processing/ibm-ep-functions/target/ibm-ep-functions.jar \
+            event-processing/ep-dedup-ptf-and-timestamp-udfs/target/ep-dedup-ptf-and-timestamp-udfs.jar \
             --clobber

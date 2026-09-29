@@ -12,7 +12,7 @@ It provides the following capabilities:
 - Event-time based processing using Flink watermarks
 - Compatible with both `TIMESTAMP` and `TIMESTAMP_LTZ` event-time columns
 
-> The Deduplication PTF is distributed as part of the combined `ibm-ep-functions.jar`. See [ibm-ep-functions](../ibm-ep-functions/README.md) for installation and release instructions.
+> The Deduplication PTF is distributed as part of the combined `ep-dedup-ptf-and-timestamp-udfs.jar`. See [ep-dedup-ptf-and-timestamp-udfs](../ep-dedup-ptf-and-timestamp-udfs/README.md) for installation and release instructions.
 
 ---
 
