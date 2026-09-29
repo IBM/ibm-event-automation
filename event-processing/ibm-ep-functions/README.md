@@ -7,8 +7,8 @@ Originally developed for IBM Event Processing.
 
 | Module | Description | Reference |
 |---|---|---|
-| [Timestamp UDFs](../timestamp-udf/README.md) | Parse ISO 8601 and SQL-formatted timestamp strings | `TO_TIMESTAMP_UDF`, `TO_TIMESTAMP_LTZ_UDF` |
-| [Deduplication PTF](../deduplication-ptf/README.md) | Deduplicate events within a configurable time window | `DEDUPLICATE_PTF` |
+| [Timestamp UDFs](../timestamp-udf/README.md) | Parse ISO 8601 and SQL-formatted timestamp strings. See [Flink scalar functions](https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/table/functions/udfs/). | `TO_TIMESTAMP_UDF`, `TO_TIMESTAMP_LTZ_UDF` |
+| [Deduplication PTF](../deduplication-ptf/README.md) | Deduplicate events within a configurable time window. See [Flink PTF](https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/table/functions/ptf/). | `DEDUPLICATE_PTF` |
 
 ---
 

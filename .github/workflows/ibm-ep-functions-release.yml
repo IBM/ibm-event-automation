@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  publish-timestamp-udf-jar:
+  publish-ibm-ep-functions-jar:
     if: startsWith(github.event.release.tag_name, 'ep-functions-v')
     runs-on: ubuntu-latest
     timeout-minutes: 20
