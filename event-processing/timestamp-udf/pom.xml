@@ -30,7 +30,7 @@
 
         <!-- Dependency Versions -->
         <flink.version>2.2.1</flink.version>
-        <log4j.version>2.25.4</log4j.version>
+        <log4j.version>2.25.5</log4j.version>
         <junit.version>5.10.1</junit.version>
 
         <!-- Plugin Versions -->
