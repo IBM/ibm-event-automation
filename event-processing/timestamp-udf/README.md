@@ -1,6 +1,6 @@
 # IBM Event Processing Timestamp UDFs
 
-User-defined functions (UDFs) for Apache Flink SQL that parse ISO 8601 and SQL-formatted timestamp strings.
+Flink User-Defined Functions (UDFs) for parsing ISO 8601 timestamp strings with and without timezone information into Flink's TIMESTAMP type.
 Originally developed for IBM Event Processing.
 
 These UDFs are useful when events contain multiple timestamp properties in different formats,

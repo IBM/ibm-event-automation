@@ -38,7 +38,7 @@ Build this module independently:
 ```bash
 git clone https://github.com/IBM/ibm-event-automation.git
 cd ibm-event-automation/event-processing/deduplication-ptf
-mvn clean package
+mvn clean install
 ```
 
 ## Deduplication modes

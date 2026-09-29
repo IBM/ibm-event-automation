@@ -7,7 +7,7 @@ Originally developed for IBM Event Processing.
 
 | Module | Description | Reference |
 |---|---|---|
-| [Timestamp UDFs](../timestamp-udf/README.md) | Parse ISO 8601 and SQL-formatted timestamp strings. See [Flink scalar functions](https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/table/functions/udfs/). | `TO_TIMESTAMP_UDF`, `TO_TIMESTAMP_LTZ_UDF` |
+| [Timestamp UDFs](../timestamp-udf/README.md) | Flink User-Defined Functions (UDFs) for parsing ISO 8601 timestamp strings with and without timezone information into Flink's TIMESTAMP type. See [Flink scalar functions](https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/table/functions/udfs/). | `TO_TIMESTAMP_UDF`, `TO_TIMESTAMP_LTZ_UDF` |
 | [Deduplication PTF](../deduplication-ptf/README.md) | Deduplicate events within a configurable time window. See [Flink Process Table Functions](https://nightlies.apache.org/flink/flink-docs-release-2.3/docs/dev/table/functions/ptfs/). | `DEDUPLICATE_PTF` |
 
 ---
@@ -29,11 +29,14 @@ Only if you want to build from sources:
 
 Download `ibm-ep-functions.jar` from [GitHub Releases](https://github.com/IBM/ibm-event-automation/releases).
 
-Add the JAR to your Flink job's runtime classpath. For example, with Flink SQL Client:
+Add the JAR to your Flink application image by copying it into the Flink `lib/` directory. For example, in a Dockerfile:
 
-```bash
-./bin/sql-client.sh --jar /path/to/ibm-ep-functions.jar
+```dockerfile
+RUN curl --fail -L -o /opt/flink/lib/ibm-ep-functions.jar \
+    https://github.com/IBM/ibm-event-automation/releases/download/ep-functions-vX.Y.Z/ibm-ep-functions.jar
 ```
+
+This is the pattern used by the [migration tools](../migration-tools/README.md) to make the UDFs and PTF available to Flink SQL jobs running on Confluent Platform for Flink.
 
 ## Build from source
 
