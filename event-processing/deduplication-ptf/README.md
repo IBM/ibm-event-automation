@@ -1,115 +1,83 @@
 # IBM Event Processing Deduplication PTF
 
-This directory contains the source for the deduplication Process Table Function (PTF) module used by IBM Event Processing.
+A Process Table Function (PTF) for Apache Flink SQL that deduplicates events within a configurable time window.
+Originally developed for IBM Event Processing.
 
-The module is intentionally self-contained so it can also be copied to the public repository distribution location
-without requiring a parent POM or other repository-specific build structure.
+This PTF is useful when an event stream contains duplicate events and you want to suppress them based on a partition key and a time-based deduplication strategy.
 
-## How it integrates with stream-proc
+It provides the following capabilities:
+- Two deduplication modes: `FIXED_INTERVAL` and `INACTIVITY`
+- Partition-based deduplication — each partition key maintains independent deduplication state
+- Support for complex partition key types: `ROW`, `ARRAY`, `BOOLEAN`, `TIMESTAMP`, and nested types
+- Event-time based processing using Flink watermarks
+- Compatible with both `TIMESTAMP` and `TIMESTAMP_LTZ` event-time columns
 
-Deduplication supports two execution paths depending on the
-`"useSqlDeduplication"` setting in the flow definition:
+> The Deduplication PTF is distributed as part of the combined `ibm-ep-functions.jar`. See [ibm-ep-functions](../ibm-ep-functions/README.md) for installation and release instructions.
 
-- **SQL-based path:** When `"useSqlDeduplication": true` is set, `stream-proc`
-  performs deduplication entirely in Flink SQL using the `DEDUPLICATE_PTF`
-  Process Table Function (PTF).
+---
 
-  The PTF is registered in Flink SQL as:
+* [Prerequisites](#prerequisites)
+* [Build from source](#build-from-source)
+* [Deduplication modes](#deduplication-modes)
+* [SQL Usage](#sql-usage)
+  * [Function arguments](#function-arguments)
+  * [Example](#example)
 
-  ```sql
-  CREATE FUNCTION DEDUPLICATE_PTF
-  AS 'com.ibm.ei.streamproc.ptf.DeduplicationPTF';
-  ```
-  and invoked using named arguments so that each `DEDUPLICATE_PTF` call in a job
-  receives a stable, node-scoped operator UID:
+---
 
-  ```sql
-  SELECT <output columns>
-  FROM TABLE(
-    DEDUPLICATE_PTF(
-      input         => TABLE <source_view> PARTITION BY <key>,
-      mode          => '<MODE>',
-      timeoutMillis => CAST(<ms> AS BIGINT),
-      on_time       => DESCRIPTOR(<event_time_col>),
-      uid           => 'deduplicate-<nodeId>'
-    )
-  );
-  ```
+## Prerequisites
 
-  | Argument | Type | Optional | Description |
-  |---|---|---|---|
-  | `input` | TABLE (set-semantic) | no | Input view; must carry a `PARTITION BY` clause |
-  | `mode` | STRING | no | `'FIXED_INTERVAL'` or `'INACTIVITY'` |
-  | `timeoutMillis` | BIGINT | no | Timeout in ms (> 0): fixed window length for `FIXED_INTERVAL`, inactivity gap for `INACTIVITY` |
-  | `on_time` | DESCRIPTOR | yes | Event-time column; defaults to the watermark column |
-  | `uid` | STRING | yes | Stable Flink operator identifier for savepoint compatibility |
+- Java 11+
+- Flink 2.2.1+
+- Maven 3
 
-- **DataStream-based (non-PTF) path:** When `"useSqlDeduplication"` is `false`, or absent for flows deployed through the flow deployer, `stream-proc` uses the DataStream-based implementation from `ibm-ep-java-nodes`. This implementation cannot be exported to SQL.
+## Build from source
 
-In the Deduplicate node's flow JSON, set `configuration.deduplicationMode` to one
-of the following values. The corresponding `mode` PTF argument value is shown for reference:
-
-| Mode | Flow JSON `configuration.deduplicationMode` value | PTF `mode` argument |
-|---|---|---|
-| Fixed interval | `"fixed-interval"` | `'FIXED_INTERVAL'` |
-| Inactivity | `"inactivity"` | `'INACTIVITY'` |
-
-When partition keys are nested properties (e.g. `item.name`), `stream-proc` creates a synthetic
-projection view to lift them to top-level columns before passing them to the PTF, because Flink's
-`PARTITION BY` clause only accepts top-level columns.
-
-For example, given events with an `item.name` field, configure the Deduplicate node to use that
-nested property as its partition key:
-
-```json
-{
-  "configuration": {
-    "deduplicationMode": "fixed-interval",
-    "useSqlDeduplication": true,
-    "matchingCriteriaProperties": [
-    {
-      "name": "item",
-      "type": "ROW",
-      "properties": [
-        {
-          "name": "name",
-          "type": "STRING"
-        }
-      ]
-    }
-    ]
-  }
-}
-```
-
-For an input such as `{ "item": { "name": "widget" } }`, the node uses `item.name` as the
-partition key. Events with the same `item.name` value are treated as duplicates within the
-configured fixed interval, while events with different values, such as `gadget`, are processed
-separately.
-
-## Build
-
-Build the module from this directory:
+Build this module independently:
 
 ```bash
+git clone https://github.com/IBM/ibm-event-automation.git
+cd ibm-event-automation/event-processing/deduplication-ptf
 mvn clean package
 ```
 
-## Public distribution copy
+## Deduplication modes
 
-A public copy of this module is intended to be maintained in:
+### FIXED_INTERVAL
+Emits at most one event per fixed time window. The window is anchored to the last emitted event. Duplicate events within the window are suppressed and do not extend the window.
 
-- Source location: https://github.com/IBM/ibm-event-automation/tree/main/event-processing/deduplication-ptf
-- Releases: https://github.com/IBM/ibm-event-automation/releases
+### INACTIVITY
+Emits the first event immediately, then suppresses duplicates until a gap of at least `timeoutMillis` milliseconds has elapsed with no events for that partition key. Every event (including duplicates) resets the inactivity timer.
 
-The public repository is intended to provide customers with:
-- access to the module source
-- a downloadable jar through GitHub Releases
-- the ability to rebuild the module if needed
+## SQL Usage
 
-This repository remains the maintained source used for Event Processing product build needs.
+Register the PTF before using it:
 
-The public repository copy is maintained separately for customer-facing distribution. No repository linkage or 
-synchronization mechanism is assumed beyond manual update when needed.
+```sql
+CREATE FUNCTION DEDUPLICATE_PTF AS 'com.ibm.ei.streamproc.ptf.DeduplicationPTF';
+```
 
-The public-repo-specific `README.md` is maintained separately and is not intended to be copied as-is from this repository.
+### Function arguments
+
+| Argument | Type | Optional | Description |
+|---|---|---|---|
+| `input` | TABLE (set-semantic) | no | Input view; must carry a `PARTITION BY` clause |
+| `mode` | STRING | no | `'FIXED_INTERVAL'` or `'INACTIVITY'` |
+| `timeoutMillis` | BIGINT | no | Timeout in milliseconds (> 0): fixed window length for `FIXED_INTERVAL`, inactivity gap for `INACTIVITY` |
+| `on_time` | DESCRIPTOR | yes | Event-time column; defaults to the watermark column |
+| `uid` | STRING | yes | Stable Flink operator identifier for savepoint compatibility |
+
+### Example
+
+```sql
+SELECT *
+FROM TABLE(
+  DEDUPLICATE_PTF(
+    input         => TABLE source_view PARTITION BY order_id,
+    mode          => 'FIXED_INTERVAL',
+    timeoutMillis => CAST(5000 AS BIGINT),
+    on_time       => DESCRIPTOR(event_time),
+    uid           => 'deduplicate-orders'
+  )
+);
+```

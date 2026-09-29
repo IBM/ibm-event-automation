@@ -130,9 +130,9 @@ RUN mkdir -p /connectors/lib \
 RUN mkdir -p /dependencies/lib \
  && cp ~/.m2/repository/org/apache/kafka/kafka-clients/${KAFKA_CLIENTS_VERSION}/kafka-clients-${KAFKA_CLIENTS_VERSION}.jar /dependencies/lib/
 
-# Download IBM Event Processing UDF jar (contains TO_TIMESTAMP_LTZ and Deduplication PTF)
-RUN curl --fail -L -o /dependencies/lib/ibm-ep-udf.jar \
-    https://github.com/IBM/ibm-event-automation/releases/download/timestamp-udf-v1.0.0/ibm-ep-udf.jar
+# Download IBM Event Processing Functions jar (contains TO_TIMESTAMP_LTZ UDF and Deduplication PTF)
+RUN curl --fail -L -o /opt/flink/lib/ibm-ep-functions.jar \
+    https://github.com/IBM/ibm-event-automation/releases/download/ep-functions-v1.1.0/ibm-ep-functions.jar
 
 # =============================================================================
 # Stage 3: Build final image with Confluent Flink runtime
