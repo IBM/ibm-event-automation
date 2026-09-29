@@ -1,4 +1,4 @@
-name: EP Dedup PTF and Timestamp UDFs release
+name: EP Deduplication PTF and Timestamp UDFs release
 
 on:
   release:
