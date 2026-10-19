@@ -11,7 +11,7 @@
 # CONFLUENT_FLINK_VERSION      — cp-flink Docker image tag (includes platform suffix)
 # CONFLUENT_FLINK_MAVEN_VERSION — Maven artifact version for io.confluent.flink dependencies
 #                                 (no platform suffix; must match the image's Flink release)
-ARG CONFLUENT_FLINK_VERSION=2.2.0-cp2-java17
+ARG CONFLUENT_FLINK_VERSION=2.2.0-cp2-java17-amd64
 ARG CONFLUENT_FLINK_MAVEN_VERSION=2.2.0-cp2
 # FLINK_OPERATOR_VERSION pins the git branch/tag of apache/flink-kubernetes-operator used to
 # build the SQL runner. "main" is a mutable ref; pin to a specific tag for reproducible builds.
@@ -160,7 +160,7 @@ COPY --from=dependency-fetcher /dependencies/lib/*.jar /opt/flink/lib/
 #
 # To build with custom versions:
 #   docker build \
-#     --build-arg CONFLUENT_FLINK_VERSION=2.2.0-cp2-java17 \
+#     --build-arg CONFLUENT_FLINK_VERSION=2.2.0-cp2-java17-amd64 \
 #     --build-arg CONFLUENT_FLINK_MAVEN_VERSION=2.2.0-cp2 \
 #     --build-arg KAFKA_CONNECTOR_VERSION=4.0.1-2.0-cp2 \
 #     --build-arg JDBC_DRIVER_VERSION=2.2.0-cp2 \
