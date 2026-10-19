@@ -131,7 +131,7 @@ RUN mkdir -p /dependencies/lib \
  && cp ~/.m2/repository/org/apache/kafka/kafka-clients/${KAFKA_CLIENTS_VERSION}/kafka-clients-${KAFKA_CLIENTS_VERSION}.jar /dependencies/lib/
 
 # Download EP Dedup PTF and Timestamp UDFs jar (contains TO_TIMESTAMP_UDF, TO_TIMESTAMP_LTZ_UDF and DEDUPLICATE_PTF)
-RUN curl --fail -L -o /opt/flink/lib/ep-dedup-ptf-and-timestamp-udfs.jar \
+RUN curl --fail -L -o /dependencies/lib/ep-dedup-ptf-and-timestamp-udfs.jar \
     https://github.com/IBM/ibm-event-automation/releases/download/ep-dedup-ptf-and-timestamp-udfs-v1.0.0/ep-dedup-ptf-and-timestamp-udfs.jar
 
 # =============================================================================
