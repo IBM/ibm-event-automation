@@ -11,22 +11,22 @@
 # CONFLUENT_FLINK_VERSION      — cp-flink Docker image tag (includes platform suffix)
 # CONFLUENT_FLINK_MAVEN_VERSION — Maven artifact version for io.confluent.flink dependencies
 #                                 (no platform suffix; must match the image's Flink release)
-ARG CONFLUENT_FLINK_VERSION=2.1.2-cp1-java11-amd64
-ARG CONFLUENT_FLINK_MAVEN_VERSION=2.1.2-cp1
+ARG CONFLUENT_FLINK_VERSION=2.2.0-cp2-java17
+ARG CONFLUENT_FLINK_MAVEN_VERSION=2.2.0-cp2
 # FLINK_OPERATOR_VERSION pins the git branch/tag of apache/flink-kubernetes-operator used to
 # build the SQL runner. "main" is a mutable ref; pin to a specific tag for reproducible builds.
 ARG FLINK_OPERATOR_VERSION=main
 ARG KAFKA_CONNECTOR_VERSION=4.0.1-2.0-cp2
 ARG KAFKA_CLIENTS_VERSION=3.9.1
-ARG JDBC_DRIVER_VERSION=2.1.2-cp1
-ARG FILE_SINK_VERSION=2.1.2-cp1
+ARG JDBC_DRIVER_VERSION=2.2.0-cp2
+ARG FILE_SINK_VERSION=2.2.0-cp2
 ARG APACHE_HTTP_CONNECTOR_VERSION=1.0.0-2.2
 ARG GETINDATA_HTTP_CONNECTOR_VERSION=0.12.0
 
 # =============================================================================
 # Stage 1: Build SQL Runner with Confluent Maven coordinates
 # =============================================================================
-FROM maven:3.9-eclipse-temurin-11 AS builder
+FROM maven:3.9-eclipse-temurin-17 AS builder
 
 ARG FLINK_OPERATOR_VERSION
 ARG CONFLUENT_FLINK_MAVEN_VERSION
@@ -65,8 +65,8 @@ RUN xmlstarlet ed --inplace \
     --update "//dependency[groupId='io.confluent.flink' and version='\${flink.version}']/version" --value "\${confluent.flink.version}" \
     pom.xml
 
-# Build the SQL Runner jar (skip XML format check, override Java target to 11)
-RUN mvn clean package -DskipTests -Dxml.skip=true -Dmaven.compiler.source=11 -Dmaven.compiler.target=11
+# Build the SQL Runner jar (skip XML format check, set Java target to 17 to match the runtime image)
+RUN mvn clean package -DskipTests -Dxml.skip=true -Dmaven.compiler.source=17 -Dmaven.compiler.target=17
 
 # =============================================================================
 # Stage 2: Fetch Confluent connectors and dependencies
@@ -160,11 +160,11 @@ COPY --from=dependency-fetcher /dependencies/lib/*.jar /opt/flink/lib/
 #
 # To build with custom versions:
 #   docker build \
-#     --build-arg CONFLUENT_FLINK_VERSION=2.1.2-cp1-java11-amd64 \
-#     --build-arg CONFLUENT_FLINK_MAVEN_VERSION=2.1.2-cp1 \
+#     --build-arg CONFLUENT_FLINK_VERSION=2.2.0-cp2-java17 \
+#     --build-arg CONFLUENT_FLINK_MAVEN_VERSION=2.2.0-cp2 \
 #     --build-arg KAFKA_CONNECTOR_VERSION=4.0.1-2.0-cp2 \
-#     --build-arg JDBC_DRIVER_VERSION=2.1.2-cp1 \
-#     --build-arg FILE_SINK_VERSION=2.1.2-cp1 \
+#     --build-arg JDBC_DRIVER_VERSION=2.2.0-cp2 \
+#     --build-arg FILE_SINK_VERSION=2.2.0-cp2 \
 #     -t your-registry/flink-runner:latest .
 #
 # After building, push to your registry:
