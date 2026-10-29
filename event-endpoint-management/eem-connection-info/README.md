@@ -11,7 +11,7 @@ The script returns the external ones too.
 
 Before you run the script, ensure the following:
 
-- Event Endpoint Management version 11.9.1 or later.
+- Event Endpoint Management version 11.9.1 or later installed.
 - `bash`, `curl` and `jq`.
 - From the Event Endpoint Management UI, under **Profile** > **Access tokens**:
   - The **Admin API URL**.
