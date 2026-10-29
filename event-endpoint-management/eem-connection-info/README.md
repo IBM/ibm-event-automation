@@ -1,7 +1,6 @@
 # eem-connection-info
 
-`eem-connection-info.sh` gets the bootstrap servers and the CA certificate that a Kafka client
-needs to connect to a virtual topic through the gateways of a gateway group.
+The `eem-connection-info.sh` script retrieves the bootstrap servers and the CA certificate that a Kafka client requires to connect to a virtual topic through the gateways in a gateway group.
 
 The Catalog in the Event Endpoint Management UI shows them for the external endpoints only. Use this
 script to get the **internal** ones, for Kafka clients that run in the same cluster as the gateways.
