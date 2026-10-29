@@ -9,7 +9,7 @@ The script returns the external ones too.
 
 ## Prerequisites
 
-Before you run the script, ensure the following:
+Before you run the script, ensure meet the following prerequisites:
 
 - Event Endpoint Management version 11.9.1 or later installed.
 - `bash`, `curl` and `jq` installed.
