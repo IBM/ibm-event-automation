@@ -13,7 +13,7 @@ Before you run the script, ensure meet the following prerequisites:
 
 - Event Endpoint Management version 11.9.1 or later installed.
 - `bash`, `curl` and `jq` installed.
-- From the Event Endpoint Management UI, under **Profile** > **Access tokens**:
+- Obtain the following from the Event Endpoint Management UI, under **Profile** > **Access tokens**:
   - The **Admin API URL**.
   - The root certificate (click **Download root certificate**).
   - An access token (click **Create token**).
