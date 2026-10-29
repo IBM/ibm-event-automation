@@ -33,7 +33,7 @@ Run `./eem-connection-info.sh --help` for more details.
 
 ## Output
 
-The script writes these files and prints the matching Kafka client properties:
+The script writes the following files to the output directory and prints the matching Kafka client properties:
 
 ```
 <output-dir>/
