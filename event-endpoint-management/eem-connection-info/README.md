@@ -9,12 +9,14 @@ The script returns the external ones too.
 
 ## Prerequisites
 
-- Event Endpoint Management version 11.9.1 or higher
+Before you run the script, ensure the following:
+
+- Event Endpoint Management version 11.9.1 or later.
 - `bash`, `curl` and `jq`.
-- From the Event Endpoint Management UI, **Profile** > **Access tokens**:
-  - the **Admin API URL**,
-  - the root certificate (**Download root certificate**),
-  - an access token (**Create token**).
+- From the Event Endpoint Management UI, under **Profile** > **Access tokens**:
+  - The **Admin API URL**.
+  - The root certificate (click **Download root certificate**).
+  - An access token (click **Create token**).
 - The source topic name, the virtual topic alias and the gateway group name, as shown in the Catalog.
 
 ## Usage
