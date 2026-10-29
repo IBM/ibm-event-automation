@@ -45,9 +45,7 @@ The script writes the following files to the output directory and prints the mat
     ca.pem
 ```
 
-Use the files in `internalEndpoints/` for Kafka clients that run in the same cluster as the gateways.
-Use the files in `endpoints/` for all other clients.
-Set these properties to configure the Kafka client:
+Use the files in `internalEndpoints/` for Kafka clients that run in the same cluster as the gateways, and use the files in `endpoints/` for all other clients. To configure the Kafka client, set the following properties:
 
 ```properties
 bootstrap.servers=<content of bootstrap-server.txt>
