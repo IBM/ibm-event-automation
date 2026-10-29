@@ -6,7 +6,7 @@ The Catalog in the Event Endpoint Management UI displays the bootstrap servers a
 
 ## Prerequisites
 
-Before you run the script, ensure meet the following prerequisites:
+Before you run the script, ensure you meet the following prerequisites:
 
 - Event Endpoint Management version 11.9.1 or later installed.
 - `bash`, `curl` and `jq` installed.
